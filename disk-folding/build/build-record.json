@@ -1,0 +1,28 @@
+{
+  "section_sha256": {
+    "sections/00-introduction.md": "0254cae1fab12f8a484ae8fab9f0948a96a90abb03faba3d9a6ddc4774020bd2",
+    "sections/01-model-and-realization.md": "e11afb022a6580607e827fc9434639a52e7c23e687526baed9c8d86071068b92",
+    "sections/02-crease-reduction.md": "c5beb68335ba7f048d2cfcf077b463c1f41fa9aae0f7877abafbed88807945b3",
+    "sections/03-finite-certificate.md": "027a264f25c54349ea111fbd735f3537b470e3adc288970c084e581ccb65ad97",
+    "sections/04-layer-construction.md": "fd964ee2c1b1305f05ab4ad8f25f329f9bf23a6f0423b75cbf9c3833e58c587c",
+    "sections/05-main-theorem.md": "b6278398cb39fab7d051ccfb22f9a39c073bd1d2143ba520b2270a612fa18f8d",
+    "sections/06-counterexample.md": "3ff203415ca2a9c6b9813e9541b707d141ac08ec583ab8122cce3c8f3c13cfff",
+    "sections/07-references.md": "3637b45233f116f42c09486ffdb51e8bb5a8838811bae6de6cf3c8b5672b2b99"
+  },
+  "build_dependencies": {
+    "pypandoc_binary": "1.17",
+    "typst": "0.15.2"
+  },
+  "pandoc_version": "3.9",
+  "outputs": {
+    "manuscript.md": "bb2a9772e33048378db70254f4cf0eea0a1cae46269b6accbe935e18e2f0bb36",
+    "manuscript.tex": "492be00a9a6d6d0aa2a145bd8c113b62160a1c8efa7821bf1f01ac89e41af229",
+    "manuscript.typ": "ac4a5edb5aa714ca94f55380a6f732e0a5be37e0fe7878b2ba5ce5703a14d762",
+    "output/pdf/disk-folding-manuscript.pdf": "6f4478119c8919eb65a56415053b78cc07a067fec74221793eb463f870d1911a"
+  },
+  "notes": [
+    "Heading depth normalized in combined manuscript only.",
+    "LaTeX exported but not compiled here; PDF compiled with Typst.",
+    "Build packages are not mathematical-verification dependencies."
+  ]
+}

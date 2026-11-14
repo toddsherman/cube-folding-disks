@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-05",
+  "timezone": "America/Los_Angeles",
+  "assessment": "No same-model general physical-disk map-to-valid-folding theorem found in inspected sources; priority remains provisional.",
+  "methods": [
+    "Web searches using theorem terminology and title variants",
+    "Primary paper full-text comparison",
+    "arXiv version records and author publication lists",
+    "Backward references and limited OpenAlex forward-citation screening"
+  ],
+  "query_families": [
+    "polyomino cube surjective consistent map disk simply connected",
+    "polyomino cube pseudo-folding Question 4.9",
+    "polyomino cube cycle rank connected face preimage",
+    "polyomino cube folding 2025 2026",
+    "Hong Nagamochi connected partitioned graph Theorem 4"
+  ],
+  "primary_sources": [
+    {
+      "title": "Folding Polyominoes into (Poly)Cubes",
+      "year": 2018,
+      "url": "https://erikdemaine.org/papers/PolyformFolding_IJCGA/"
+    },
+    {
+      "title": "Folding Polyominoes with Holes into a Cube",
+      "year": 2021,
+      "url": "https://erikdemaine.org/papers/CubeFoldingHoles_CGTA/"
+    },
+    {
+      "title": "Folding polyominoes into cubes",
+      "year": 2025,
+      "url": "https://doi.org/10.20382/jocg.v16i1a17",
+      "preprint": "https://arxiv.org/abs/2402.14965"
+    },
+    {
+      "title": "Bounding the number of holes required for folding rectangular polyominoes into cubes",
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2510.18197"
+    },
+    {
+      "title": "Folding Small Polyominoes into a Unit Cube",
+      "year": 2020,
+      "url": "https://erikdemaine.org/papers/CubeFolding_CCCG2020/"
+    },
+    {
+      "title": "Simpler algorithms for testing two-page book embedding of partitioned graphs",
+      "year": 2018,
+      "url": "https://www.sciencedirect.com/science/article/pii/S0304397515012207"
+    }
+  ],
+  "limitations": [
+    "Not a proof that no equivalent prior result exists",
+    "Not a comprehensive MathSciNet or zbMATH review",
+    "No author correspondence",
+    "Incomplete OpenAlex citation metadata; zero counts not used as absence evidence",
+    "Hong-Nagamochi publisher full Section 3 obtained through indexed search extraction; direct page returned HTTP 403",
+    "Unpublished or unindexed manuscripts may be missed"
+  ]
+}

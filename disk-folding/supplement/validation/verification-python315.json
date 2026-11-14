@@ -1,0 +1,96 @@
+{
+  "status": "verified_complete_abstract_path_Y_explicit_toggle_certificates",
+  "schema": "colored_disk_tree_toggles_independent_verification_v1",
+  "scope": "Complete necessary abstract path/Y domain through12 arcs with exclusive leaves. Every saved witness is replayed as full cube-vertex isometries with pointwise original-edge matching; every E>=8 pattern has a six-covering witness with at most7 active arcs. This result does not itself prove the universal physical-disk reductions or local realization.",
+  "counts": {
+    "patterns": 87538,
+    "cube_actions": 48,
+    "ordered_path_leaf_tuples": 30,
+    "ordered_Y_leaf_tuples": 120,
+    "edge_endpoint_matches": 1987252,
+    "small_minimal_survivors": 80,
+    "cheaper_survivor_toggle_checks": 4080,
+    "negative_controls": 9
+  },
+  "domain_counts": {
+    "path:5": 16,
+    "Y:5": 22,
+    "path:6": 60,
+    "Y:6": 78,
+    "path:7": 196,
+    "Y:7": 264,
+    "path:8": 552,
+    "Y:8": 708,
+    "path:9": 1488,
+    "Y:9": 1874,
+    "path:10": 3892,
+    "Y:10": 4608,
+    "path:11": 10028,
+    "Y:11": 11282,
+    "path:12": 25696,
+    "Y:12": 26774
+  },
+  "witness_active_arc_histogram": {
+    "5": 72982,
+    "6": 14532,
+    "7": 24
+  },
+  "survivor_arc_histogram": {
+    "5": 38,
+    "6": 38,
+    "7": 4
+  },
+  "negative_controls": [
+    {
+      "name": "all_inactive_forgery",
+      "rejected": true
+    },
+    {
+      "name": "wrong_active_count",
+      "rejected": true
+    },
+    {
+      "name": "wrong_parent_tree",
+      "rejected": true
+    },
+    {
+      "name": "nonadjacent_original_colors",
+      "rejected": true
+    },
+    {
+      "name": "wrong_full_vertex_reflection",
+      "rejected": true
+    },
+    {
+      "name": "missing_ordered_leaf_orbit_witness",
+      "rejected": true
+    },
+    {
+      "name": "missing_high_arc_pattern",
+      "rejected": true
+    },
+    {
+      "name": "extra_out_of_domain_pattern",
+      "rejected": true
+    },
+    {
+      "name": "forged_leg_permutation",
+      "rejected": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "verify.py",
+      "sha256": "21a1e0c8f7fa508bbc27dd312b981342f7502642ad10d79540e39f7c64e14f29"
+    },
+    {
+      "path": "results/colored-disk-tree-toggle-certificates-independent-v1.json",
+      "sha256": "b6b39bc01e21f47341929a2dc563d232478cc3b781b91298f7aefc5489011ff6"
+    },
+    {
+      "path": "results/minimal-colored-disk-region-trees-primary-v1.json",
+      "sha256": "438ef678b8e268a2a6ddcf6492daa6b011b64090d257eb620509c62919113099"
+    }
+  ],
+  "seconds": 3.43817974999547
+}

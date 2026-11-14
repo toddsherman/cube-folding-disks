@@ -1,0 +1,26 @@
+{
+  "schema": "supplement_packaging_integrity_controls_v1",
+  "checks": [
+    {
+      "name": "all_packaged_hashes",
+      "exit_code": 0,
+      "stdout": "Verified SHA-256 hashes for 15 packaged files."
+    },
+    {
+      "name": "altered_bound_source_hash",
+      "exit_code": 1,
+      "stderr": "SHA-256 mismatch: scripts/direct_colored_tree_toggle_search_v1.cpp"
+    },
+    {
+      "name": "consumer_rejects_altered_producer",
+      "exit_code": 1,
+      "output_absent": true,
+      "failure_type": "AssertionError during original provenance binding checks"
+    },
+    {
+      "name": "restored_packaged_hashes",
+      "exit_code": 0,
+      "stdout": "Verified SHA-256 hashes for 15 packaged files."
+    }
+  ]
+}

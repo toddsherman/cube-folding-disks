@@ -1,0 +1,109 @@
+{
+ "pdf_sha256": "cf63554b792b3217e53f19127141b8614b184a9c070e6fc060d7165cb926f71c",
+ "pages": 23,
+ "extracted_characters": 73164,
+ "replacement_characters": 0,
+ "page_size": "A4",
+ "visual_review": "All pages rendered at60dpi and inspected in contact sheets; recurrence and witness tables also inspected at130dpi. Final change replaces the xor expression by explicit opposite pairs and affected page10 was rerendered. No clipped text, missing math glyph, overlapping element, or table overflow observed.",
+ "compilation": "Typst PDF compiled; LaTeX export not compiled.",
+ "source_hashes_match_build_record": "true for the 2026-11-05 build record (PDF cf63554b...) only",
+ "review_scope": "PDF layout and transcription checks; mathematical review records are separate.",
+ "rebuild_2026_11_07": {
+  "pdf_sha256": "b8c9c2f8963c6589f4662c8e68fb0a6963d5cbab28abcae6ce0b37a13ddd61ee",
+  "pages": 29,
+  "reason": "Section 4.2 replaced; L3a, L5-L7, Lemma R1, Introduction and References edited.",
+  "toolchain_check": "Rebuilding the 2026-11-05 sections in the same environment (pypandoc_binary 1.17, typst 0.15.2) reproduced the previous PDF sha256 cf63554b... exactly.",
+  "text_check": "pypdf extraction: 0 replacement characters; no unrendered \\( or \\[ delimiters.",
+  "visual_review": "Partial. Pages 13, 14, 19 and 21 (start of 4.2, Colors frame formula, Step 2-3 interval displays, Remark L2b and Corollary L2a) were rendered at 110 ppi and inspected. The full-document visual review recorded above applies to the earlier PDF only.",
+  "status": "intermediate build, superseded the same day by final_2026_11_07"
+ },
+ "final_2026_11_07": {
+  "pdf_sha256": "25684f7eb4ac20f0d8a6449fbd8fb8eb0d8eb445c0eab9595fe96b32801e3808",
+  "pages": 29,
+  "reason": "Section 4.2 replaced; L3, L3a, L5-L7, Lemma R1, the Introduction (sentence and date line) and the References edited; post-review wording and layout fixes in Section 4.",
+  "source_hashes_match_build_record": true,
+  "text_check": "No unrendered LaTeX or Markdown markup, no missing glyphs; the empty set renders as U+2205.",
+  "visual_review": "Full. The previous build (e5e59570...) was rendered at 110 ppi and every page 1-29 was viewed by one of two separate agents, with 200 ppi crops of the displays, and compared against the 2026-11-05 PDF. After three further text changes in Section 4.2, pages 1-19 and 27-29 of this PDF are pixel-identical at 110 ppi to that build, and the changed pages 20-26 were viewed directly.",
+  "known_cosmetic_issues": [
+   "Page 15 ends with the lead-in of Lemma L2.2, whose four items start page 16 (new). Page 12 ends with the lead-in of Lemma L1, whose three items start page 13 (as in the 2026-11-05 PDF). Both come from the build rule that makes numbered lists unbreakable.",
+   "Pre-existing, unchanged from the 2026-11-05 PDF: tight relation spacing in the Lemma M1 display (p. 4) and around the union in Proposition X1 (p. 25); the norm in Theorem M3 set with the relation symbol (p. 5); no gap before the conditions in the Lemma C1 cases display (p. 10); subsection numbers with a trailing period in Section 4 only; mixed proof-heading and end-mark styles between sections.",
+   "These were left because fixing the pre-existing ones would change sections whose recorded review hashes still match, and page breaks will move again when Section 4.2 is revised after review."
+  ],
+  "compilation": "Typst PDF compiled; LaTeX export not compiled."
+ },
+ "rebuild_2026_11_09": {
+  "pdf_sha256": "1d5b1ff57b09ca76af0a7e65241c0e4890386d53d920a442e28412f0980c0df5",
+  "pages": 38,
+  "source_hashes_match_build_record": true,
+  "reason": "Confidence-check revision of 9 November 2026: all eight section files edited (title; Lemma B1; R1 proof; C1/C3; L1; (G); L5/L6; Sections 5 and 6; Introduction credits; new references; presentation fixes). See ../disk-folding-checks/8-apply-updates/APPLIED-SUMMARY.json.",
+  "build_changes": [
+   "Pinned PDF timestamp moved from 2026-11-05 to 2026-11-09 (builds remain byte-reproducible).",
+   "The H1 title is written to the PDF /Title entry.",
+   "Numbered lists are no longer unbreakable, and tables may break across pages (the witness table of Section 6 now splits, with its header repeated).",
+   "Subscripted order relations such as <_F are set with the subscript to the right of the relation (Typst scripts())."
+  ],
+  "text_check": "pypdf extraction: no U+FFFD replacement characters and no unrendered LaTeX or Markdown markup. Fonts embedded: Libertinus Serif (regular, italic, bold), New Computer Modern Math, DejaVu Sans Mono; no system-font fallback (the Geneva fallback for the former U+220E end marks is gone).",
+  "visual_review": "Full, by agents, in two rounds at 110 ppi: every page of PDF 4ba9d8a9... viewed by one of three agents (visual-check-2.json in ../disk-folding-checks/8-apply-updates/), after a first full round on e80b6fdc... (visual-check-1.json). The final source fixes changed pages 1, 9, 10, 17, 21, 24, 25, 29 and 34-37 of this PDF; the main session viewed pages 17, 21 and 34 at full size and pages 1, 9, 10, 24, 25, 29, 35, 36 and 37 in reduced montages; the other 26 pages are byte-identical, as page images, to the fully reviewed 4ba9d8a9... build.",
+  "known_cosmetic_issues": [
+   "Line breaks can fall between a label word and its number (for example \"Section\" / \"2.2\", \"Theorem\" / \"M3\"); a build-time nonbreaking-space rule was considered and not adopted.",
+   "Some inline formulas break across lines at a relation or binary operator (for example on pp. 27, 28, 31, 32 and 34); these move on every reflow and were not chased.",
+   "Absolute-value bars written as |Q| in Section 4.2 are set with relation-style spacing.",
+   "Deferred proofs keep descriptive bold headings (\"Proof of Lemma L2.\", \"Proof of Theorem A.\"); all other proof headings are bold \"Proof.\" and all end marks are the same small hollow square."
+  ],
+  "resolved_from_final_2026_11_07": [
+   "Tight relation spacing in the Lemma M1 display and around the union in Proposition X1; the norm in Theorem M3; the gap before the conditions in the Lemma C1 cases display; mixed proof-heading and end-mark styles; stranded list lead-ins (Lemmas L1, L2.2)."
+  ],
+  "compilation": "Typst PDF compiled; LaTeX export not compiled."
+ },
+ "rebuild_2026_11_09b": {
+  "pdf_sha256": "8455b4cc302206525f726ef7d8483cab50a1dfb696123ceca071e62cf83de6a2",
+  "pages": 40,
+  "source_hashes_match_build_record": true,
+  "reason": "Corollary A2 added (evening of 9 November 2026): Sections 0 (Abstract, Introduction) and 5 changed. See reviews/ADDENDUM-2026-11-09b-decision-corollary.md and ../disk-folding-checks/10-polytime-adoption/.",
+  "build_changes": [
+   "Table 1 (Section 3.1) is wrapped in an unbreakable block (regex on the Typst output, asserted to match once), so that it is not split with one data row left at a page foot; other tables may still break."
+  ],
+  "text_check": "pypdf extraction: 0 U+FFFD replacement characters; 0 instances of unrendered LaTeX commands, ** or $.",
+  "visual_review": "Full visual check of all 40 pages of the reflowed PDF by four agents (workflow wf_188c9b64-8ac), with every non-cosmetic finding verified by a skeptic. Two notable reflow defects were fixed: a list lead-in stranded at the foot of page 4 (by a layout-only paragraph merge in Section 1.2) and Table 1 split with one data row left on page 17 (by a build rule keeping it whole). Two cosmetic splits before a display equation (pages 6-7 and 31-32) were left. After these fixes only pages 4, 5 and 17-23 changed; the main session viewed them, and the other 31 page images are pixel-identical to the checked build. The main session also viewed pages 1, 2 and 33-36 at full size.",
+  "notation_notes": [
+   "The new text writes |S| as \\left|S\\right|, which Typst sets with normal spacing (lr).",
+   "The set of cuts is a calligraphic S, distinct from the cell set S of Section 1.1 and Lemma B1."
+  ],
+  "known_cosmetic_issues": "Unchanged from rebuild_2026_11_09."
+ },
+ "rebuild_2026_11_09c": {
+  "pdf_sha256": "5725c856f27daace680c08fb854f830cc2dab54dce659cd6a2dc217e3a42d2f1",
+  "pages": 41,
+  "source_hashes_match_build_record": true,
+  "reason": "Full review of 9 November 2026 (night): closing paragraph added to Section 5 and reference [Shi25] to Section 7. See reviews/ADDENDUM-2026-11-09c-full-review.md.",
+  "build_changes": [
+   "Tables are kept whole again (the breakable-table rule of 9 November and the Table 1 exception were removed): reflow had twice left one data row apart from its table."
+  ],
+  "text_check": "pypdf extraction: 0 U+FFFD replacement characters; 0 instances of unrendered LaTeX commands, ** or $.",
+  "visual_review": "Relative to the fully checked 40-page build 8455b4cc\u2026, only pages 18 and 36\u201341 changed (page images compared one by one); the main session viewed each of them. Page 18 carries Table 1 whole at its top. Pages 36\u201338 carry the new closing paragraph of Section 5 and the start of Section 6. Page 38 ends about half full because the witness table of Section 6 is kept whole and opens page 39. Page 41 is the reference list with the new entry [Shi25]. The other 34 pages are pixel-identical to the checked build. Text extraction shows no replacement characters and no raw markup.",
+  "known_cosmetic_issues": "As in rebuild_2026_11_09, and one more: the page before the witness table of Section 6 ends about half full, because that table is kept whole and starts the next page."
+ },
+ "rebuild_2026_11_14": {
+  "pdf_sha256": "5f38f455e986a2e813c873b654750275a4a169daada3651f48757b9283b7ea3a",
+  "pages": 41,
+  "source_hashes_match_build_record": true,
+  "reason": "Changes of 14 November 2026 after the outside audit: Sections 1 and 5 reworded in four places. See reviews/ADDENDUM-2026-11-14-outside-audit.md.",
+  "build_changes": [],
+  "text_check": "pypdf extraction: 0 U+FFFD replacement characters; 0 instances of unrendered LaTeX commands, ** or $.",
+  "visual_review": "The 16 pages that differ from the build of 9 November (pages 8 to 17 and 33 to 38) were rendered at 110 ppi and viewed; the other 25 pages are pixel-identical to that build. No heading is stranded and no table is split. Page 38 still ends short, before the witness table of Section 6.",
+  "known_cosmetic_issues": "As in rebuild_2026_11_09c."
+ },
+ "rebuild_2026_11_14c": {
+  "pdf_sha256": "6f4478119c8919eb65a56415053b78cc07a067fec74221793eb463f870d1911a",
+  "pages": 41,
+  "source_hashes_match_build_record": true,
+  "reason": "Third build of 14 November 2026: author named in the title block, with the revision dates and a note on how the work was produced. See Section 8 of reviews/ADDENDUM-2026-11-14-outside-audit.md.",
+  "build_changes": [
+   "The PDF author field is set from the author line of the title block.",
+   "The pinned build date is 2026-11-14 (before: 2026-11-09)."
+  ],
+  "text_check": "pypdf extraction: 0 U+FFFD replacement characters; 0 instances of unrendered LaTeX commands, ** or $.",
+  "visual_review": "The 28 pages that differ from the previous build (pages 1 to 28) were rendered at 110 ppi and viewed; pages 29 to 41 are pixel-identical to it. The title block shows the author's name, the revision dates and the note. No heading is stranded and no table is split. Page 38 still ends short, before the witness table of Section 6.",
+  "known_cosmetic_issues": "As in rebuild_2026_11_09c."
+ }
+}

@@ -1,0 +1,408 @@
+# harness.log -- L2 supplement (drafts/L2-supplement), 2026-11-06 22:55 PST
+# Python 3.15.0; all commands run from drafts/L2-supplement
+# sha256 of the files exercised:
+#   a5db16016e73177edb969bbda132deb5b0be85e4dd252610ea1fc6dbb8470f74  impl.py
+#   d936b4d5c07831aa4545ace720f92adeb16c9aef1b345b0c0ebc7b3a87689489  l2harness.py
+#   26ccccf31fab292383925e9fda78e61f958d916cc06f1d3d78da624c39bc8d53  check_counterexample.py
+# Harness arguments: CANDIDATE N SEED NMAX CASES. Exit status 0 means zero failures.
+
+## Required runs
+
+$ python3 l2harness.py impl.py 4000 4401 40 a,b1,b2
+{"instances": {"a": 1360, "b1": 1341, "b2": 1299, "ok_b1": 1341, "ok_b2": 1299, "ok_a": 1360}, "failures": 0, "seconds": 7.8}
+exit=0
+
+$ python3 l2harness.py impl.py 1500 4402 80 a,b1,b2
+{"instances": {"a": 523, "b1": 497, "b2": 480, "ok_a": 523, "ok_b2": 480, "ok_b1": 497}, "failures": 0, "seconds": 8.7}
+exit=0
+
+$ python3 check_counterexample.py
+# Remark L2b: four whole-side banks of a 2m x 2n block
+2x2 block (width x height), 4 cells, 8 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 2), (('H', 1), 2), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 24
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0)]
+  checker verdicts: {"flips alternate on ('H', 0)": 8, "flips alternate on ('V', 0)": 8, 'same-edge banks not separated': 8}
+  -> OK
+4x2 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 4), (('V', 1), 2), (('H', 1), 4), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0), (2, 0), (2, 1), (3, 1), (3, 0)]
+  checker verdicts: {'bank not monotone': 298, "flips alternate on ('H', 0)": 4736, "flips alternate on ('V', 0)": 34944, "flips alternate on ('V', 1)": 320, "halfedge (6, 1) not exposed on ('V', 1)": 8, "halfedge (7, 1) not exposed on ('V', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+2x4 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 4), (('H', 1), 2), (('V', 1), 4)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0)]
+  checker verdicts: {'bank not monotone': 110, "flips alternate on ('H', 0)": 4736, "flips alternate on ('H', 1)": 320, "flips alternate on ('V', 0)": 34944, "halfedge (0, 0) not exposed on ('H', 1)": 166, "halfedge (3, 2) not exposed on ('H', 1)": 4, "halfedge (4, 0) not exposed on ('H', 1)": 26, "halfedge (7, 2) not exposed on ('H', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+# positive controls (one odd side length)
+3x2 block: impl.construct order [(2, 0), (1, 0), (0, 0), (0, 1), (1, 1), (2, 1)] -> checker ok
+2x3 block: impl.construct order [(1, 2), (1, 1), (1, 0), (0, 0), (0, 1), (0, 2)] -> checker ok
+# positive controls for the third clause of (H2): split the bottom bank of the
+# 2x2 and 4x2 blocks into two banks meeting at the mixed position (1,0)
+2x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (1, 0)] -> checker ok; exhaustive valid orders 2
+4x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (2, 0), (1, 0)] -> checker ok; exhaustive valid orders 2
+ALL OK
+exit=0
+
+## Additional runs
+# L2DEBUG=1 asserts the colour condition, the interval formulas, the tie convention,
+# the slide claims and (S1)-(S3) of Lemma L2.4 at every recursion level, and Remark (iii).
+
+$ L2DEBUG=1 python3 l2harness.py impl.py 1500 4403 60 a,b1,b2
+{"instances": {"a": 513, "b1": 482, "b2": 505, "ok_b2": 505, "ok_a": 513, "ok_b1": 482}, "failures": 0, "seconds": 6.5}
+exit=0
+
+$ python3 l2harness.py impl.py 500 4405 150 a,b1,b2
+{"instances": {"a": 169, "b1": 171, "b2": 160, "ok_a": 169, "ok_b1": 171, "ok_b2": 160}, "failures": 0, "seconds": 8.9}
+exit=0
+# case g (any consecutive grouping, banks not necessarily outward): a test of Lemma L2 on
+# sampled instances; every sampled instance here satisfied (H2). Not a claim about case g in general.
+
+$ L2DEBUG=1 python3 l2harness.py impl.py 2000 4404 40 g
+{"instances": {"g": 2000, "ok_g": 2000}, "failures": 0, "seconds": 4.9}
+exit=0
+
+## Mutation control (negative): tie flag of the red-cut subproblem Q1 flipped in a scratch copy
+# (diff: 'tb1, rf1 = after_block(R1, cut1), False' -> '..., True'); the debug assertions must fire.
+$ L2DEBUG=1 python3 l2harness.py <scratch>/impl_mut.py 300 4406 30 a,b1,b2 | head -1
+{"instances": {"a": 89, "b1": 97, "b2": 114, "ok_b2": 37, "ok_a": 21, "ok_b1": 20}, "failures": 222, "seconds": 0.3}
+(nonzero failures expected)
+
+################################################################################
+# Revision after referee reports, 2026-11-06 (appended; the entries above were made
+# with the earlier impl.py, sha256 a5db1601...0f74, and are kept as a record)
+# Change to impl.py: construct() raises Python's recursion limit (the recursion depth
+# of solve()/k2_cut() grows linearly with the cell count; before this change a 1 x 1000
+# strip raised RecursionError); docstrings updated to the final wording and symbols.
+# solve() and k2_cut() are unchanged.  Python 3.15.0; all commands run from the
+# supplement directory with PYTHONDONTWRITEBYTECODE=1.
+# sha256 of the files exercised:
+#   7b51b84af773e60aac062fbe8380384a12f3b7412f071a064031833ff6af0b7d  impl.py
+#   d936b4d5c07831aa4545ace720f92adeb16c9aef1b345b0c0ebc7b3a87689489  l2harness.py
+#   26ccccf31fab292383925e9fda78e61f958d916cc06f1d3d78da624c39bc8d53  check_counterexample.py
+#   aaecb20daeace5cf4104ea5526fb46d297526492bda4e92850f5d8ed3c99e956  check_adversarial.py
+#   11e006736fa0c1e1bc45063626d7e78b4de0214c7d08d334b965f71743cbdeac  controls/C_induction_impl_v2.py
+#   baba2b341f0b319492e729b5f8e43ab3464b46d7cef0edad64fe8fcd3eb36242  controls/long_strip.py
+#   cd3d78cda487602e190a47b9189dc1b363ffa7b534bd1c639694e06de96635b4  controls/equiv_check.py
+#   e6f2d46d5d099dc5a987c984fa5234d307c704949e79e3a4158160f423831436  controls/mutation_controls.py
+#   0543af886d67ab24d822cdec15cace7e60932363b669ad52c41cdbc04eaeeb8c  controls/old_gap_example.py
+#
+# What the runs certify.  l2harness.py and the plain runs check only the final
+# conclusions 1-4 of Lemma L2 (local feasibility, exposure, monotonicity, separation).
+# The internal invariants of Lemma L2.4 (orientation in (S3), mixedness of the Step-3
+# markers, the interval formulas and tie flags) are certified only by the L2DEBUG=1 runs;
+# controls/mutation_controls.py shows two mutants that only L2DEBUG detects.
+# Coverage notes.  Cases b1 and b2 of l2harness.py generate outward banks only, and every
+# case picks at most one sub-interval per maximal run, so the random harness runs reach
+# only the 'both colours' and 'unselected' clauses of (H2), never the 'meet' clause.
+# Non-outward (b1)/(b2) selections, runs split into meeting banks, selections of every
+# boundary halfedge, and holed polyominoes made into disks by slits are exercised by
+# check_adversarial.py (and non-outward selections also by case g); the 'meet' clause
+# is reached there and by the two hand-built controls of check_counterexample.py.
+# The docstring of l2harness.py still labels case a "(L2(a))"; the file is a hash-pinned
+# byte copy of the shared harness and is left unchanged (case a = Corollary L2a(a)).
+
+## Required runs (after the impl.py change)
+
+$ python3 l2harness.py impl.py 3000 5501 40 a,b1,b2
+{"instances": {"a": 986, "b1": 1005, "b2": 1009, "ok_b1": 1005, "ok_a": 986, "ok_b2": 1009}, "failures": 0, "seconds": 5.9}
+exit=0
+
+$ python3 l2harness.py impl.py 1000 5502 80 a,b1,b2
+{"instances": {"a": 346, "b1": 317, "b2": 337, "ok_a": 346, "ok_b1": 317, "ok_b2": 337}, "failures": 0, "seconds": 5.7}
+exit=0
+
+$ python3 check_counterexample.py
+# Remark L2b: four whole-side banks of a 2m x 2n block
+2x2 block (width x height), 4 cells, 8 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 2), (('H', 1), 2), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 24
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0)]
+  checker verdicts: {"flips alternate on ('H', 0)": 8, "flips alternate on ('V', 0)": 8, 'same-edge banks not separated': 8}
+  -> OK
+4x2 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 4), (('V', 1), 2), (('H', 1), 4), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0), (2, 0), (2, 1), (3, 1), (3, 0)]
+  checker verdicts: {'bank not monotone': 298, "flips alternate on ('H', 0)": 4736, "flips alternate on ('V', 0)": 34944, "flips alternate on ('V', 1)": 320, "halfedge (6, 1) not exposed on ('V', 1)": 8, "halfedge (7, 1) not exposed on ('V', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+2x4 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 4), (('H', 1), 2), (('V', 1), 4)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0)]
+  checker verdicts: {'bank not monotone': 110, "flips alternate on ('H', 0)": 4736, "flips alternate on ('H', 1)": 320, "flips alternate on ('V', 0)": 34944, "halfedge (0, 0) not exposed on ('H', 1)": 166, "halfedge (3, 2) not exposed on ('H', 1)": 4, "halfedge (4, 0) not exposed on ('H', 1)": 26, "halfedge (7, 2) not exposed on ('H', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+# positive controls (one odd side length)
+3x2 block: impl.construct order [(2, 0), (1, 0), (0, 0), (0, 1), (1, 1), (2, 1)] -> checker ok
+2x3 block: impl.construct order [(1, 2), (1, 1), (1, 0), (0, 0), (0, 1), (0, 2)] -> checker ok
+# positive controls for the third clause of (H2): split the bottom bank of the
+# 2x2 and 4x2 blocks into two banks meeting at the mixed position (1,0)
+2x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (1, 0)] -> checker ok; exhaustive valid orders 2
+4x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (2, 0), (1, 0)] -> checker ok; exhaustive valid orders 2
+ALL OK
+exit=0
+
+## Additional runs
+
+$ L2DEBUG=1 python3 l2harness.py impl.py 1500 5503 60 a,b1,b2
+{"instances": {"a": 494, "b1": 498, "b2": 508, "ok_a": 494, "ok_b1": 498, "ok_b2": 508}, "failures": 0, "seconds": 6.6}
+exit=0
+
+# check_adversarial.py: 151 adversarial disks x outward and non-outward selections;
+# independent (H1)/(H2) and L2a classification.  refused_H1_* counts refusals in which
+# some partition satisfies (H1), so (H2) is the failing hypothesis; refused_noH1_* the
+# others; valid_exists=None means more than 8 cells (not searched exhaustively).
+$ python3 check_adversarial.py 5504 4
+{"seed": 5504, "shapes": 151, "stats": {"inst": 6619, "tag_allruns": 302, "l2a": 5583, "ok": 6143, "ok_allselected": 335, "tag_allsplit": 302, "tag_a": 1208, "tag_b1": 1208, "tag_b2": 1183, "tag_b2full": 1208, "tag_rand": 1208, "refused": 476}, "refused_info": {"refused_H1_valid_exists=False": 6, "refused_H1_valid_exists=None": 6, "refused_noH1_valid_exists=None": 436, "refused_noH1_valid_exists=True": 19, "refused_noH1_valid_exists=False": 9}, "H2_clause_used": {"H2_both": 3869, "H2_meet": 12, "H2_unselected": 2094}, "problems": 0}
+exit=0
+
+$ L2DEBUG=1 python3 check_adversarial.py 5505 3
+{"seed": 5505, "shapes": 151, "stats": {"inst": 5115, "tag_allruns": 302, "l2a": 4231, "ok": 4657, "ok_allselected": 302, "tag_allsplit": 302, "tag_a": 906, "tag_b1": 906, "tag_b2full": 906, "tag_rand": 906, "tag_b2": 887, "refused": 458}, "refused_info": {"refused_H1_valid_exists=False": 6, "refused_H1_valid_exists=None": 6, "refused_noH1_valid_exists=None": 419, "refused_noH1_valid_exists=True": 23, "refused_noH1_valid_exists=False": 4}, "H2_clause_used": {"H2_both": 2954, "H2_meet": 11, "H2_unselected": 1558}, "problems": 0}
+exit=0
+
+# recursion depth: 1 x 1000 strip (raised RecursionError before the change)
+$ python3 controls/long_strip.py 1000
+1x1000 strip, all four sides as banks (case b1): (True, 'ok') 5.2s
+
+## Controls (controls/)
+# mutation_controls.py supersedes the scratch mutant <scratch>/impl_mut.py above.
+# equiv_check.py compares impl.py with the refereed C_induction impl_v2.py (byte copy
+# controls/C_induction_impl_v2.py); old_gap_example.py is the revision-note example of
+# the one-colour gap in the former proof (not part of the new proof).
+
+$ python3 controls/mutation_controls.py 300 4406
+tie_flag  failures: plain  149   L2DEBUG  222   (of 300)
+blue_p1   failures: plain  300   L2DEBUG  300   (of 300)
+O2_O1     failures: plain    0   L2DEBUG  300   (of 300)
+no_slide  failures: plain    0   L2DEBUG  248   (of 300)
+expectations hold
+exit=0
+
+$ python3 controls/equiv_check.py
+{'instances': 3000, 'identical_orders': 2941, 'different_but_valid': 59, 'both_ProofGap': 0}
+impl.py (H2) clause used: {'H2_both': 2622, 'H2_unselected': 378}
+exit=0
+
+$ python3 controls/old_gap_example.py | tail -1
+cell order after cutting at u: ['b', 'c', 'a'] (False, 'bank not monotone')
+exit=0
+
+## Final referee round (impl.py sha256 2388c415...0c20)
+# impl.py change: module docstring only (a dictionary from the impl_v2 comment notation
+# rho/beta, alpha/beta, C, claim2_check to the final text); no code line changed.
+# The comments themselves are kept so that the mutant patches of
+# controls/mutation_controls.py still match.  Fresh seeds 6601-6603.
+
+$ python3 l2harness.py impl.py 3000 6601 40 a,b1,b2
+{"instances": {"a": 962, "b1": 1038, "b2": 1000, "ok_b1": 1038, "ok_b2": 1000, "ok_a": 962}, "failures": 0, "seconds": 5.8}
+exit=0
+
+$ python3 l2harness.py impl.py 1000 6602 80 a,b1,b2
+{"instances": {"a": 299, "b1": 362, "b2": 339, "ok_b1": 362, "ok_a": 299, "ok_b2": 339}, "failures": 0, "seconds": 5.5}
+exit=0
+
+$ python3 check_counterexample.py
+# Remark L2b: four whole-side banks of a 2m x 2n block
+2x2 block (width x height), 4 cells, 8 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 2), (('H', 1), 2), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 24
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0)]
+  checker verdicts: {"flips alternate on ('H', 0)": 8, "flips alternate on ('V', 0)": 8, 'same-edge banks not separated': 8}
+  -> OK
+4x2 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 4), (('V', 1), 2), (('H', 1), 4), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0), (2, 0), (2, 1), (3, 1), (3, 0)]
+  checker verdicts: {'bank not monotone': 298, "flips alternate on ('H', 0)": 4736, "flips alternate on ('V', 0)": 34944, "flips alternate on ('V', 1)": 320, "halfedge (6, 1) not exposed on ('V', 1)": 8, "halfedge (7, 1) not exposed on ('V', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+2x4 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 4), (('H', 1), 2), (('V', 1), 4)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0)]
+  checker verdicts: {'bank not monotone': 110, "flips alternate on ('H', 0)": 4736, "flips alternate on ('H', 1)": 320, "flips alternate on ('V', 0)": 34944, "halfedge (0, 0) not exposed on ('H', 1)": 166, "halfedge (3, 2) not exposed on ('H', 1)": 4, "halfedge (4, 0) not exposed on ('H', 1)": 26, "halfedge (7, 2) not exposed on ('H', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+# positive controls (one odd side length)
+3x2 block: impl.construct order [(2, 0), (1, 0), (0, 0), (0, 1), (1, 1), (2, 1)] -> checker ok
+2x3 block: impl.construct order [(1, 2), (1, 1), (1, 0), (0, 0), (0, 1), (0, 2)] -> checker ok
+# positive controls for the third clause of (H2): split the bottom bank of the
+# 2x2 and 4x2 blocks into two banks meeting at the mixed position (1,0)
+2x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (1, 0)] -> checker ok; exhaustive valid orders 2
+4x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (2, 0), (1, 0)] -> checker ok; exhaustive valid orders 2
+ALL OK
+exit=0
+
+$ L2DEBUG=1 python3 check_adversarial.py 6603 3
+{"seed": 6603, "shapes": 151, "stats": {"inst": 5116, "tag_allruns": 302, "l2a": 4236, "ok": 4670, "ok_allselected": 296, "tag_allsplit": 302, "tag_a": 906, "tag_b1": 906, "tag_b2": 888, "tag_b2full": 906, "tag_rand": 906, "refused": 446}, "refused_info": {"refused_H1_valid_exists=False": 6, "refused_H1_valid_exists=None": 6, "refused_noH1_valid_exists=None": 394, "refused_noH1_valid_exists=True": 23, "refused_noH1_valid_exists=False": 17}, "H2_clause_used": {"H2_both": 2940, "H2_meet": 11, "H2_unselected": 1586}, "problems": 0}
+exit=0
+
+$ python3 controls/mutation_controls.py 300 4406
+tie_flag  failures: plain  149   L2DEBUG  222   (of 300)
+blue_p1   failures: plain  300   L2DEBUG  300   (of 300)
+O2_O1     failures: plain    0   L2DEBUG  300   (of 300)
+no_slide  failures: plain    0   L2DEBUG  248   (of 300)
+expectations hold
+exit=0
+
+$ python3 controls/equiv_check.py
+{'instances': 3000, 'identical_orders': 2941, 'different_but_valid': 59, 'both_ProofGap': 0}
+impl.py (H2) clause used: {'H2_both': 2622, 'H2_unselected': 378}
+exit=0
+
+# ---------------------------------------------------------------------------
+# 2026-11-07: directory moved from drafts/L2-supplement to supplement/l2-bank-orders
+# when the new Section 4.2 was pasted into sections/04-layer-construction.md.
+# impl.py change: first docstring line only (path of the section); no code line changed.
+# Python 3.15.0; all commands run from supplement/l2-bank-orders
+# sha256 of the files exercised:
+#   5d72bdd2862dd425c21c16b7447f88d09cd13902efe0fbd5302683442e7e727a  impl.py
+#   d936b4d5c07831aa4545ace720f92adeb16c9aef1b345b0c0ebc7b3a87689489  l2harness.py
+#   26ccccf31fab292383925e9fda78e61f958d916cc06f1d3d78da624c39bc8d53  check_counterexample.py
+#   aaecb20daeace5cf4104ea5526fb46d297526492bda4e92850f5d8ed3c99e956  check_adversarial.py
+#   11e006736fa0c1e1bc45063626d7e78b4de0214c7d08d334b965f71743cbdeac  controls/C_induction_impl_v2.py
+#   cd3d78cda487602e190a47b9189dc1b363ffa7b534bd1c639694e06de96635b4  controls/equiv_check.py
+#   baba2b341f0b319492e729b5f8e43ab3464b46d7cef0edad64fe8fcd3eb36242  controls/long_strip.py
+#   e6f2d46d5d099dc5a987c984fa5234d307c704949e79e3a4158160f423831436  controls/mutation_controls.py
+#   0543af886d67ab24d822cdec15cace7e60932363b669ad52c41cdbc04eaeeb8c  controls/old_gap_example.py
+# Apart from elapsed times, every output below agrees with the earlier output of the same
+# command and seed (for seeds 5501-5505, the block that starts at line 88).
+
+$ python3 l2harness.py impl.py 3000 5501 40 a,b1,b2
+{"instances": {"a": 986, "b1": 1005, "b2": 1009, "ok_b1": 1005, "ok_a": 986, "ok_b2": 1009}, "failures": 0, "seconds": 5.9}
+# exit 0, 6 s
+
+$ python3 l2harness.py impl.py 1000 5502 80 a,b1,b2
+{"instances": {"a": 346, "b1": 317, "b2": 337, "ok_a": 346, "ok_b1": 317, "ok_b2": 337}, "failures": 0, "seconds": 5.7}
+# exit 0, 6 s
+
+$ python3 check_counterexample.py
+# Remark L2b: four whole-side banks of a 2m x 2n block
+2x2 block (width x height), 4 cells, 8 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 2), (('H', 1), 2), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 24
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0)]
+  checker verdicts: {"flips alternate on ('H', 0)": 8, "flips alternate on ('V', 0)": 8, 'same-edge banks not separated': 8}
+  -> OK
+4x2 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 4), (('V', 1), 2), (('H', 1), 4), (('V', 1), 2)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (1, 1), (1, 0), (2, 0), (2, 1), (3, 1), (3, 0)]
+  checker verdicts: {'bank not monotone': 298, "flips alternate on ('H', 0)": 4736, "flips alternate on ('V', 0)": 34944, "flips alternate on ('V', 1)": 320, "halfedge (6, 1) not exposed on ('V', 1)": 8, "halfedge (7, 1) not exposed on ('V', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+2x4 block (width x height), 8 cells, 12 boundary halfedges
+  banks (target edge, length): [(('H', 1), 2), (('V', 1), 4), (('H', 1), 2), (('V', 1), 4)]
+  all halfedges outward, all selected; grouping partition (former L2(b), (H1)): 0
+  partitions satisfying (H1): [0]  (H2) holds for them: {0: False}
+  impl.construct: ProofGap: hypothesis of Lemma L2 not satisfied
+  orders checked exhaustively: 40320
+  valid orders (conclusions 1-4): 0
+  orders satisfying conclusions 1-3 (only separation fails): 8
+  first such order (cells, lowest first): [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (1, 2), (1, 1), (1, 0)]
+  checker verdicts: {'bank not monotone': 110, "flips alternate on ('H', 0)": 4736, "flips alternate on ('H', 1)": 320, "flips alternate on ('V', 0)": 34944, "halfedge (0, 0) not exposed on ('H', 1)": 166, "halfedge (3, 2) not exposed on ('H', 1)": 4, "halfedge (4, 0) not exposed on ('H', 1)": 26, "halfedge (7, 2) not exposed on ('H', 1)": 6, 'same-edge banks not separated': 8}
+  -> OK
+# positive controls (one odd side length)
+3x2 block: impl.construct order [(2, 0), (1, 0), (0, 0), (0, 1), (1, 1), (2, 1)] -> checker ok
+2x3 block: impl.construct order [(1, 2), (1, 1), (1, 0), (0, 0), (0, 1), (0, 2)] -> checker ok
+# positive controls for the third clause of (H2): split the bottom bank of the
+# 2x2 and 4x2 blocks into two banks meeting at the mixed position (1,0)
+2x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (1, 0)] -> checker ok; exhaustive valid orders 2
+4x2 block, 5 banks: (H1) partitions [0], (H2) witness {0: (True, ('meet', 1))}; impl.construct order [(0, 0), (0, 1), (1, 1), (2, 1), (3, 1), (3, 0), (2, 0), (1, 0)] -> checker ok; exhaustive valid orders 2
+ALL OK
+# exit 0, 0 s
+
+$ L2DEBUG=1 python3 l2harness.py impl.py 1500 5503 60 a,b1,b2
+{"instances": {"a": 494, "b1": 498, "b2": 508, "ok_a": 494, "ok_b1": 498, "ok_b2": 508}, "failures": 0, "seconds": 6.6}
+# exit 0, 7 s
+
+$ python3 check_adversarial.py 5504 4
+{"seed": 5504, "shapes": 151, "stats": {"inst": 6619, "tag_allruns": 302, "l2a": 5583, "ok": 6143, "ok_allselected": 335, "tag_allsplit": 302, "tag_a": 1208, "tag_b1": 1208, "tag_b2": 1183, "tag_b2full": 1208, "tag_rand": 1208, "refused": 476}, "refused_info": {"refused_H1_valid_exists=False": 6, "refused_H1_valid_exists=None": 6, "refused_noH1_valid_exists=None": 436, "refused_noH1_valid_exists=True": 19, "refused_noH1_valid_exists=False": 9}, "H2_clause_used": {"H2_both": 3869, "H2_meet": 12, "H2_unselected": 2094}, "problems": 0}
+# exit 0, 7 s
+
+$ L2DEBUG=1 python3 check_adversarial.py 5505 3
+{"seed": 5505, "shapes": 151, "stats": {"inst": 5115, "tag_allruns": 302, "l2a": 4231, "ok": 4657, "ok_allselected": 302, "tag_allsplit": 302, "tag_a": 906, "tag_b1": 906, "tag_b2full": 906, "tag_rand": 906, "tag_b2": 887, "refused": 458}, "refused_info": {"refused_H1_valid_exists=False": 6, "refused_H1_valid_exists=None": 6, "refused_noH1_valid_exists=None": 419, "refused_noH1_valid_exists=True": 23, "refused_noH1_valid_exists=False": 4}, "H2_clause_used": {"H2_both": 2954, "H2_meet": 11, "H2_unselected": 1558}, "problems": 0}
+# exit 0, 8 s
+
+$ python3 controls/long_strip.py 1000
+1x1000 strip, all four sides as banks (case b1): (True, 'ok') 5.3s
+# exit 0, 5 s
+
+$ python3 controls/mutation_controls.py 300 4406
+tie_flag  failures: plain  149   L2DEBUG  222   (of 300)
+blue_p1   failures: plain  300   L2DEBUG  300   (of 300)
+O2_O1     failures: plain    0   L2DEBUG  300   (of 300)
+no_slide  failures: plain    0   L2DEBUG  248   (of 300)
+expectations hold
+# exit 0, 3 s
+
+$ python3 controls/equiv_check.py
+{'instances': 3000, 'identical_orders': 2941, 'different_but_valid': 59, 'both_ProofGap': 0}
+impl.py (H2) clause used: {'H2_both': 2622, 'H2_unselected': 378}
+# exit 0, 10 s
+
+$ python3 controls/old_gap_example.py
+edges: [('a', 'b', 'R'), ('b', 'c', 'B'), ('u', 'w_a', 'B'), ('w_a', 'a', 'B'), ('u', 'w_b', 'B'), ('w_b', 'b', 'B'), ('u', 'w_c', 'B'), ('w_c', 'c', 'B')]
+faces of the given embedding: [['a', 'b', 'c', 'w_c', 'u', 'w_a'], ['b', 'a', 'w_a', 'u', 'w_b'], ['c', 'b', 'w_b', 'u', 'w_c']]
+curve (vertex, face, vertex): [('u', ['b', 'a', 'w_a', 'u', 'w_b'], 'w_b'), ('w_b', ['b', 'a', 'w_a', 'u', 'w_b'], 'b'), ('b', ['a', 'b', 'c', 'w_c', 'u', 'w_a'], 'c'), ('c', ['a', 'b', 'c', 'w_c', 'u', 'w_a'], 'w_c'), ('w_c', ['a', 'b', 'c', 'w_c', 'u', 'w_a'], 'w_a'), ('w_a', ['a', 'b', 'c', 'w_c', 'u', 'w_a'], 'a'), ('a', ['b', 'a', 'w_a', 'u', 'w_b'], 'u')]
+augmented map: V-E+F = 2
+sides of the curve (face classes): 2
+red edges lie in classes [1] ; blue edges in classes [9]
+vertex order along the curve: ['u', 'w_b', 'b', 'c', 'w_c', 'w_a', 'a']
+cell order after cutting at u: ['b', 'c', 'a'] (False, 'bank not monotone')
+# exit 0, 0 s
+

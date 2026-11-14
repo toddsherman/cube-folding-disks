@@ -1,0 +1,83 @@
+--- scripts/verify_colored_disk_tree_toggles_independent_v1.py
++++ verify.py
+@@ -3,15 +3,20 @@
+ 
+ No producer import, compiler, search solver or mask-DP recurrence is used.
+ """
++# This consumer deliberately retains the original assertion-based checks.
++# Optimized Python disables them, so fail closed before reading certificates.
++if not __debug__:
++    raise SystemExit("Verification requires assertions: rerun without -O/-OO or PYTHONOPTIMIZE.")
++
+ from collections import Counter
+ from itertools import permutations,product
+ from pathlib import Path
+ import argparse,copy,hashlib,json,time
+-ROOT=Path(__file__).resolve().parents[1]
+-SELF='scripts/verify_colored_disk_tree_toggles_independent_v1.py'
++ROOT=Path(__file__).resolve().parent
++SELF='verify.py'
+ SOURCE='results/colored-disk-tree-toggle-certificates-independent-v1.json'
+ PRIMARY='results/minimal-colored-disk-region-trees-primary-v1.json'
+-OUT='results/colored-disk-tree-toggles-independent-verification-v1.json'
++OUT='verification-new.json'
+ NORMALS=((1,0,0),(-1,0,0),(0,1,0),(0,-1,0),(0,0,1),(0,0,-1))
+ VERTICES=tuple(product((-1,1),repeat=3))
+ def sha(path):return hashlib.sha256((ROOT/path).read_bytes()).hexdigest()
+@@ -78,6 +83,7 @@
+ def replay(row,parents,sigma,edge_vertices,incidence,mask_override=None):
+  n=len(parents);assert row['parents']==parents and row['arcs']==n-1
+  colors=row['colors'];assert len(colors)==n and set(colors)==set(range(6))
++ assert all(type(x) is int for x in colors+row['parents']+[row['arcs'],row['active_arcs']])
+  assert all(adjacent(colors[parents[v]],colors[v]) for v in range(1,n))
+  mask=row['active_mask'] if mask_override is None else mask_override
+  assert type(mask) is int and 0<=mask<(1<<(n-1))
+@@ -98,8 +104,10 @@
+  return len(set(newcolors))==6
+ def main():
+  ap=argparse.ArgumentParser();ap.add_argument('--input',default=SOURCE);ap.add_argument('--output',default=OUT);args=ap.parse_args();assert not(ROOT/args.output).exists();begin=time.monotonic()
+- doc=json.loads((ROOT/args.input).read_text());primary=json.loads((ROOT/PRIMARY).read_text())
++ doc=json.loads((ROOT/args.input).read_text(),object_pairs_hook=nodup);primary=json.loads((ROOT/PRIMARY).read_text(),object_pairs_hook=nodup)
++ assert [e['path'] for e in doc['inputs']]==['scripts/certify_colored_disk_tree_toggles_independent_v1.py','scripts/direct_colored_tree_toggle_search_v1.cpp']
+  for entry in doc['inputs']:assert sha(entry['path'])==entry['sha256']
++ assert list(primary['bindings'])==['scripts/probe_minimal_colored_disk_region_trees_v1.py']
+  for path,value in primary['bindings'].items():assert sha(path)==value
+  faces,vertices,sigma,edge_vertices,incidence=cube();orbit_check(doc,faces)
+  assert doc['cube_vertex_actions']==list(map(list,vertices))
+@@ -123,13 +131,28 @@
+    survivors.append(k)
+  assert seen==set(records) and len(seen)==87538
+  assert dict(counts)==doc['counts']==primary['counts']
++ # Hardening of 9 November 2026: bind the certificate's summary fields to its records.
++ assert doc['total_patterns']==len(doc['records']) and doc['maximum_witness_arcs']==max(r['active_arcs'] for r in doc['records'])
++ assert doc['direct_masks_examined']==sum(r['direct_masks_examined'] for r in doc['records'])
++ assert doc['minimum_histogram']==dict(Counter(f"{r['kind']}:{r['arcs']}:minimum={r['active_arcs']}" for r in doc['records']))
++ # Hardening of 14 November 2026: outside the timing field every value is an int, a str or None
++ # (no bool, no float); the header strings are the expected ones; path records carry no leg
++ # lengths and Y records three; action indices are in range(48), so none is a negative alias;
++ # and the histogram and survivor list agree with the primary result. Both files are read with
++ # nodup, which refuses an object that repeats a key.
++ assert all(plain(v) for k,v in doc.items() if k!='seconds') and plain(primary['minimal_survivors']) and plain(primary['minimum_histogram']) and plain(primary['counts'])
++ assert doc['status']=='complete_explicit_abstract_path_Y_toggle_certificates' and doc['schema']=='colored_disk_tree_toggle_certificates_independent_v1'
++ assert all(r['leg_lengths'] is None if r['kind']=='path' else type(r['leg_lengths']) is list and len(r['leg_lengths'])==3 for r in doc['records']+primary['minimal_survivors'])
++ assert min(r['direct_masks_examined'] for r in doc['records'])>=0
++ assert 0<=doc['identity_action']<48 and all(0<=doc['edge_reflection_actions'][a][b]<48 for a,b in sigma) and all(0<=w['action']<48 for size in '23' for row in doc['leaf_orbits'][size] for w in row['action_witnesses'])
++ assert doc['minimum_histogram']==primary['minimum_histogram'] and len(primary['minimal_survivors'])==80
+  assert len(survivors)==80 and Counter(k[1] for k in survivors)=={5:38,6:38,7:4}
+  assert {(r['kind'],r['arcs'],tuple(r['leg_lengths'] or()),tuple(r['colors'])) for r in primary['minimal_survivors']}==set(survivors)
+  assert [i for i,r in enumerate(doc['records']) if key(r) in set(survivors)]==doc['minimal_survivor_indices']
+  controls=[]
+  def reject(name,fn):
+   try:fn()
+-  except (AssertionError,KeyError,ValueError,StopIteration):controls.append(dict(name=name,rejected=True));return
++  except AssertionError:controls.append(dict(name=name,rejected=True));return
+   raise AssertionError('Tamper accepted: '+name)
+  sample=next(r for r in doc['records'] if r['arcs']==12);parents=sample['parents']
+  bad=copy.deepcopy(sample);bad['active_mask']=0;bad['active_arcs']=0
+@@ -161,4 +184,6 @@
+  print(json.dumps(dict(status=out['status'],counts=out['counts'],seconds=out['seconds'],sha256=sha(args.output))))
+ def assert_positive(row,parents,sigma,edge_vertices,incidence):assert replay(row,parents,sigma,edge_vertices,incidence)
+ def assert_equal(a,b):assert a==b
++def plain(x):return all(map(plain,x.values())) if type(x) is dict else all(map(plain,x)) if type(x) is list else type(x) in (int,str,type(None))
++def nodup(pairs):d=dict(pairs);assert len(d)==len(pairs);return d
+ if __name__=='__main__':main()

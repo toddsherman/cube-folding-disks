@@ -1,0 +1,3079 @@
+#let sect = sym.inter
+#set page(numbering: "1", margin: 25mm)
+#set par(justify: true)
+#let horizontalrule = line(start: (25%,0%), end: (75%,0%))
+
+#show terms.item: it => block(breakable: false)[
+  #text(weight: "bold")[#it.term]
+  #block(inset: (left: 1.5em, top: -0.4em))[#it.description]
+]
+
+#set table(
+  inset: 6pt,
+  stroke: none
+)
+
+#show figure.where(
+  kind: table
+): set figure.caption(position: top)
+
+#show figure.where(
+  kind: image
+): set figure.caption(position: bottom)
+
+#let content-to-string(content) = {
+  if content.has("text") {
+    content.text
+  } else if content.has("children") {
+    content.children.map(content-to-string).join("")
+  } else if content.has("body") {
+    content-to-string(content.body)
+  } else if content == [ ] {
+    " "
+  }
+}
+#let conf(
+  title: none,
+  subtitle: none,
+  authors: (),
+  keywords: (),
+  date: none,
+  abstract-title: none,
+  abstract: none,
+  thanks: none,
+  cols: 1,
+  margin: (x: 1.25in, y: 1.25in),
+  paper: "us-letter",
+  lang: "en",
+  region: "US",
+  font: none,
+  fontsize: 11pt,
+  mathfont: none,
+  codefont: none,
+  linestretch: 1,
+  sectionnumbering: none,
+  linkcolor: none,
+  citecolor: none,
+  filecolor: none,
+  pagenumbering: "1",
+  doc,
+) = {
+  set document(
+    title: title,
+    keywords: keywords,
+  )
+  set document(
+      author: authors.map(author => content-to-string(author.name)).join(", ", last: " & "),
+  ) if authors != none and authors != ()
+  set page(
+    paper: paper,
+    margin: margin,
+    numbering: pagenumbering,
+    columns: cols
+  )
+
+  set par(
+    justify: true,
+    leading: linestretch * 0.65em
+  )
+  set text(lang: lang,
+           region: region,
+           size: fontsize)
+
+  set text(font: font) if font != none
+  show math.equation: set text(font: mathfont) if mathfont != none
+  show raw: set text(font: codefont) if codefont != none
+
+  set heading(numbering: sectionnumbering)
+
+  show link: set text(fill: rgb(content-to-string(linkcolor))) if linkcolor != none
+  show ref: set text(fill: rgb(content-to-string(citecolor))) if citecolor != none
+  show link: this => {
+    if filecolor != none and type(this.dest) == label {
+      text(this, fill: rgb(content-to-string(filecolor)))
+    } else {
+      text(this)
+    }
+  }
+
+  block(below: 1em, width: 100%)[
+    #if title != none {
+      align(center, block[
+          #text(weight: "bold", size: 1.5em, hyphenate: false)[#title #if thanks != none {
+              footnote(thanks, numbering: "*")
+              counter(footnote).update(n => n - 1)
+            }]
+          #(
+            if subtitle != none {
+              parbreak()
+              text(weight: "bold", size: 1.25em, hyphenate: false)[#subtitle]
+            }
+           )])
+    }
+
+    #if authors != none and authors != [] {
+      let count = authors.len()
+      let ncols = calc.min(count, 3)
+      grid(
+        columns: (1fr,) * ncols,
+        row-gutter: 1.5em,
+        ..authors.map(author => align(center)[
+          #author.name \
+          #author.affiliation \
+          #author.email
+        ])
+      )
+    }
+
+    #if date != none {
+      align(center)[#block(inset: 1em)[
+          #date
+        ]]
+    }
+
+    #if abstract != none {
+      block(inset: 2em)[
+        #text(weight: "semibold")[#abstract-title] #h(1em) #abstract
+      ]
+    }
+  ]
+
+  doc
+}
+#show: doc => conf(
+  abstract-title: [Abstract],
+  paper: "a4",
+  fontsize: 10.5pt,
+  pagenumbering: "1",
+  cols: 1,
+  doc,
+)
+#set document(title: "Square-grid disks with a surjective consistent cube map fold validly onto the cube", author: "Todd S. Sherman")
+
+
+= Square-grid disks with a surjective consistent cube map fold validly onto the cube
+<square-grid-disks-with-a-surjective-consistent-cube-map-fold-validly-onto-the-cube>
+Todd S. Sherman
+
+Research manuscript, 5 November 2026; revised 7, 9 and 14 November 2026
+
+#emph[This manuscript and its computational supplement were written and
+checked by AI agents under the author's direction, using Anthropic's
+Fable 5.2 and Opus 5.5, Google's Carbon, and OpenAI's Astra. No human
+with sufficient expertise in this field of study has reviewed any
+proof.]
+
+=== Abstract
+<abstract>
+We consider folding a physical disk onto the unit cube, allowing
+multiple layers and 90- or 180-degree folds along retained grid joins. A
+physical disk is obtained from finitely many unit squares of the plane
+grid by gluing some pairs of side-adjacent squares along their common
+side, and is homeomorphic to a closed disk. We prove that a consistent
+complete-frame map covering all six cube faces is sufficient for a valid
+folding in the piecewise-linear ambient-isotopy model. The source,
+including its slits and corner identifications, is unchanged; the map
+and layer orders may change. The proof decomposes a map into monochrome
+disks separated by whole straight crease arcs, constructs a family of
+maps indexed by arc toggles, and bounds a minimal six-covering member by
+twelve arcs. An exhaustive certificate on 87,538 abstract colored trees
+reduces the bound to seven. A geometric ordering argument then realizes
+the resulting map, and disk topology gives validity. The theorem has no
+area, interface-length, or retained-dual-rank bound. The proof,
+including the certificate, also yields an $O \( N^7 \)$-time algorithm
+deciding whether a physical disk with $N$ squares folds onto the cube,
+since the candidate crease arcs depend only on the source and at most
+seven are needed. Both results concern disk sources; they do not settle
+the corresponding existence and complexity questions for sources with
+holes.
+
+== Introduction
+<introduction>
+A face assignment can satisfy every square-edge incidence and still fail
+to describe a realizable layered folding. Conversely, an unrealizable
+prescribed map does not show that its source cannot fold: another map
+may admit compatible layers. The distinction between a particular map
+and the existence of some valid map is central here.
+
+#strong[Theorem A.] Let $P$ be a physical disk, that is, a physical
+source in the sense of Section 1.1 that is homeomorphic to a closed
+disk, with its retained unit-edge joins, slits, and corner
+identifications fixed. Then $P$ admits a valid folding onto the unit
+cube in the layered PL model if and only if it admits a consistent
+complete-frame map covering all six cube faces. The sufficient direction
+introduces no source cuts, gluings, or additional crease lines.
+
+Here a valid folding is, as in Aichholzer, Lehner, and Lindorfer
+\[ALL25, Definition 3.2\], a folded state that is ambient isotopic to a
+trivial folding, that is, to a realization of a flat blueprint. It does
+not mean a motion in which square panels remain rigid at every
+intermediate time. Section 1 makes the model precise.
+
+The necessity is immediate. For sufficiency, a 90-degree interface
+continues straight through each interior vertex and cannot cross another
+such interface. Whole interfaces cut the disk conceptually into a tree
+of monochrome disks. Reflecting one side in a symmetry fixing the target
+cube edge toggles that interface while preserving every retained join. A
+minimum six-covering member of this finite family has exclusive leaf
+colors, at most four leaves, and at most twelve active interfaces. Four
+leaves reduce analytically to five interfaces; the remaining trees are
+paths or Y-shaped trees. A complete certificate reduces all their
+possibilities to at most seven interfaces. Section 4 constructs
+compatible layer orders for these remaining arrangements. Section 1
+turns them into an embedded PL disk and hence a valid folding.
+
+The distinction between an interface and a unit join is essential. One
+interface may contain arbitrarily many joins, and each monochrome region
+may have arbitrarily many squares. The construction treats the complete
+sequences of bank ports, not a replacement by single hinges.
+
+=== Relation to previous work
+<relation-to-previous-work>
+Aichholzer et al.~\[ABDD18\] compare folding models and give algorithms
+for tree-shaped sources, and Czajkowski et al.~\[CDD+20\] study small
+polyominoes in models with additional creases, such as the half-grid
+model. Classifications in such models are not assertions in the
+fixed-grid model considered here. Table 1 of \[CDD+20\] summarizes the
+status of cube folding of polyominoes across folding models as of 2020;
+for the grid model with orthogonal creases and polyominoes whose
+retained cell-adjacency graphs may contain cycles, it records the
+problem as partially characterized and open. Czajkowski et al.~also
+report \[CDD+20, Section 3\] that Dunham and Whieldon \[DW18\] found by
+exhaustive search all solutions of Gardner's puzzle, which asks to cut
+slits into a $3 times 3$ square so that it folds along grid lines into a
+unit cube with only one side of the paper showing on the outside, and
+also all solutions without this last condition.
+
+Aichholzer et al.~\[AAAC21\] study polyominoes with holes, use
+consistent mappings as a necessary test for foldability, and ask
+\[AAAC21, Section 5\] whether this necessary condition is also
+sufficient. Aichholzer, Lehner, and Lindorfer \[ALL25\] give the PL
+validity framework used here and exhibit prescribed-map obstructions. In
+particular, their Example 4.5 is a surjective consistent mapping of a
+simply connected polyomino that is realized by no folded state, so the
+sufficient direction of Theorem A may have to change the map. They ask
+in Question 4.9 whether some polyomino admits surjective pseudo-foldings
+but no valid one. Lemma B1 in Section 1.6 identifies the polyominoes of
+\[ALL25\] (squares identified only along edges) with physical sources,
+their simply connected polyominoes with physical disks, and their
+consistent mappings, read as isometric on each square, with consistent
+complete-frame maps. With this identification, Theorem A shows that no
+simply connected polyomino admits surjective pseudo-foldings without
+admitting a valid one (Corollary A1 in Section 5). It does not settle
+Question 4.9 for polyominoes with holes. Lehner and Shirley \[LS25\]
+study cooperating holes in rectangular sources, outside the disk class.
+
+Open Problem 9.2 of \[ALL25\] asks for a complete characterization of
+the simply connected polyominoes that can be folded into a cube; there
+"into" is to be read as "onto", since in the sense of \[ALL25,
+Definition 3.3\] every polyomino folds into the cube trivially, by
+180-degree folds onto one face \[ALL25, Section 4.1, p.~613\]. For these
+polyominoes Theorem A reduces the problem to the existence of a
+surjective consistent complete-frame map. It gives no characterization
+in terms of shape. Conjecture 4.10 of \[ALL25\] states that CubeFolding,
+the problem of deciding whether a given polyomino folds onto the cube,
+can be solved in polynomial time. For tree-shaped polyominoes this
+follows from the classification of \[ALL25, Section 7\], as Lehner and
+Shirley note \[LS25, Section 1\]. Corollary A2 in Section 5 settles the
+simply connected case: the candidate crease arcs, maximal straight runs
+of retained joins through full stars, depend only on the source, and by
+Lemma R1 and Proposition C3 at most seven of them are needed, so
+CubeFolding for simply connected polyominoes with $N$ squares can be
+decided in $O \( N^7 \)$ time. Like Theorem A, this relies on the finite
+claim C2 behind Proposition C3, which is checked by computer (Section
+3.2). The conjecture remains open for polyominoes with holes.
+
+Two special cases of Theorem A were known. First, tree-shaped
+polyominoes, those whose retained cell-adjacency graph is a tree, are
+physical disks, and Aichholzer, Lehner, and Lindorfer \[ALL25, Section
+7\] classify the tree-shaped polyominoes that fold onto the cube. This
+extends \[ABDD18, Theorem 4\], which they describe as a
+characterization, in the grid model, of the foldable tree-shaped
+polyominoes whose bounding box has height at most 3; they note that its
+statement and proof appear to be incomplete and give their own
+formulation and proof. Their arguments for non-foldability show that the
+trees concerned have no surjective consistent mapping. For $3 times 3$
+and $3 times 4$ bounding boxes they rely on computer-generated lists of
+minimal foldable trees \[ALL25, Figures 25--26\]. We checked by computer
+that, up to symmetry, these lists consist exactly of the trees of those
+bounding sizes that admit a surjective consistent mapping but contain no
+proper sub-polyomino admitting one. Hence, granted the correctness of
+these lists, the tree case of Theorem A follows from \[ALL25, Section
+7\]. Second, \[ALL25, Theorem 8.2\] shows that a simply connected
+polyomino folds onto the cube if some boundary point has horizontal and
+vertical distance at least 3 from one of its valid corners, in the sense
+defined there. This covers many disks that are not trees. It does not
+imply Theorem A, since some non-tree disks with a surjective consistent
+map fail its hypothesis; the smallest of these have eight cells. Theorem
+A covers all physical disks, whose retained cell-adjacency graphs may
+contain many cycles.
+
+We know of no individual disk whose foldability needs the reduction of
+Sections 2--4, and none is presented here as a new example. An
+exhaustive computer search over the non-tree disks that have a
+surjective consistent map but fail the hypothesis of \[ALL25, Theorem
+8.2\], with at most 12 cells and all joins retained or with at most 10
+cells and slits allowed, finds that each of them also folds by more
+direct means: all but 49 by simple folds in the sense of Arkin et
+al.~\[ABD+04\], which reduce the disk to a layered cube net that is then
+folded onto the cube, and the remaining 49 by wrapping a layered
+tree-shaped stack around the cube, a step whose validity rests on
+Theorem M3 and Corollary D1. Our computations in this and the preceding
+paragraph bear only on the relation to previous work; Theorem A does not
+depend on them, and their scripts are not part of the supplement. The
+contribution of Theorem A is the statement for all physical disks, not
+an individual example.
+
+The bank-order lemma, Lemma L2 of Section 4.2, is proved directly, by
+induction along straight runs of joins. Its topological inputs are the
+classification of compact PL surfaces and the arc-splitting statement
+(Sch) of Section 4.2, which follows from the Jordan--Schoenflies theorem
+\[MT01, Section 2.2\] and the $theta$-graph lemma \[MT01, Section 2.1\].
+The proof of Lemma R1 in Section 2 uses the same inputs. All geometric
+reductions are proved below. Section 1 compares its local order
+condition and its realization theorem with results on flat folded states
+\[ADK26\], on folding motions of polygonal paper \[DDMO04\], and on
+lifting maps to embeddings \[Mel17\]. Section 6 gives a supporting
+example showing why requiring each face's monochrome square subgraph to
+be connected is too restrictive.
+
+The computational step checks positive witnesses over a proved
+exhaustive abstract domain. It is separated from the source reduction
+and geometric realization, so a reviewer can examine the finite claim
+without trusting the search procedure that found its certificates.
+
+== 1. Source complexes, ordered maps, and PL realizations
+<source-complexes-ordered-maps-and-pl-realizations>
+This section fixes the folding model and proves the geometric
+implication used by the finite certificates: feasible edge-layer orders
+give an embedded realization, and for a physical disk that realization
+is valid. The realization lemma is proved here; it is not inferred from
+agreement between two programs.
+
+=== 1.1 Physical sources and complete frames
+<physical-sources-and-complete-frames>
+Let $S subset bb(Z)^2$ be a nonempty finite set of distinct cells. Start
+with a disjoint copy of the closed unit square for each $s in S$. For
+any selected pair of side-adjacent cells, identify their common sides by
+the identification induced by their positions in the plane. Call these
+the #strong[retained joins]. Nonselected adjacencies are slits. Make no
+further identifications: in particular, coincident drawn corners are
+identified only when the retained side identifications imply this
+transitively. Let $P$ be the resulting quotient and assume its retained
+cell-adjacency graph is connected. We call $P$ a #strong[physical
+source]. Every identification is induced by planar positions, so the map
+$pi : P arrow.r bb(R)^2$ sending each square onto its cell is well
+defined; we call it the #strong[planar position map].
+
+Every physical source is a compact, orientable PL surface with nonempty
+boundary. Indeed, corners are identified only through retained joins,
+and a join identifies corners over the same lattice point. Hence the
+corners forming one abstract vertex make up a #strong[corner fan]:
+consecutive sectors of the four-sector planar star at a lattice point,
+joined across the retained sides between them. Its link is an interval,
+or a circle when the fan has all four sectors and all four intervening
+joins; we then call the vertex a #strong[full star]. In particular, no
+corner pinch occurs. The orientations of the squares induced from the
+plane are compatible across every retained join, and a cell of $S$
+maximizing $x + y$ has its top and right sides in $partial P$. A
+#strong[physical disk], or #strong[disk source], is a physical source
+homeomorphic to a closed disk. A disk certificate must verify the actual
+quotient, not the apparent outline of the drawing. Connectivity,
+orientability, vertex-link conditions, Euler characteristic one, and one
+boundary component suffice to recognize a disk in this class.
+
+Write $C = partial \[ 0 \, 1 \]^3$. Number the corners of a source
+square counterclockwise by $0 \, 1 \, 2 \, 3$, starting at its
+bottom-left corner, and number side $p$ from corner $p$ to corner
+$p + 1 med \( mod med 4 \)$. A #strong[complete frame] assigns to these
+corners four ordered vertices of a cube face and determines the affine
+isometry of the whole square. It may be written
+
+$ beta_i \( x \, y \) = o_i + x u_i + y v_i \, #h(2em) 0 lt.eq x \, y lt.eq 1 \, $
+
+where $u_i \, v_i$ are orthogonal signed coordinate vectors and the
+image is one face of $C$. Its outward face normal is denoted $n_i$\;
+this normal is determined by the target face, independently of the
+orientation of $\( u_i \, v_i \)$.
+
+A #strong[consistent map] is a complete frame for every square such
+that, for every retained join $\( i \, p \, j \, q \)$, meaning that
+side $p$ of square $i$ is identified with side
+$q = p + 2 med \( mod med 4 \)$ of the square $j$ across it, the two
+frames agree at the identified corners: writing $c_p$ for corner $p$ of
+$\[ 0 \, 1 \]^2$,
+
+$ beta_i \( c_p \) = beta_j \( c_(q + 1) \) \, #h(2em) beta_i \( c_(p + 1) \) = beta_j \( c_q \) . $
+
+Thus the affine maps descend to a continuous map $beta : P arrow.r C$.
+Matching only face labels would not suffice. The map is
+#strong[surjective] when all six cube faces occur. At a retained join
+the two images are either the same face, called a 180-degree join, or
+the two different faces incident with its target cube edge, called a
+90-degree join. No third possibility exists for two cube faces
+containing that complete edge.
+
+For each target face, prescribe a strict total order of its source
+squares. Write $r_i$ for the rank, from $0$ to $m_f - 1$, of square $i$
+among the $m_f$ squares assigned to face $f$, increasing away from the
+cube. Orders on different target faces are independent.
+
+=== 1.2 The local order condition
+<the-local-order-condition>
+Fix a cube edge $E$, incident with faces $f \, g$. Each retained join
+mapped to $E$ pairs two square occurrences, each on one of these faces.
+List the $f$-occurrences in increasing rank and the $g$-occurrences in
+decreasing rank around a circle. Require that no two pairs have
+alternating endpoints in this cyclic order. Occurrences not used by a
+retained join at $E$ need not be paired. A square cannot supply two
+different sides at the same target cube edge, so distinct pairs have
+distinct occurrences. The condition can equivalently be checked by three
+kinds of comparisons:
+
++ Two joins between different target faces preserve relative rank order
+  on the two faces.
++ The endpoint of such a join is not strictly between the endpoints of a
+  same-face join on that face.
++ The rank intervals of two same-face joins on the same target face are
+  disjoint or nested, not alternating.
+
+Same-face joins on opposite incident faces impose no additional pairwise
+condition. These cases enumerate all ways two pairs can use the two face
+intervals. We call the total orders #strong[locally feasible] when this
+condition holds at every cube edge. The following proof establishes the
+sufficiency we need; it does not assume that a local test determines
+validity for sources with holes.
+
+Comparisons 1, 2 and 3 are the cube-edge analogues of the
+tortilla-tortilla, taco-tortilla and taco-taco constraints for flat
+folded states, respectively. Akitaya, Demaine, and Ku \[ADK26, Theorem
+1\] show that a flat folding of a face-convex crease pattern admits a
+valid layer order defined by such facewise constraints exactly when it
+admits a valid pointwise layer order. Their setting is flat and has no
+cube edges, so it does not imply Lemma M1 or Theorem M3.
+
+=== 1.3 An explicit transverse construction
+<an-explicit-transverse-construction>
+#strong[Lemma M1 (disjoint transverse connectors).] For locally feasible
+ranks on a source with $N$ squares, all joins at one cube edge can be
+realized simultaneously by pairwise disjoint polygonal arcs in its
+outward transverse quadrant. Their endpoints are at explicitly chosen
+strictly increasing heights on the two outward-normal rays. The arcs
+meet these rays only at their endpoints and can be scaled arbitrarily
+small.
+
+#strong[Proof.] Choose $A > N^2$ and $t > 0$. Place the occurrence of
+square $i$ at height
+
+$ h_i = t A \( r_i + 1 \) . $
+
+A join between different faces is the straight segment between its two
+ray endpoints. A same-face join with ranks $a \, b$ uses a rectangular
+U: starting on its normal ray, move a distance $t lr(|a - b|)$ in the
+direction of the other face's outward normal (parallel to the other
+ray), move parallel to the first ray to the other height, and return to
+that ray. All non-endpoint points have positive coordinates in the
+outward quadrant. Each path lies within transverse distance
+$sqrt(2) thin t A N$ of the cube edge.
+
+There are four pair types. Two straight connectors are disjoint because
+their intercepts on both positive axes have the same strict order. Two
+U-connectors on the same ray are disjoint if their rank intervals are
+disjoint; if one interval properly contains the other, its excursion
+$t lr(|a - b|)$ is strictly larger, so its two legs and outside segment
+avoid the inner U. U-connectors on opposite rays are disjoint because
+their axial heights are at least $t A$, whereas their excursions are
+less than $t N < t A$.
+
+Finally consider a straight connector and a U on the first ray. The
+straight connector's intercept cannot lie inside the U's rank interval.
+If it lies below that interval, their first-coordinate ranges are
+disjoint. If it lies above the interval, write its intercept as $t A k$,
+its other intercept as $t A ell$, and let $x$ lie in the U's axial
+interval. Distinct integral ranks imply $x lt.eq t A \( k - 1 \)$, so
+the straight segment has second coordinate
+
+$ t A ell (1 - frac(x, t A k)) gt.eq frac(t A ell, k) gt.eq frac(t A, N) > t N . $
+
+The entire U has second coordinate less than $t N$. The other-ray case
+is identical. This exhausts all pairs, and all separations are strict.
+Scaling $t$ proves the last assertion. $square.stroked.tiny$
+
+=== 1.4 Filling vertex neighborhoods
+<filling-vertex-neighborhoods>
+#strong[Lemma M2 (simultaneous relative caps).] Let $B$ be a PL 3-ball.
+A finite pairwise disjoint collection of simple PL circles and simple PL
+arcs on $partial B$ bounds pairwise disjoint PL disks in $B$ as follows:
+a circle is the entire boundary of its disk; an arc is one boundary arc
+of its disk, with the complementary boundary arc free in the interior of
+$B$. Each disk meets $partial B$ exactly in its prescribed circle or
+arc.
+
+#strong[Proof.] Use a thin inward PL collar
+$partial B times \[ 0 \, delta \]$\; for the cubical balls below, it can
+be obtained by triangulating the boundary and the prisms between two
+nested cubes. Choose a point of $partial B$ outside the prescribed
+curves and identify the punctured sphere with the plane. Each circle
+bounds the closed Jordan disk avoiding that point. These finitely many
+disks are laminar: any two are disjoint or one is contained in the
+interior of the other.
+
+After a common subdivision, refined (for example barycentrically) so
+that each prescribed curve is a full subcomplex, that is, no simplex
+outside the curve has all its vertices on it, represent each circle cap
+as the graph in the collar of a PL function on its Jordan disk, zero on
+the boundary and strictly positive in the interior; for instance, take
+the function that is linear on simplices, zero at the vertices of the
+circle, and positive at all other vertices. Choose functions from outer
+disks to inner disks. The function already chosen for a containing disk
+has a positive minimum on each compact child disk. Choose the child's
+positive height smaller than this minimum. Thus, at every point where
+two graph domains overlap, the containing cap lies strictly deeper. The
+resulting caps are pairwise disjoint and meet the sphere only in their
+prescribed circles.
+
+Choose disjoint small one-sided rectangular neighborhoods of the arc
+components on the sphere, avoiding every circle. Each arc is one
+boundary side of its neighborhood. Since a connected such neighborhood
+avoids all circles, it lies either wholly inside or wholly outside each
+circle's Jordan disk. Realize its half-disk as the graph of a PL
+function that is zero precisely on the prescribed arc and positive
+elsewhere, including on the complementary boundary arc except its
+endpoints. For each containing circle cap, its depth has a positive
+minimum on the chosen small neighborhood; choose the arc cap shallower
+than all these minima. The neighborhoods of distinct arcs are disjoint.
+This gives the required simultaneous caps. $square.stroked.tiny$
+
+The lemma requires disjoint #emph[simple] sphere links. In the following
+application this is proved before capping, from the embedding outside
+the vertex balls and the actual interval/circle links of the source. It
+would not follow merely from an Euler characteristic calculation. Coning
+every sphere link to a common center would also not prove the lemma.
+
+=== 1.5 Realization with a pointwise error bound
+<realization-with-a-pointwise-error-bound>
+#strong[Theorem M3 (ordered-map realization).] Let $P$ be a physical
+source (Section 1.1) with $N$ squares. Every consistent complete-frame
+map with locally feasible face orders has, for every positive $epsilon$,
+a PL embedding $F : P arrow.r bb(R)^3$ with
+
+$ lr(bar.v.double F \( x \) - beta \( x \) bar.v.double) < epsilon #h(2em) \( x in P \) \, $
+
+whose face patches occur in the prescribed layer order.
+
+#strong[Proof.] We first construct the image pieces and then give their
+source parametrization. Choose
+
+$ 0 < rho < min \( 1 \/ 10 \, epsilon \/ 20 \) \, #h(2em) 0 < eta < rho \/ 10 \, $
+
+and choose $A > N^2$ and $t > 0$ so small that $D = t A N < rho \/ 10$.
+Around each cube vertex $v$, remove the interior of the axis-aligned
+cubical ball
+
+$ B_v = v + \[ - rho \, rho \]^3 . $
+
+These balls are pairwise disjoint. Translate the image of source square
+$i$ by $h_i n_i$, retaining the part outside the open vertex balls. Its
+tangential coordinates still run over its target unit face. Different
+patches on one face are in different planes. Patches on different faces
+are disjoint: each stays in its own face's tangential square and is
+strictly outside in its normal coordinate.
+
+At each retained join, insert the product of its Lemma M1 transverse arc
+with the longitudinal interval $\[ rho \, 1 - rho \]$ of its target cube
+edge. Bind its endpoints to the two face patches using the complete edge
+frames. This makes a polygonal ribbon with the prescribed, untwisted
+source identification. The ribbon's interior is strictly in the outward
+transverse quadrant, whereas incident face-patch interiors are on the
+inward side of an axis; hence it meets the patches on the two incident
+faces only in its intended attaching intervals. It misses the patches on
+the other four faces. Such a patch has normal coordinate at least
+$1 + t A$ or at most $- t A$. On the ribbon, this coordinate is
+longitudinal, in $\[ rho \, 1 - rho \]$, for the two faces perpendicular
+to the edge; for the two faces opposite the incident ones it is
+transverse, in $\[ 1 \, 1 + D \]$ or $\[ - D \, 0 \]$. Lemma M1 makes
+ribbons at the same cube edge disjoint. Ribbons at different edges are
+disjoint as well: their transverse coordinates are at most
+$D < rho \/ 10$, while their longitudinal coordinates remain at least
+$rho$ from the endpoints. This separates even edge neighborhoods
+incident with the same cube vertex. Edges not sharing a vertex have a
+still larger separation. We have obtained an embedded PL surface outside
+the open balls.
+
+On each $partial B_v$, the cut face patches and ribbons form a disjoint
+collection of simple polygonal curves and arcs. More explicitly, a
+translated square corner supplies its cut corner arc, and each incident
+retained join supplies the connector between the appropriate arc
+endpoints. These connect in exactly the actual source corner fan order.
+No corner is identified just because its drawing or target vertex
+coincides with another. A closed four-sector fan gives a circle; a
+boundary fan gives an arc. Distinct fans have disjoint links because all
+the face and ribbon pieces are already embedded. Apply Lemma M2 inside
+each ball. Its interiors are disjoint from the previously constructed
+exterior, and its prescribed boundaries attach to the correct fans. The
+union is an embedded surface with exactly the source incidence.
+
+It remains to ensure that this is a realization of the #strong[whole
+source with pointwise control], rather than merely an unparametrized
+nearby surface. Along each retained source edge take a collar of width
+$eta$ on each side, over the longitudinal range $\[ rho \, 1 - rho \]$,
+so that it stops at the source corner neighborhoods. Since $eta < rho$,
+these collars are pairwise disjoint. Keep the longitudinal parameter
+fixed. In the transverse collar parameter, map the source interval
+$\[ - eta \, eta \]$ by a monotone piecewise-linear map onto the
+concatenation of the first face strip of width $eta$, the complete
+connector, and the second face strip of width $eta$, agreeing with the
+translated affine face maps at $plus.minus eta$. The image consists of
+the full face strips of width $eta$ and the ribbon; only the source
+parameter interval of each face collar is compressed, to make room for
+the connector. This gives a homeomorphism of the original collar onto
+the patch-and-ribbon neighborhood. Thus inserting a ribbon has not
+introduced extra source material or changed its gluing. Outside these
+collars use the translated affine face map.
+
+Choose the remaining source corner neighborhoods with frontier assembled
+from the preimages of the face-patch truncation arcs under the
+translated affine face maps and the source edge-collar intervals at
+their longitudinal endpoints. The target truncation occurs at
+longitudinal coordinate $rho$, and the preceding reparametrizations
+change only the transverse source coordinate within width $eta$. Its
+source frontier therefore lies within tangential distance
+$rho + eta < 2 rho$ of the relevant corner in every incident square;
+fill in the corresponding actual corner fan on that side. Each resulting
+source corner neighborhood is contained in the corner square of side
+$2 rho$. Its frontier is the fan interval or circle already parametrized
+on $partial B_v$. For a closed fan, extend the PL homeomorphism of this
+frontier onto the prescribed circle to a PL homeomorphism of the corner
+neighborhood onto its Lemma M2 cap by coning (the PL Alexander trick).
+For a boundary fan, first extend the homeomorphism of the frontier arc
+onto the prescribed arc by any PL homeomorphism between the
+complementary boundary arcs, the one in $partial P$ and the free arc of
+the cap, and then cone. These extensions agree with the adjacent collar
+maps on every prescribed attaching interval. They define a PL
+homeomorphism from $P$ onto the constructed embedded surface.
+
+For completeness, the error estimate separates three regions. Off source
+edge collars and corner neighborhoods, the displacement is
+$h_i lt.eq D$. In an edge collar, the source and image retain the same
+longitudinal coordinate; the source blueprint is within $eta$ of the
+target edge, and the corresponding image is within $eta + sqrt(2) D$.
+Hence their distance is at most $2 eta + sqrt(2) D$. In a source corner
+neighborhood, $beta \( x \)$ is within $2 sqrt(2) rho$ of its target
+cube vertex, and its cap image is within $sqrt(3) rho$. Their distance
+is therefore less than $5 rho < epsilon$. The other two bounds are
+smaller. This proves the required pointwise inequality and preserves the
+prescribed strict order on the unmodified face interiors.
+$square.stroked.tiny$
+
+The construction allows caps inside the cube. An outside-cube constraint
+is neither assumed nor supplied. The face orders are witnessed on the
+substantial parallel face patches; the theorem makes no uniqueness claim
+about all embeddings near the same blueprint. No choice of pairwise
+linking numbers or of a link-simplification heuristic enters the proof.
+
+=== 1.6 Relation to the published folding model and disk validity
+<relation-to-the-published-folding-model-and-disk-validity>
+Aichholzer, Lehner, and Lindorfer \[ALL25, Section 3, pp.~604--605, and
+Definitions 3.1--3.3\] define a folding blueprint of an abstract
+polyomino as a map to $bb(R)^3$ that is an isometry on each square, a
+folded state as a PL embedding, and $epsilon$-correspondence by the
+pointwise inequality used in Theorem M3. A blueprint is flat when its
+image lies in a plane and the images of distinct squares overlap only in
+edges. A polyomino is an abstract polyomino admitting a flat blueprint,
+and a trivial folding is a realization of a flat blueprint (Definition
+3.1). Validity means ambient isotopy to a trivial folding (Definition
+3.2). A folding is #strong[onto] the cube when its blueprint is
+surjective (Definition 3.3). In particular, the realization itself need
+not lie exactly on the cube surface, and the ambient isotopy is not a
+rigid-hinge motion constrained to preserve square shapes at intermediate
+times.
+
+Their Theorem 3.4 states, for a folded state of a polyomino, the
+equivalence of validity, containment of the embedded surface in a
+polyhedral sphere, and an unlink boundary. We use only its disk case.
+
+To apply these results we fix how the objects of \[ALL25\] correspond to
+those of Section 1.1. In \[ALL25, p.~604\], an abstract polyomino is
+obtained from disjoint unit squares by identifying some of their edges
+in pairs. We read this, as described there, with vertices identified
+only through these edge identifications; this is also the reading under
+which the boundary of a folded state is a disjoint union of circles, as
+noted in \[ALL25, p.~605\]. If corners could also be identified without
+an edge identification, as the square-complex formulation in \[ALL25,
+p.~604\] would permit, the vertex so formed would have a disconnected
+link, and the complex would be neither a surface nor a physical source;
+Lemma B1 and its consequences use the edge-only reading. A polyomino of
+\[ALL25\] consists of finitely many squares, at least one, joined edge
+to edge into a connected whole \[ALL25, Section 2\]; we read Definition
+3.1, whose wording does not repeat these conditions, with them, so that
+the complex $P$ is finite, nonempty and connected. In the plane figure
+of a polyomino, a #strong[hole] is a maximal connected set of missing
+squares and slits contained in the interior of a cycle of the dual graph
+$D \( P \)$ \[ALL25, p.~604\], and a polyomino is #strong[simply
+connected] when it has no hole \[ALL25, p.~603\]. A #strong[consistent
+mapping] \[ALL25, p.~607\] is a homomorphism of polygonal complexes
+$P arrow.r C$: it maps faces to faces, edges to edges, and vertices to
+vertices, preserving incidence. Aichholzer, Lehner, and Lindorfer
+present consistent mappings as a combinatorial version of folding
+blueprints that carries the same information, and we read them in this
+sense, as isometric on each square: the mapping carries the corners and
+sides of each square bijectively, preserving incidence, onto the corners
+and sides of one face of $C$. A #strong[pseudo-folding] adds a layer map
+to a consistent mapping and is surjective when the mapping is \[ALL25,
+p.~608\].
+
+#strong[Lemma B1 (agreement with \[ALL25\]).] Let $P$ be a physical
+source with planar position map $pi$.
+
+\(a) The map $pi$ is a flat blueprint, so $P$ is a polyomino in the
+sense of \[ALL25, Definition 3.1\]. Conversely, every polyomino in this
+sense, read as above, is isomorphic to a physical source by a map that
+is an isometry on each square.
+
+\(b) $P$ is simply connected in the sense of \[ALL25\] if and only if it
+is a physical disk.
+
+\(c) A map $beta : P arrow.r C$ is a folding blueprint into $C$ if and
+only if it is a consistent complete-frame map, that is, an affine
+isometry of each square onto one face of $C$ satisfying the join
+equations; it is surjective exactly when all six faces occur.
+Correspondingly, the consistent mappings of \[ALL25\], read as above,
+are exactly the maps of faces, edges, and vertices induced by consistent
+complete-frame maps, and such a mapping, or a pseudo-folding containing
+it, is surjective exactly when all six faces occur.
+
+#strong[Proof.] #emph[Part (a).] The source $P$ is obtained from
+disjoint unit squares by identifying sides in pairs, and its vertices
+are identified only through these side identifications (Section 1.1).
+Regarded as a map into a plane of $bb(R)^3$, the map $pi$ is an isometry
+on each square, and the images of distinct squares are distinct cells,
+which meet at most in a side or a corner. Thus $pi$ is a flat blueprint.
+Conversely, let $pi$ be a flat blueprint of a polyomino $P$ of
+\[ALL25\], regarded as a map to the plane containing its image. Since
+$pi$ is injective on each square, no two distinct points of one square
+are identified in $P$. Hence, if an edge $e$ of a square $A$ is
+identified with an edge of a square $B$, then $B eq.not A$, and
+$pi \( A \)$ and $pi \( B \)$ are unit squares with the common side
+$pi \( e \)$. They are not equal, since images of distinct squares
+overlap only in edges, so $pi \( B \)$ is the reflection of $pi \( A \)$
+in $pi \( e \)$. Identified points have equal images, so the two copies
+of $e$ are identified as these positions induce. As $P$ is connected and
+its vertices are identified only through edges, any two squares are
+linked by a chain of edge identifications. In plane coordinates in which
+one square maps onto $\[ 0 \, 1 \]^2$, every square therefore maps onto
+a cell of $bb(Z)^2$, and distinct squares map onto distinct cells. Let
+$S$ be the set of these cells, which is finite and nonempty, and retain
+exactly the joins between side-adjacent cells of $S$ along which $P$
+identifies edges. Two cells share at most one side, and each edge is
+identified with at most one other edge, so this is a selection of joins
+as in Section 1.1, and its retained cell-adjacency graph is connected.
+In both complexes, vertices are identified only through the edge
+identifications. Hence $pi$ induces an isomorphism of $P$ onto the
+resulting physical source that is an isometry on each square.
+
+#emph[Part (b).] By (a), the plane figure of \[ALL25, Section 2\] is
+$pi \( P \)$\; the flat blueprint is unique up to isometry \[ALL25,
+p.~605\]. Its squares are the cells of $S$, its missing squares are the
+cells of $bb(Z)^2$ not in $S$, and its slits are the common sides of
+side-adjacent cells of $S$ without a retained join. The dual graph
+$D = D \( P \)$ is drawn with a vertex at the center of each cell of $S$
+and, for each retained join, the unit segment between the two centers;
+it is a connected plane graph contained in the lines through cell
+centers. Each edge of $D$ lies in the union of its two cells and meets
+their boundaries only at the midpoint of their common, retained side. A
+closed missing square or slit meets the cells of $S$ only in their
+boundaries and contains no such midpoint, so it misses $D$ and lies in
+one face of $D$. For a lattice point $v$, the open square
+$Q_v = v + \( - 1 / 2 \, 1 / 2 \)^2$ misses $D$. It is a face of $D$
+exactly when its four sides are edges of $D$, that is, when the four
+cells at $v$ lie in $S$ and the four sides at $v$ are retained, so that
+$v$ carries a full star; if a side of $Q_v$ is not an edge of $D$, its
+interior misses $D$ and connects $Q_v$ to a neighboring square. Such a
+face $Q_v$ contains no point of a missing square or slit, since it meets
+only the four cells and the four sides at $v$. Every other bounded face
+$Phi$ contains such a point. Indeed, $Phi$ is open and the lines through
+cell centers have empty interior, so $Phi$ meets some $Q_v$, and
+contains it, as $Q_v$ is connected and misses $D$. Then $v$ does not
+carry a full star, since otherwise $Phi = Q_v$. So a cell at $v$ is
+missing or a side at $v$ is a slit; it meets $Q_v subset Phi$ and
+therefore lies in $Phi$.
+
+Let $N$, $R$, and $n$ be the numbers of squares, retained joins, and
+full stars of $P$. The vertices of $P$ are its corner fans. Over one
+lattice point they are the components of the graph whose vertices are
+the cells of $S$ at that point and whose edges are the retained sides at
+it. This graph is a subgraph of a 4-cycle, so it has as many components
+as it has cells minus retained sides, plus one when it is the whole
+4-cycle. Summing over lattice points, $P$ has $4 N - 2 R + n$ vertices;
+it has $N$ faces and $4 N - R$ edges, so $chi \( P \) = N - R + n$. By
+Euler's formula, the connected plane graph $D$, with $N$ vertices and
+$R$ edges, has $1 - N + R$ bounded faces, and $n$ of them are the
+squares $Q_v$ of full stars. Hence $chi \( P \) = 1 - m$, where $m$ is
+the number of the other bounded faces. As $P$ is a compact connected
+orientable surface with nonempty boundary (Section 1.1),
+$chi \( P \) lt.eq 1$, with equality exactly when $P$ is a disk. Thus
+$P$ is a physical disk if and only if $m = 0$.
+
+If $P$ has a hole, then a missing square or slit lies inside a cycle of
+$D$. Its face lies inside that cycle, so it is bounded and is not the
+square of a full star, and $m > 0$. Conversely, let $m > 0$. Choose a
+bounded face $Phi$ other than the squares of full stars, a missing
+square or slit $x$ in $Phi$, and a point $y$ of $x$. Let $Z$ be the set
+of edges of $D$ with $Phi$ on exactly one side. Around each vertex of
+$D$, the sectors between consecutive edges enter and leave $Phi$ an even
+number of times, so every vertex has even degree in $Z$, and $Z$ is an
+edge-disjoint union of cycles. Take a ray from $y$ that avoids the
+vertices of $D$ and is parallel to none of its edges. It eventually lies
+in the unbounded face, and it passes between $Phi$ and other faces
+exactly when it crosses an edge of $Z$. So it crosses $Z$, and hence one
+of these cycles, an odd number of times. By the parity criterion for
+polygons (see the polygonal Jordan curve theorem in \[MT01, Section
+2.1\]), $y$ lies inside that cycle. The maximal connected union of
+missing squares and slits containing $x$ misses $D$, so it lies inside
+the same cycle, and $P$ has a hole.
+
+#emph[Part (c).] Let $beta$ be a folding blueprint into $C$. An isometry
+of a square into $bb(R)^3$ is the restriction of an affine map, so for
+each square $s$ the image $beta \( s \)$ is a planar unit square in $C$.
+The six closed faces of $C$ cover it, so one of them meets it in a set
+with nonempty interior relative to its plane. That plane is then the
+plane of this face, whose intersection with $C$ is the face itself.
+Hence $beta \( s \)$ is this face, and $beta$ restricted to $s$ is an
+affine isometry onto it carrying corners to corners, that is, a complete
+frame. The identified points of a retained join have equal images; at
+its two identified corners, this is the pair of join equations of
+Section 1.1. Conversely, a consistent complete-frame map descends to a
+continuous map on $P$ (Section 1.1) that is an isometry on each square,
+so it is a folding blueprint into $C$. Its image is the union of the
+faces that occur. For a consistent mapping read as above, the
+incidence-preserving bijection on a square determines the corner images
+of exactly one complete frame, and every complete frame arises in this
+way. At a retained join, the identified side and its two identified
+corners have one image each, which is again the pair of join equations;
+conversely, the join equations make the induced maps of faces, edges,
+and vertices well defined on $P$. Since every edge and vertex of $C$
+lies in a face, such a mapping, and a pseudo-folding containing it, is
+surjective exactly when all six faces occur. $square.stroked.tiny$
+
+The nondegenerate reading in (c) is needed. A homomorphism of polygonal
+complexes in the literal sense may fold the boundary of a square onto a
+path of cube edges. With such degenerate squares, the $1 times 6$ strip,
+a physical disk, has a homomorphism onto all six faces, twelve edges,
+and eight vertices of $C$. It has no surjective consistent
+complete-frame map: adjacent squares of a strip share a side, so all its
+frames send the direction of the shared sides to one cube axis, and only
+four faces are parallel to that axis. Aichholzer, Lehner, and Lindorfer
+likewise note that a folding of a $1 times n$ strip covers at most four
+faces \[ALL25, p.~621\]. Under the literal reading, the strip would thus
+admit a surjective pseudo-folding but no folding onto $C$, and Question
+4.9 of \[ALL25\] would have a trivial positive answer.
+
+#strong[Corollary D1 (disk certificate).] If $P$ is a physical disk, a
+surjective consistent map and locally feasible face orders certify a
+valid folding of $P$ onto the cube in the \[ALL25\] model.
+
+#strong[Proof.] By Lemma B1(a), $P$ is a polyomino in the sense of
+\[ALL25, Definition 3.1\], and by Lemma B1(c), $beta$ is a surjective
+folding blueprint into $C$. Theorem M3 produces the required folded
+state, an embedded PL disk, for every sufficiently small prescribed
+$epsilon$. The boundary of an embedded PL disk is an unknot, which is
+condition 3 of Theorem 3.4. Alternatively, a sufficiently small
+one-sided regular neighborhood of the disk is a PL 3-ball whose boundary
+sphere contains the original disk as one boundary face, which is
+condition 2. Theorem 3.4 then gives validity, and surjectivity of $beta$
+gives a folding onto $C$. $square.stroked.tiny$
+
+The same argument shows that every folded state of a physical disk is
+valid; the substance of Corollary D1 is the existence of the realization
+supplied by Theorem M3. By Lemma B1(b), this validity statement is the
+disk case of the remark in \[ALL25, Section 4.1, p.~611\] that a
+realizable pseudo-folding can fail to be valid only if the polyomino has
+a hole.
+
+This is a sufficient certificate for an individual map and order.
+Failure to find orders in a bounded search is not a negative folding
+result. For sources with holes Theorem M3 still gives an embedded
+realization, but Corollary D1 no longer applies: its entire boundary
+link must be addressed separately.
+
+Two related results do not imply Theorem M3 or Corollary D1. In the
+model of Demaine, Devadoss, Mitchell, and O'Rourke, a folded state of a
+simple polygon is an isometric map of the paper together with a
+noncrossing stacking order, and they show that every such state that is
+well behaved in their sense is reached by a continuous folding motion
+\[DDMO04, Theorem 2\]. This is the closest classical analogue of Theorem
+M3 with Corollary D1, but its conclusion is a motion rather than an
+$epsilon$-close PL embedding, a source with slits is not a simple
+polygon, and its noncrossing conditions at cube edges and vertices would
+still have to be derived from the local order condition, which is what
+Lemmas M1 and M2 do. Melikhov's criterion \[Mel17, Theorem 5\]
+characterizes the nondegenerate PL maps $f : X arrow.r Y$ of compact
+polyhedra that lift to PL embeddings $X arrow.r Y times bb(R)$. Because
+a lift of $beta$ to $C times bb(R)$, placed in a thin bicollar of $C$ in
+$bb(R)^3$, is an $epsilon$-realization, the criterion yields Theorem M3
+for layer orders that extend continuously over the whole double-point
+set of $beta$, crease points included. It does not yield Theorem M3 in
+general: the local order condition allows a 180-degree join to wrap
+around a free side of a square ranked between its two layers, and such
+an ordered map has no lift to $C times bb(R)$.
+
+Page, section, figure, and item numbers cited from \[ALL25\] refer to
+its published version; the arXiv version numbers some of them
+differently, for example Open Problem 9.2 as Open Problem 8.2.
+
+== 2. A universal reduction to finitely many colored trees
+<a-universal-reduction-to-finitely-many-colored-trees>
+This section concerns complete-frame maps, without prescribing layer
+orders. All references to cutting are decompositions for the proof: the
+physical source retains every one of its original joins. A face color is
+one of the six cube faces; two colors are adjacent when their faces
+share a cube edge. Write $F^(*)$ for the color opposite $F$. Throughout,
+$P$ is the physical disk under consideration. A #emph[vertex] of a
+physical source is an abstract vertex together with its corner fan
+(Section 1.1). It is a #emph[full star] when the fan consists of four
+squares and all four retained joins between them (the circular case of
+Section 1.1), and a #emph[boundary vertex] otherwise; full stars are
+interior points of the source, and boundary vertices lie on its
+boundary.
+
+#strong[Lemma R1 (whole crease arcs).] In a physical disk with a
+consistent complete-frame map, the retained joins between distinct
+target faces decompose into straight proper arcs with disjoint
+interiors. Every unit join on one arc maps to the same complete cube
+edge. Every interior vertex of an arc is a full star; in particular,
+consecutive squares on either side of an arc are joined by a retained
+180-degree join. Removing these joins from the retained cell-adjacency
+graph gives monochrome physical disk regions, and their adjacency graph
+has one edge per arc and is a tree.
+
+#strong[Proof.] At a full star the four square corners have a common
+image, which is a cube vertex. The four source edge rays therefore map
+to the three cube edge directions at that vertex, and consecutive rays
+have different labels because each intervening square maps bijectively
+onto a face. Up to rotation and relabeling, a proper three-coloring of a
+four-cycle is either $A \, B \, A \, B$ or $A \, B \, A \, C$. The join
+at a ray is a 180-degree join precisely when the two neighboring ray
+labels agree. The first pattern has no 90-degree joins; the second has
+exactly two, on opposite rays labeled $A$, and 180-degree joins on the
+rays labeled $B$ and $C$. The two rays labeled $A$ map to the same
+complete cube edge.
+
+Continue a 90-degree join straight at each full star and stop at every
+boundary vertex; by the pattern $A \, B \, A \, C$, the continuation is
+again a 90-degree join and maps to the same complete cube edge. This
+convention stops at a boundary fan even if another ray at the same
+lattice coordinate is collinear. Distinct source vertices are not
+identified merely because their coordinates agree. Along a run the
+coordinates advance in one direction on one lattice line. Hence the
+coordinate map is injective on a run, so a run is finite and cannot
+close; it ends at two distinct boundary vertices. The open sides of its
+joins and its interior vertices are interior points of $P$, and its
+endpoints lie on $partial P$, so each run is a straight proper arc, and
+all its unit joins map to one complete cube edge. Every 90-degree join
+lies on exactly one run, because the continuation is determined in both
+directions. At an interior vertex of a run, the run occupies the two
+rays labeled $A$, and the 180-degree joins on the rays labeled $B$ and
+$C$ join the two consecutive squares on either side. That full star
+carries no other 90-degree join, and an endpoint of a run is not a full
+star, so distinct runs meet at most in common endpoints. This proves the
+first three assertions. Let $Gamma_1 \, dots.h \, Gamma_k$ be the runs;
+they are the arcs.
+
+The source $P$ is a compact PL surface (Section 1.1) homeomorphic to a
+closed disk, hence a PL disk by the classification of compact PL
+surfaces; the same holds for every physical disk. We use the following
+cutting step. Let $X$ be a physical disk and $Gamma$ a straight run of
+retained joins of $X$ whose interior vertices are full stars of $X$ and
+whose endpoints are distinct boundary vertices of $X$. Since its
+endpoints are boundary vertices, $Gamma$ is a maximal such run, that is,
+a cut of $X$ in the sense of Section 4.2, and, as for the runs of $P$
+above, it is a proper PL arc of $X$. By (Sch) of Section 4.2, which is
+pure topology, derived there from the planar PL Jordan--Schoenflies
+theorem \[MT01, Section 2.2\] and the $theta$-graph lemma \[MT01,
+Section 2.1\], $Gamma$ divides $X$ into two closed disks meeting exactly
+in $Gamma$. The proof of Part 2 of Lemma L2.2 uses only (Sch), Section
+1.1, and the facts that $X$ is a physical disk and that $Gamma$ is a cut
+of $X$ forming a proper PL arc with distinct endpoints; the standing
+hypothesis of Section 4.2 that all squares lie on one face is used there
+only to call the halves all-flip, and that proof uses nothing from the
+present section. It shows that the two disks are physical disks
+$X_1 \, X_2$, the #emph[halves], each formed by the squares it contains
+and the joins of $X$ among them, with $X_1 union X_2 = X$ and
+$X_1 sect X_2 = Gamma$. The two squares of each join of $Gamma$ lie in
+different halves, every other join of $X$ has both squares in one half,
+and each half is join-connected, that is, connected in its retained
+cell-adjacency graph. So the halves are the two components of the
+retained cell-adjacency graph of $X$ after the joins of $Gamma$ are
+removed. A fan of $X$ at a vertex off $Gamma$ lies unchanged in one
+half. At a vertex of $Gamma$, removing its one join of $Gamma$ (at an
+endpoint, where the fan is a path of squares) or its two joins of
+$Gamma$ (at an interior vertex) splits the fan into two consecutive
+subfans, one in each half.
+
+Cut $Gamma_1 \, dots.h \, Gamma_k$ in turn. Suppose that
+$Gamma_1 \, dots.h \, Gamma_j$ have been cut, giving $j + 1$ physical
+disks, the #emph[pieces], which are the components of the retained
+cell-adjacency graph of $P$ after the joins of these runs are removed.
+Suppose also that every fan of a piece is a consecutive subfan of a fan
+of $P$, and that the fan of $P$ at a vertex lying on none of these runs
+is, unchanged, a fan of one piece. All this holds for $j = 0$. Since
+distinct runs meet at most in common endpoints, which are boundary
+vertices, the run $Gamma = Gamma_(j + 1)$ shares no join with the
+earlier runs, and its interior vertices are vertices of none of them. So
+each join of $Gamma$ has both squares in one piece, and each interior
+vertex of $Gamma$ is, unchanged, a full star of one piece. Consecutive
+joins of $Gamma$ share such a star, so $Gamma$ consists of joins of one
+piece $X$, and its interior vertices are full stars of $X$. At either
+endpoint of $Gamma$, the vertex of $X$ at which $Gamma$ ends has as fan
+a consecutive subfan of the fan of $P$ there, which is a path; so it is
+a boundary vertex of $X$. The two endpoints have distinct coordinates.
+The cutting step therefore applies and replaces $X$ by its two halves,
+and the inductive hypotheses hold for $j + 1$. In particular, a boundary
+fan carrying several run endpoints needs no separate treatment: each run
+splits the current subfan at its own join, and every later run ends at
+the subfan containing its own last join. After $k$ cuts there are
+$k + 1$ pieces; they are exactly the regions of the statement, and each
+is a physical disk. At a boundary vertex of $P$, the corresponding
+vertices of the regions have as fans the maximal intervals of its fan
+that contain no arc join.
+
+Fix an arc. By the full-star assertion, its squares on one side are
+consecutive along it and joined by 180-degree joins, which lie on no
+arc, so they lie in one region. The two sides lay in different halves
+when the arc was cut, and pieces are only subdivided afterwards, so they
+lie in different regions. Thus all joins of one arc join the same two
+regions, and every join between different regions lies on an arc. The
+adjacency graph, with one edge for each arc, is connected because $P$ is
+join-connected, and it has $k + 1$ vertices and $k$ edges; hence it is a
+tree, and distinct arcs join distinct pairs of regions. At a boundary
+vertex of $P$, consecutive maximal intervals of its fan that contain no
+arc join are separated by the last join of an arc ending there, and so
+lie in the two regions that this arc joins. No arc has two joins at that
+vertex, since the vertex is not an interior vertex of an arc and the
+endpoints of an arc have distinct coordinates. A tree has no closed walk
+with pairwise distinct edges, so these intervals lie in pairwise
+distinct regions. Within a region every retained join is 180 degrees, so
+all squares map to one face. $square.stroked.tiny$
+
+For a target edge $e$, let $sigma_e$ be the nonidentity cube symmetry
+that fixes $e$ pointwise and exchanges its two incident faces. If those
+colors are $A \, B$, its face action is
+$\( A med B \) \( A^(*) med B^(*) \)$\; the remaining two colors are
+fixed. In coordinates based at an endpoint of $e$, it fixes the
+edge-axis coordinate and interchanges the other two coordinate
+distances. This also specifies its action on all cube vertices.
+
+#strong[Lemma R2 (fixed toggle family).] Suppose the initial arc
+decomposition has $k$ arcs, and fix the complete frame that the given
+map assigns to one source square, the root. Call a join originally
+internal when it lies on no original arc. The consistent maps with this
+root frame in which every originally internal join is a 180-degree join
+are exactly $2^k$ maps, one for each assignment of 90/180 statuses to
+the original arcs; in each of them every original arc has one status
+along its whole length. These maps form the fixed toggle family of the
+given map, and the given map is its member with every original arc at 90
+degrees.
+
+#strong[Proof.] Removing one arc separates the region tree and the
+physical disk into two sides. Apply $sigma_e$ to every complete frame on
+the side not containing the root square. Internal joins on that side
+remain consistent because both incident frames undergo the same
+isometry. Every join along the chosen interface retains its endpoint
+images because $sigma_e$ fixes $e$ pointwise. The interface changes
+between 90 and 180 degrees; no other retained join changes status.
+
+Every other original arc lies entirely on one side, apart from possible
+shared boundary endpoints. Its whole target edge therefore remains
+well-defined after this operation. Root the original tree and process
+its edges away from the root, toggling the current target edge when
+needed. This realizes every desired bit vector without changing
+previously selected bits or the root frame. Different vectors give
+different maps. Finally, on any connected source, a root complete frame
+and all join statuses determine at most one map: at a join the parent
+frame, the two matched endpoints, and the same-face/other-incident-face
+choice uniquely determine the child's frame. Propagation along a
+spanning tree proves uniqueness. Conversely, consider any consistent map
+with the root frame in which every originally internal join is a
+180-degree join. By the first paragraph of the proof of Lemma R1, a join
+on a ray of a full star is a 180-degree join exactly when the labels of
+its two neighboring rays agree. Opposite rays have the same two
+neighbors, so at each interior vertex of an original arc the two joins
+of the arc have equal status, and the status is constant along the arc.
+The map therefore has the root frame and all join statuses of one
+constructed member, and it equals that member by uniqueness.
+$square.stroked.tiny$
+
+This family is not asserted to contain every consistent map of the
+source. It is enough that it contains the given surjective map. Choose a
+surjective member $M$ minimizing the number $a$ of active original arcs
+and contract the inactive edges in the original region tree. The
+resulting tree $T$ has $a + 1$ monochrome disk regions and distinct
+adjacent face colors. Indeed, for every member of the family, the
+maximal 90-degree runs that Lemma R1 gives for that member are exactly
+its active original arcs: by Lemma R2 its 90-degree joins are exactly
+the joins of these arcs, and each original arc is a straight run through
+full stars whose endpoints are boundary vertices. Contracting the
+inactive edges of the original region tree therefore gives the region
+tree of that member itself, since the joins off its active arcs are
+exactly the joins inside original regions and the joins of its inactive
+original arcs; the edges of this tree are the whole bend arcs of that
+member. Hence $T$ is the region tree of $M$, and Lemma R1 applied to $M$
+shows that its regions are monochrome physical disks.
+
+#strong[Lemma R3 (exclusive leaves).] Every leaf of $T$ has a color
+occurring nowhere else. There are $ell in { 2 \, 3 \, 4 }$ leaves, and
+precisely $6 - ell$ colors occur at nonleaf vertices.
+
+#strong[Proof.] Reflect a leaf region by the symmetry fixing its sole
+attachment edge. Its color becomes its parent's color and the attachment
+becomes inactive. If the old leaf color occurred elsewhere, coverage
+would be preserved, contrary to minimality. If the reflected region
+contains the fixed root, apply the same symmetry globally afterwards.
+This restores the root frame and does not affect coverage or join
+statuses. By Lemma R2 the normalized map remains in the original family.
+
+Thus leaf colors are distinct and globally exclusive. Since six colors
+occur, $T$ has at least six vertices and has a nonleaf vertex. If there
+were five leaves, all nonleaves would have the sole remaining color.
+Nonleaves induce a connected subtree; adjacent vertices have distinct
+colors, so that subtree would consist of one vertex. This would make a
+star whose center face is adjacent to five different faces, impossible
+because a cube face has four neighbors. Six or more leaves leave no
+available color for a nonleaf. Every nontrivial tree has at least two
+leaves. $square.stroked.tiny$
+
+#strong[Lemma R4 (two-interface reflection and coverage).] Suppose two
+edges of $T$ have the same target edge $e$. The unique component between
+them after removing those two edges, including all its side branches,
+can be reflected by $sigma_e$. This cancels both interfaces and
+preserves all other join statuses. If $C$ is its color set and $O$ the
+outside color set, coverage is lost exactly when some color $f$
+satisfies
+
+$ f in C \\ O \, #h(2em) sigma_e \( f \) in.not C . $
+
+#strong[Proof.] The component has exactly the two removed interfaces as
+attachments to its complement. Pointwise edge fixing preserves their
+endpoint identifications; all other joins have both incident frames
+acted upon or neither. After reflection the occupied colors are
+$O union sigma_e \( C \)$. Since $C union O$ is the full six-color set
+and $sigma_e$ is an involution, a missing color is exactly one described
+by the displayed condition. Global root normalization, when necessary,
+preserves coverage and statuses. $square.stroked.tiny$
+
+#strong[Lemma R5 (no three equal target edges on a path).] No simple
+path of an active-arc-minimal tree $T$ contains three edges with the
+same target edge.
+
+#strong[Proof.] Let the three occurrences, in path order, be
+$e_1 \, e_2 \, e_3$, with incident colors $A \, B$. Let $S_12$ and
+$S_23$ be the full middle components between the first two and the last
+two occurrences. They are disjoint, including their side branches. The
+third occurrence lies entirely outside $S_12$, supplying both $A$ and
+$B$ there; similarly the first occurrence supplies both outside $S_23$.
+
+Minimality forces each reflection in Lemma R4 to lose a color. That
+color cannot be $A$, $B$, or either fixed color. Thus each middle
+component contains every occurrence of one of $A^(*) \, B^(*)$ and no
+occurrence of the other. Disjoint components cannot both contain every
+occurrence of the same globally occupied color. They therefore confine
+different opposite colors. The larger middle component $S_13$ contains
+both smaller ones and both endpoint regions of $e_2$, hence all four
+moved colors $A \, B \, A^(*) \, B^(*)$. Reflecting $S_13$ preserves all
+moved colors inside it and fixes the other two, preserving coverage
+while cancelling two active arcs. This contradicts minimality.
+$square.stroked.tiny$
+
+#strong[Lemma R6 (twelve-arc bound).] The tree $T$ has
+$5 lt.eq a lt.eq 12$ active arcs.
+
+#strong[Proof.] Six occupied colors require at least six regions, hence
+$a gt.eq 5$. Suppress degree-two vertices of $T$\; let $s$ be the number
+of resulting edges, equivalently the number of maximal chains. The
+degree formula for a tree gives at most $ell - 2$ branch vertices and
+hence $s lt.eq 2 ell - 3$.
+
+Fix a target edge $e$ joining two nonleaf colors. Let $q_e$ count its
+occurrences and $r_e$ count chains containing it. Between consecutive
+occurrences on each chain are $q_e - r_e$ middle intervals. These
+intervals have disjoint vertex sets, even across chains, because they
+exclude chain endpoints and lie in disjoint degree-two interiors. If
+$q_e gt.eq 3$, another entire occurrence lies outside each such
+interval. Both incident colors therefore occur outside. By Lemma R4 and
+minimality, every interval globally confines one of the opposite
+incident colors. It cannot confine a leaf color, since leaves are
+outside every chain interior. One globally occupied color cannot be
+confined in two disjoint intervals. If $t_e$ is the number of opposite
+incident colors among the nonleaf colors, it follows that
+
+$ q_e - r_e lt.eq t_e quad \( q_e gt.eq 3 \) \, #h(2em) q_e lt.eq max { 2 \, s + t_e } . $
+
+When $ell = 2$, the tree is one chain and Lemma R5 gives the stronger
+$q_e lt.eq 2$. There are four nonleaf colors. Their induced subgraph in
+the cube-face adjacency graph has at most five edges: every four faces
+contain at least one opposite pair. The two leaf edges and at most two
+occurrences of each nonleaf target edge give
+$a lt.eq 2 + 2 dot.op 5 = 12$.
+
+When $ell = 3$, the three nonleaf colors form a connected subgraph. With
+no opposite pair they form a triangle, and every $t_e = 0$\; since
+$s lt.eq 3$, the bound is $a lt.eq 3 + 3 dot.op 3 = 12$. With an
+opposite pair they form a two-edge path; each of its edges has
+$t_e = 1$, giving $a lt.eq 3 + 2 dot.op 4 = 11$.
+
+When $ell = 4$, the two nonleaf colors must be adjacent. Only one
+nonleaf target edge is possible; its $t_e = 0$ and $s lt.eq 5$, giving
+$a lt.eq 4 + 5 = 9$. These cases exhaust Lemma R3. $square.stroked.tiny$
+
+#strong[Lemma R7 (four leaves give six regions).] If $T$ has four
+leaves, then $a = 5$, and each cube face has exactly one region.
+
+#strong[Proof.] The nonleaves induce a connected subtree $H$ with
+exactly two colors $A \, B$, both occurring. They are adjacent, so every
+edge of $H$ has the same target edge. Lemma R5 bounds its diameter by
+two; thus $H$ is a star, including the single-edge case. Name its center
+color $A$ and its arm colors $B$. Suppose there are at least two arms.
+
+Each arm vertex is a nonleaf of $T$ whose only neighbor in $H$ is the
+center, so it has a leaf of $T$ attached. The exclusive leaf of color
+$B^(*)$ can attach only to the $A$ center, and the exclusive leaf of
+color $A^(*)$ attaches to exactly one $B$ arm. Choose a different arm
+and reflect that entire arm together with its leaf children through
+$sigma_(A sect B)$. Neither opposite moved color lies in this component.
+Any of its leaf colors is one of the two fixed colors; outside, the
+center and another arm retain both $A$ and $B$. Coverage is preserved
+and one arc is cancelled. After root normalization when necessary, as in
+Lemma R3, the result lies in the family by Lemma R2, contradicting
+minimality. Thus $H$ is a single edge. Together with the four exclusive
+leaves it gives six uniquely colored regions and five arcs.
+$square.stroked.tiny$
+
+For the remaining two- and three-leaf cases, the trees are respectively
+paths and Y-shaped trees. Indeed $sum_v \( deg \( v \) - 2 \) = - 2$\;
+with three leaves there is exactly one degree-three vertex and all other
+nonleaves have degree two. Lemmas R3 and R6 therefore reduce the
+universal source problem to paths and Y-shaped trees with five through
+twelve edges, six face colors, adjacent consecutive colors, and globally
+exclusive leaf colors. These are necessary conditions only. Enumerating
+all trees satisfying them may include unrealizable source geometries,
+which is harmless for a universal reduction.
+
+== 3. The complete finite certificate
+<the-complete-finite-certificate>
+Index the cube faces by $0 \, dots.h \, 5$ with opposite pairs
+$\( 0 \, 1 \)$, $\( 2 \, 3 \)$, and $\( 4 \, 5 \)$. A colored tree has a
+face color at each vertex, and the colors at the ends of every edge are
+adjacent, that is, distinct faces sharing a cube edge (Section 2). We
+also record the action of each symmetry on the eight cube vertices. This
+is a redundant, concrete representation: the 48 symmetries act
+faithfully on the faces.
+
+#strong[Lemma C1 (full-frame evaluation).] Let $M$ be a member of a
+fixed toggle family, used as the base map, and let $T$ be its contracted
+region tree, obtained from the original region tree by contracting the
+original arcs that are inactive in $M$. The vertices of $T$ are the
+regions of $M$, with face colors $c_v$, and its edges are the active
+original arcs of $M$, which are exactly the whole bend arcs of $M$ (see
+the paragraph after Lemma R2). Root $T$, and let $e = \( p \, v \)$ be
+an edge of $T$, with target cube edge $E_e$ under $M$. For a chosen bit
+vector $b$ on the edges of $T$, define cube isometries recursively by
+
+$ g_(upright(r o o t)) = upright(i d) \, #h(2em) g_v = cases(delim: "{", g_p \, & quad b_e = 1 \,, g_p compose sigma_(E_e) \, & quad b_e = 0 .) $
+
+Apply $g_v$ to the complete frames of $M$ on every square in region $v$.
+The result is a consistent map in which the joins along an edge $e$ of
+$T$ are 90-degree joins exactly when $b_e = 1$, and all other retained
+joins are 180-degree joins; its coverage is
+${ g_v \( c_v \) : v in V \( T \) }$. After one global isometry
+restoring the fixed source square's frame, when necessary, it becomes
+the member of the same family whose active original arcs are exactly the
+edges $e$ with $b_e = 1$, with the same number of covered faces.
+
+#strong[Proof.] On an interface endpoint $x in E_e$, either formula
+gives $g_v \( x \) = g_p \( x \)$, since $sigma_(E_e)$ fixes both
+endpoints. The two incident face colors remain distinct for an active
+bit and become equal for an inactive bit. Internal joins of a region
+undergo one common isometry and remain consistent and inactive. The
+current-edge formulation of an actual sequence of toggles agrees with
+the recurrence because
+
+$ sigma_(g \( E \)) = g sigma_E g^(- 1) \, #h(2em) sigma_(g \( E \)) g = g sigma_E . $
+
+Thus ancestor transformations do not invalidate the use of the target
+edge $E_e$ of $M$ in the recurrence. No tangent-frame information is
+needed to identify that edge: the intersection of two adjacent cube
+faces is a unique edge. If the root region does not contain the fixed
+source square, apply one global isometry to restore that square's frame;
+this changes neither the number of covered faces nor any join status.
+Every original arc is then either an edge $e$ of $T$, active along its
+whole length exactly when $b_e = 1$, or an arc inactive in $M$, whose
+joins lie inside one region of $T$ and remain 180 degrees, as do all
+originally internal joins. The family member with these arc statuses
+therefore has the same root frame and the same join statuses, and
+uniqueness in Lemma R2 identifies the two maps. $square.stroked.tiny$
+
+The isometries $g_v$ depend only on the rooted colored tree
+$\( T \, c \)$ and on $b$, since $E_e$ is the common edge of the
+adjacent faces $c_p$ and $c_v$. For an abstract colored tree, the
+#strong[full-frame evaluation] of a bit vector $b$ is this recurrence
+together with the colors $g_v \( c_v \)$. As in the proof,
+$g_p \( c_p \)$ and $g_v \( c_v \)$ differ exactly when $b_e = 1$\;
+these edges are the active arcs of the evaluation. Because each
+$sigma_E$ is an involution, the rule $g_v = g_p sigma_(E_e)^(1 - b_e)$
+is equivalent to $g_p = g_v sigma_(E_e)^(1 - b_e)$. Hence, for another
+root $r'$, the recurrence gives $g_(r')^(- 1) g_v$ in place of $g_v$: a
+change of root moves all colors by one isometry and changes neither the
+number of covered faces nor any status.
+
+=== 3.1 The domain and its symmetry coverage
+<the-domain-and-its-symmetry-coverage>
+For each edge count $a = 5 \, dots.h \, 12$, generate the following
+inputs.
+
+For paths, normalize the ordered endpoint colors to $\( 0 \, 1 \)$ when
+they are opposite or $\( 0 \, 2 \)$ when adjacent. These are the two
+orbits of distinct ordered face pairs under cube symmetries. Assign each
+internal vertex any of the other four colors and retain exactly the
+assignments with adjacent consecutive colors and six-color coverage.
+
+For Y-shaped trees, distinguish the degree-three center and enumerate
+#strong[all ordered positive arm-length triples] summing to $a$. The
+three exclusive leaf colors are distinct. They either contain an
+opposite pair or contain no opposite pair. After an arm permutation and
+a cube symmetry, they are respectively $\( 0 \, 1 \, 2 \)$ or
+$\( 0 \, 2 \, 4 \)$. Assign the center and internal arm vertices any of
+the other three colors; retain exactly the adjacent, six-covering
+assignments. All ordered arm lengths are included, so permuting arms
+does not impose an unproved geometric ordering.
+
+The opposite-pair representation of cube faces shows these are all
+possibilities: permutations of the three opposite pairs and independent
+swaps within each pair are exactly the 48 cube symmetries. For the Y
+case, three distinct colors cannot contain more than one complete
+opposite pair. The consumer additionally checks explicit normalization
+witnesses for all 30 ordered distinct leaf pairs and all 120 ordered
+distinct leaf triples. Symmetry duplicates within the normalized domain
+do not matter; the obligation is exhaustive coverage.
+
+#figure(
+  align(center)[#table(
+    columns: 4,
+    align: (right,right,right,right,),
+    table.header([Active arcs], [Path patterns], [Y patterns], [Total],),
+    table.hline(),
+    [5], [16], [22], [38],
+    [6], [60], [78], [138],
+    [7], [196], [264], [460],
+    [8], [552], [708], [1,260],
+    [9], [1,488], [1,874], [3,362],
+    [10], [3,892], [4,608], [8,500],
+    [11], [10,028], [11,282], [21,310],
+    [12], [25,696], [26,774], [52,470],
+    [Total], [41,928], [45,610], [87,538],
+  )]
+  , caption: [Number of normalized path and Y-shaped domain inputs for
+  each number of active arcs.]
+  , kind: table
+  )
+
+=== 3.2 What the certificate proves
+<what-the-certificate-proves>
+#strong[Finite claim C2.] Every colored tree in this domain has a bit
+vector whose full-frame evaluation covers all six cube faces and has at
+most seven active arcs.
+
+The supplement contains one explicit bit vector for every input. Its
+consumer regenerates the normalized domain recursively and requires
+exact equality of the certificate key set with the generated input set,
+rejecting omissions, additions, and duplicate records. It independently
+constructs the 48 opposite-preserving face permutations and derives
+their actions on cube vertices from three-face incidence. For each
+witness it checks that the record's parent array equals that of the
+regenerated tree, evaluates the recurrence of Lemma C1 on all eight cube
+vertices, and checks six-face coverage and that at most seven bits are
+active, in agreement with the recorded active count. These checks and
+the exact key-set equality are the substantive ones. The consumer also
+asserts the pointwise endpoint match at every edge and the selected
+active/inactive status. Each reflection $sigma_E$ is selected as the
+unique symmetry that fixes both endpoints of $E$ and maps one incident
+face to the other, so these assertions hold for every bit vector once
+the reflection table is correct: they are consistency checks of the
+reflection ($sigma$) table, not of the witnesses.
+
+The verification records 87,538 patterns and 1,987,252 endpoint
+comparisons, two for each edge of each pattern; these comparisons are
+reflection-table consistency checks. Witness active counts are five for
+72,982 patterns, six for 14,532, and seven for 24. In particular every
+input with eight through twelve arcs has a strict reduction.
+
+The certificate was generated by a direct bit-vector search, separate
+from the primary minimum-cost dynamic program. The direct search
+examined 98,037,403 bit vectors. This generation count is provenance,
+not a premise required to trust a positive witness. The consumer does
+not invoke a solver, a compiler, or either producer. A mathematical
+reading of the domain enumeration and witness evaluator, together with
+successful execution, establishes the finite claim.
+
+For additional diagnostics, the consumer checks the primary program's 80
+minimal survivors: 38 with five arcs, 38 with six, and four with seven.
+It rejects all 4,080 cheaper assignments for these survivors. Minimality
+of these 80 examples is not needed for the universal upper bound C2. The
+output lists nine negative controls. Seven are semantic corruption
+controls, which exercise invalid coverage, active count, parent tree,
+original colors, full vertex reflection, leaf-orbit coverage, and a
+forged arm permutation. The other two, for a missing and an extra domain
+entry, are set-comparison illustrations: each compares the generated key
+set with a copy of the certificate key set with one key removed or one
+out-of-domain key added. The two compared sets differ by construction,
+so these two controls report a rejection without exercising the
+consumer's key-set checks; those checks, in the main loop, are what
+reject omissions and additions. The semantic controls detect specified
+failure modes, not every possible programming error.
+
+=== 3.3 Consequence for physical disks
+<consequence-for-physical-disks>
+#strong[Proposition C3.] Every physical disk admitting a surjective
+consistent complete-frame map has a surjective member of the fixed
+toggle family of that map with at most seven active arcs; indeed every
+active-arc-minimal surjective member has at most seven, and a member's
+active original arcs are exactly its whole bend arcs.
+
+#strong[Proof.] Let $M$ be an active-arc-minimal surjective member of
+the family; one exists because the family is finite and contains the
+given map. Let $T$ be its contracted region tree, with face colors $c$.
+Lemmas R3 and R6 give two through four leaves and five through twelve
+arcs. The four-leaf case has five arcs by Lemma R7. Otherwise $T$ is a
+path or a Y tree; suppose that it has at least eight arcs.
+
+By Section 3.1 there are a cube isometry $h$ and an isomorphism $psi$
+from $T$ onto one of the enumerated trees (for a path, either
+orientation; for a Y tree, a suitable ordering of its arms) such that
+$c' = h compose c compose psi^(- 1)$ has normalized leaf colors. Since
+$h$ preserves face adjacency, six-face coverage and the exclusivity of
+leaf colors, $c'$ is a domain input. By C2 it has a bit vector $b'$ with
+at most seven active bits whose full-frame evaluation $g'$ covers all
+six faces. Put $b_e = b'_(psi \( e \))$, root $T$ and $psi \( T \)$ at
+corresponding vertices (by the paragraph after Lemma C1, the root is
+immaterial), and let $g$ be the full-frame evaluation of $b$ on
+$\( T \, c \)$. The target edges correspond,
+$E'_(psi \( e \)) = h \( c_p \) sect h \( c_v \) = h \( E_e \)$, so the
+identity $sigma_(h \( E \)) = h sigma_E h^(- 1)$ from the proof of Lemma
+C1 and induction from the root give $g'_(psi \( v \)) = h g_v h^(- 1)$.
+Hence $g'_(psi \( v \)) \( c'_(psi \( v \)) \) = h \( g_v \( c_v \) \)$.
+The evaluation of $b$ therefore also covers all six faces, and $b$ has
+as many active bits as $b'$.
+
+Lemma C1 with $M$ as base map now gives a surjective member of the same
+family whose active original arcs are the at most seven edges $e$ of $T$
+with $b_e = 1$, contradicting minimality. Thus every active-arc-minimal
+surjective member has at most seven active arcs. By the paragraph after
+Lemma R2, the active original arcs of any member are exactly its whole
+bend arcs. $square.stroked.tiny$
+
+This is the only exhaustive computational obligation in the main
+theorem. The argument reducing arbitrary physical disks to this domain
+is analytic, as is the downstream layer construction. The supplement
+documents its invocation, tested interpreter, data hashes, validation
+behavior, and fresh execution output. The finite certificate does not by
+itself establish any geometric or topological lemma.
+
+== 4. Layer construction on the unchanged physical disk
+<layer-construction-on-the-unchanged-physical-disk>
+This section proves the constructive layer-order step. Its conclusions
+concern the original cells and #strong[all] original retained joins. The
+region decomposition used in the proof does not authorize a new slit.
+Whole cube isometries may change the prescribed map; an ordering
+reversal changes only layers.
+
+=== 4.1 Ports, orders, and the geometric interface
+<ports-orders-and-the-geometric-interface>
+A cell with lower-left coordinate $\( x \, y \)$ has ports
+$0 \, 1 \, 2 \, 3$, respectively south, east, north, west. Its corners
+are indexed counterclockwise as bottom-left, bottom-right, top-right,
+top-left. A complete frame sends these four corners bijectively to the
+four cyclically ordered vertices of a cube face. Across a retained join
+$\( a \, p \; b \, q \)$, where $q = p + 2 med \( mod med 4 \)$, the two
+endpoint images agree in reverse boundary order. Source corners are
+identified only through actual retained joins. Coincident coordinates on
+different slit banks or split corner fans are not an identification.
+
+Write $F \( a \)$ for the face occupied by cell $a$. A retained join is
+a #strong[flip] when $F \( a \) = F \( b \)$, corresponding to a folded
+angle of $180^compose$, and a #strong[bend] otherwise, corresponding to
+$90^compose$ between adjacent cube faces. A layer assignment gives a
+strict total order $scripts(<)_F$ to the cells on each face $F$\; equivalently,
+it gives distinct ranks $0 \, dots.h \, n_F - 1$, increasing away from
+the cube.
+
+#strong[Lemma L1 (edge-order criterion).] Fix a target cube edge $e$
+between faces $F \, G$. As in Section 1.2, list the cells on $F$ in
+increasing $scripts(<)_F$-order followed by the cells on $G$ in decreasing
+$scripts(<)_G$-order around a circle, and represent each retained join at $e$ by
+the chord between its two endpoint cells. No two of these chords have
+alternating endpoints exactly when the following conditions hold:
+
++ Two flips $a b \, c d$ on the same face do not alternate: neither
+  $a < c < b < d$ nor $c < a < d < b$, after ordering the endpoints
+  within each pair. Flips on different incident faces require no
+  comparison.
++ For a flip $a b$ on one incident face $H in { F \, G }$ and a bend
+  $c d$ with $c$ on $H$, $c$ is not strictly between $a$ and $b$ in
+  $scripts(<)_H$.
++ For bends $a b \, c d$, with $a \, c$ on $F$ and $b \, d$ on $G$,
+  $ a scripts(<)_F c quad arrow.l.r.double quad b scripts(<)_G d . $
+
+#strong[Proof.] Two flips on one face have all four endpoints in that
+face's arc of the circle, where they alternate exactly as excluded in
+condition 1; reversing the order of an arc does not affect alternation.
+Flips on different faces have their endpoints in disjoint arcs and never
+alternate. For a flip $a b$ on $H$ and a bend $c d$ with $c$ on $H$, the
+endpoint $d$ lies outside the arc of $H$, so the two chords alternate
+exactly when $c$ is strictly between $a$ and $b$. For bends $a b \, c d$
+as in condition 3 with $a scripts(<)_F c$, the cyclic order is $a \, c \, d \, b$
+if $b scripts(<)_G d$ and $a \, c \, b \, d$ if $d scripts(<)_G b$\; only the second
+alternates, and the case $c scripts(<)_F a$ is symmetric. Distinct joins at $e$
+have distinct endpoint cells: a complete frame has exactly one port on
+that edge, and a source port belongs to at most one retained join. Thus
+no shared-endpoint exception is suppressed. Conditions 1, 2 and 3 are
+the comparisons 3, 2 and 1 of Section 1.2, so orders satisfying them at
+every cube edge are exactly the locally feasible orders defined there.
+The lemma concerns orders only. For locally feasible orders, Lemma M1
+realizes the joins at each cube edge by pairwise disjoint polygonal arcs
+in its outward transverse quadrant; the realization of the whole source
+is Theorem M3, and Corollary D1 makes it a valid folding onto the cube
+when the source is a disk and the map is surjective.
+$square.stroked.tiny$
+
+As noted in Section 1.2, conditions 1, 2 and 3 are the cube-edge
+analogues of the taco-taco, taco-tortilla and tortilla-tortilla
+constraints for flat folded states \[ADK26\], a setting without cube
+edges.
+
+The following conclusions of Section 2 (Lemma R1 and its proof, Lemma
+R2, and the contraction paragraph after Lemma R2) are the geometric
+input here:
+
+#strong[Geometric interface (G).] In a consistently mapped physical
+disk, the maximal $90^compose$ crease runs are proper straight arcs with
+disjoint interiors, and every interior vertex of an arc is a full star.
+Decomposing along $k$ such arcs yields $k + 1$ all-flip physical disks,
+the regions, whose interface graph is a tree. Several arcs may end at
+one boundary fan; their final joins split it into consecutive subfans,
+which lie in distinct regions. A finite, root-normalized toggle family
+changes whole original arcs between bends and flips, keeps every
+originally internal join a flip, preserves complete-frame consistency on
+the unchanged source, and contracts inactive edges of the original
+region tree. It contains the starting map. In each member, whose regions
+are those of the contracted tree, every interface is a whole active
+original arc, a straight run of retained joins. At an interior vertex of
+such an arc, the two cells on either side of the arc are joined along
+the tangent direction by an original flip (Lemma R1), which remains a
+flip in every member (Lemma R2). These two cells therefore form the
+whole fan of their region at that vertex, and the other two cells lie
+across the arc in the adjacent region. Hence each interface bank, formed
+by the interface sides of the cells of one incident region, is one
+interval of that region's boundary walk, and its consecutive parents are
+joined along the tangent direction.
+
+All statements below use entire interface runs, not representatives of
+length one. An #strong[all-flip region] is a retained-join-connected set
+of cells occupying one face. A #strong[bank] is a nonempty interval of
+an actual boundary walk, with a fixed source port and consecutive,
+distinct parent cells joined along the tangent direction. Its target
+cube edge is fixed. Different banks select disjoint halfedges, although
+banks on different target edges may share a parent. A selected halfedge
+is #strong[outward] relative to a region when the adjacent square
+coordinate is absent from that region. This is stronger than merely
+being unjoined there.
+
+A layer order #strong[exposes] a marked halfedge on target edge $e$ if
+its parent is not strictly between the endpoints of any internal flip at
+$e$. It is #strong[monotone] on a bank if its parents increase or
+decrease in their straight tangent-coordinate order. The direction is
+chosen, not prescribed. Two banks are #strong[separated] if every parent
+of one precedes every parent of the other. These properties are
+invariant under reversal of the whole region order.
+
+=== 4.2 Cofacial bank orders by straight cuts
+<cofacial-bank-orders-by-straight-cuts>
+We order the cells of one all-flip region by induction along straight
+runs of its joins. As in Section 2, these cuts are decompositions for
+the proof: every retained join of the region is kept and checked. The
+external inputs are standard PL topology: the Jordan--Schoenflies
+theorem \[MT01, Section 2.2\] and the $theta$-graph lemma \[MT01,
+Section 2.1\], which give (Sch) below; and the classification of compact
+PL surfaces, which also underlies the recognition criterion of Section
+1.1. (Sch) is a statement of PL topology alone; the proof of Lemma R1
+uses it, together with the argument of Part 2 of Lemma L2.2.
+
+#strong[\(Sch)] Let $Gamma$ be a proper PL arc with endpoints
+$p eq.not q$ in a closed PL disk $D$. Then $p \, q$ divide $partial D$
+into two arcs $gamma_1 \, gamma_2$, the complement $D \\ Gamma$ has
+exactly two components, and their closures $D_1 \, D_2$ are closed disks
+with $partial D_i = gamma_i union Gamma$,
+$D_i sect partial D = gamma_i$, $D_1 union D_2 = D$ and
+$D_1 sect D_2 = Gamma$.
+
+#strong[Proof.] Identify $D$ PL with a convex polygon; the interior of
+$Gamma$ lies in the interior of $D$. The $theta$-graph
+$Theta = gamma_1 union gamma_2 union Gamma$ divides the plane into
+exactly three faces, each bounded by one of its three cycles \[MT01,
+Section 2.1\]. The set $bb(R)^2 \\ Theta$ is the disjoint union of the
+open sets $bb(R)^2 \\ D$ and $upright(i n t) thin D \\ Gamma$, so each
+face, being connected, lies in one of them. Since $D$ is convex,
+$bb(R)^2 \\ D$ is connected; it is unbounded and misses $Theta$, so it
+lies in the unbounded face, which is therefore $bb(R)^2 \\ D$. Its
+frontier is $partial D = gamma_1 union gamma_2$. The other two faces
+$U_1 \, U_2$, bounded by $gamma_1 union Gamma$ and
+$gamma_2 union Gamma$, are therefore the components of
+$upright(i n t) thin D \\ Gamma$. The frontier of $U_i$ is the Jordan
+curve $gamma_i union Gamma$, so the connected open set $U_i$ is also
+closed in $bb(R)^2 \\ \( gamma_i union Gamma \)$\; it is therefore a
+component of that set, and the bounded one. By the Jordan--Schoenflies
+theorem \[MT01, Section 2.2\], $D_i = U_i union gamma_i union Gamma$ is
+a closed disk with $partial D_i = gamma_i union Gamma$. Since
+$U_i subset upright(i n t) thin D$ and
+$Gamma sect partial D = { p \, q } subset gamma_i$, also
+$D_i sect partial D = gamma_i$. Then $D_1 union D_2 = D$, and
+$D_1 sect D_2 = Gamma$ because $U_1 sect U_2 = nothing$ and
+$gamma_1 sect gamma_2 = { p \, q }$. The sets
+$D_i \\ Gamma = U_i union \( gamma_i \\ { p \, q } \)$ are connected,
+disjoint and relatively closed in $D \\ Gamma$, so they are its two
+components. $square.stroked.tiny$
+
+Throughout, $Q$ is an #strong[all-flip physical disk]: a physical source
+in the sense of Section 1.1 that is homeomorphic to a closed disk, with
+all cells on one face. Such a source is a compact PL surface
+homeomorphic to a disk, so by the classification of compact PL surfaces
+it is a PL disk, and (Sch) applies to it. These are the regions supplied
+by (G) for whichever member of the toggle family is in use, equivalently
+the contracted monochrome disk regions of Section 2, including those
+left by the leaf reflections of L6: a contraction, or a leaf reflection
+in L6, glues two disks along an arc that lies in the boundary of each
+(the whole interface run), and the result is a disk. Distinct cells are
+distinct lattice squares, and corners are identified only through
+retained joins. Hence a connected physical source has a connected join
+graph, and the coordinate map $pi : Q arrow.r bb(R)^2$ is injective on
+every straight run of joins. A vertex occurrence (corner fan) is
+#emph[interior], or a #emph[full star], when its fan has four cells and
+all four joins (a circular link, as in Section 1.1; the full star of
+Section 2 and Lemma R1), and #emph[boundary] otherwise; a boundary
+occurrence is #emph[joint] when its fan has at least two cells. The
+counterclockwise boundary walk $W = \( W_0 \, dots.h \, W_(L - 1) \)$,
+with $Q$ on the left, lists the boundary halfedges. A #emph[position]
+$t in bb(Z) \/ L$ is the boundary occurrence between $W_(t - 1)$ and
+$W_t$, and these are its two #emph[walk halfedges]. Boundary fans are
+intervals, so each boundary occurrence is exactly one position. Banks
+are intervals of $W$, as in Section 4.1.
+
+#strong[Colors.] Fix a root cell $c_(*) = \( x_0 \, y_0 \)$ of $Q$, with
+frame $beta_(c_(*)) \( x \, y \) = o + x u + y v$, and let
+$tau : bb(R) arrow.r \[ 0 \, 1 \]$ be the distance to the nearest even
+integer. For a cell $c = \( x_c \, y_c \)$, the frames
+$ beta_c \( x \, y \) = o + tau \( x_c + x - x_0 \) thin u + tau \( y_c + y - y_0 \) thin v \, #h(2em) 0 lt.eq x \, y lt.eq 1 \, $
+satisfy the join equations of Section 1.1 at every flip. Across a
+vertical side the two frames agree on the side and are mirror images in
+it, because $tau$ is even about every integer. So crossing the side
+reverses the target coordinate along $u$ and fixes the one along $v$\;
+likewise across horizontal sides. A parent frame and a flip determine
+the child frame (proof of Lemma R2), and $Q$ is join-connected, so these
+are the frames of $Q$. Hence every side on a vertical lattice line
+$X = xi$, boundary sides included, maps onto the target edge on which
+the $u$-coordinate equals $tau \( xi - x_0 \) in { 0 \, 1 }$. This edge
+depends only on the parity of $xi$, and the two edges so obtained are
+opposite; call them the #emph[vertical] target edges, and the two
+opposite edges met in the same way by horizontal lines the
+#emph[horizontal] ones. Fix one of the two partitions $Pi$ of the target
+edges into adjacent pairs, and call its two classes, the #emph[merged
+colors], #emph[red] and #emph[blue]. Each class contains one vertical
+and one horizontal edge, so the colors of vertical lines alternate with
+parity, and so do those of horizontal lines. A join, side or port is
+colored by its target edge. A lattice point, and any position over it,
+is #strong[pure red] (#strong[pure blue]) when both lattice lines
+through it are red (blue), and #strong[mixed] otherwise.
+
+Two cyclically consecutive selected banks #emph[meet] at a position $t$
+when the last halfedge of the first is $W_(t - 1)$ and the first
+halfedge of the second is $W_t$.
+
+#strong[Lemma L2 (cofacial bank orders).] Let $Q$ be an all-flip
+physical disk, and select banks on its boundary. Suppose that for one
+adjacent-pair partition $Pi$:
+
+\(H1) in the cyclic sequence of selected halfedges, listed in the order
+of $W$, each merged color is consecutive (equivalently, the color
+changes at most twice);
+
+\(H2) both merged colors are selected, or some boundary halfedge is
+unselected, or two cyclically consecutive selected banks meet at a mixed
+position.
+
+Then $Q$ has a locally feasible order that exposes every selected
+halfedge, is monotone on every selected bank, and gives any two selected
+banks on the same target edge separated parent sets. No outwardness is
+assumed.
+
+#emph[Remarks.] (i) A walk traverses a bank in one tangent direction,
+and its consecutive parents are joined along the tangent. Monotonicity
+along $W$ is therefore the tangent-coordinate monotonicity of Section
+4.1. (ii) Condition (H2) fails exactly when every boundary halfedge is
+selected, all in one merged color, and every position at which two
+consecutive banks meet is pure. Even when every boundary halfedge is
+selected, all in one merged color, two consecutive banks may meet at a
+mixed position, for instance at the tip of a slit, where the walk turns
+back along the slit. For example, take the $2 times 4$ block of cells
+$\( x \, y \)$ with $0 lt.eq x lt.eq 1$ and $0 lt.eq y lt.eq 3$, with
+the join between $\( 0 \, 1 \)$ and $\( 0 \, 2 \)$ slit, and select
+every boundary halfedge, the banks being the maximal intervals of the
+walk on which the port is constant. Every selected halfedge lies on one
+of the lines $X = 0 \, 2$ and $Y = 0 \, 2 \, 4$, so all have one merged
+color for the partition that merges the two target edges of these lines.
+The banks formed by the south side of $\( 0 \, 2 \)$ and the north side
+of $\( 0 \, 1 \)$ meet at the tip $\( 1 \, 2 \)$ of the slit, which is
+mixed, so (H2) holds. (H2) is sufficient; we do not claim that it is
+necessary. (iii) If the hypotheses hold for one partition, they hold for
+every partition satisfying (H1). Indeed, suppose $Pi$ satisfies (H1) but
+not (H2). Then every boundary halfedge is selected and lies on one of
+the two edges $e_V \, e_H$ of a single $Pi$-class. Under the other
+partition, the color of a boundary halfedge is just its direction.
+Consecutive horizontal halfedges of $W$ are collinear, and the north
+side of a topmost cell and the south side of a bottommost cell are on
+different horizontal lines. So the horizontal halfedges form at least
+two maximal runs along $W$, the direction changes at least four times,
+and the other partition fails (H1). So a partition satisfying (H1) but
+not (H2) is the only partition satisfying (H1).
+
+The proof occupies the rest of this subsection.
+
+#strong[Lemma L2.1 (parity).]
+
++ Every unit lattice segment has exactly one pure endpoint, and that
+  endpoint has the segment's color.
++ A cell has one pure red and one pure blue corner, which are diagonally
+  opposite, and two mixed corners. Its two sides at a pure corner have
+  that corner's color. Its two sides at a mixed corner have different
+  colors.
++ At a pure position, both walk halfedges have its color. At a non-joint
+  position of a cell $c$, the two walk halfedges are the two sides of
+  $c$ there.
++ Pure and mixed positions alternate along $W$.
++ A cell has exactly one side on each target edge. Hence selected banks
+  on one target edge have disjoint parent sets.
+
+#strong[Proof.] A segment on a line of color $lambda$ joins points on
+two consecutive perpendicular lines, one of each color. Its endpoint on
+the $lambda$-colored line is pure of color $lambda$, and the other
+endpoint is mixed. This is 1. The corners of a cell lie on two
+consecutive vertical and two consecutive horizontal lines, so 1 gives 2.
+For 3, a halfedge at a pure point has that point as its pure endpoint;
+the second claim is the definition of a one-cell fan. Consecutive
+positions are the endpoints of one halfedge, so 1 gives 4. The two
+vertical sides of a cell lie on lines of different parity, and so do its
+two horizontal sides. Banks select disjoint halfedges, which gives 5.
+$square.stroked.tiny$
+
+A #strong[cut] of $Q$ is a maximal straight run of retained joins along
+one lattice line, all of whose interior vertices are interior
+occurrences. This is the continuation rule of Lemma R1, applied here to
+every join of an all-flip region.
+
+#strong[Lemma L2.2 (cuts split the disk).] Let $Gamma$ be a cut of $Q$.
+
++ Every join lies on exactly one cut. The endpoints of $Gamma$ are
+  distinct positions. All joins of $Gamma$ have one target edge and
+  hence one color, and a pure endpoint of $Gamma$ has that color.
++ $Gamma$ divides $Q$ into two all-flip physical disks $Q_1 \, Q_2$, its
+  #emph[halves]. Identifying each $Q_i$ with a closed subset of $Q$
+  through the map induced by the inclusion of its cells,
+  $Q_1 union Q_2 = Q$ and $Q_1 sect Q_2 = Gamma$. The two cells of each
+  join of $Gamma$ lie in different $Q_i$. Every other join has both
+  cells in one $Q_i$, and the joins of $Q_i$ are exactly the joins of
+  $Q$ between its cells. In particular $1 lt.eq \| Q_i \| < \| Q \|$.
++ The halfedges of $W$ with parent in $Q_i$ form a nonempty interval
+  $alpha_i$ of $W$, and $alpha_1 \, alpha_2$ are complementary. Name the
+  endpoints of $Gamma$ so that $W$ passes from $alpha_1$ to $alpha_2$ at
+  $p$ and from $alpha_2$ to $alpha_1$ at $q$. The walk of $Q_1$ is
+  $alpha_1$, from $q$ to $p$, followed by the block $kappa_1$ of cut
+  sides of its cells, from $p$ to $q$. The walk of $Q_2$ is $alpha_2$,
+  from $p$ to $q$, followed by $kappa_2$, from $q$ to $p$.
++ The parents of $kappa_1$, from $p$ to $q$, are distinct cells
+  $a_1 \, dots.h \, a_k$, each $a_i$ joined across $Gamma$ to
+  $b_i in Q_2$. The parents of $kappa_2$, from $q$ to $p$, are
+  $b_k \, dots.h \, b_1$.
+
+#strong[Proof.] #emph[Part 1.] Extend a join along its line in both
+directions. At an interior occurrence the full star contains the next
+collinear join; at a boundary occurrence the run stops. Since $pi$ is
+injective on the run, it cannot close up, and its two endpoints have
+different coordinates. A lattice line carries joins of only one target
+edge. A pure endpoint is the pure endpoint of the last join of $Gamma$,
+so it has that join's color by L2.1.
+
+#emph[Part 2.] The open sides of the joins of $Gamma$ and its interior
+vertices are interior points of $Q$, while its endpoints lie on
+$partial Q$. So $Gamma$ is a proper arc. Apply (Sch) to obtain closed
+disks $D_1 \, D_2$. An open cell misses $Gamma$, so each closed cell
+lies in one $D_i$. Near a point of an open side not on $Gamma$, the
+source is a union of two half-disks, one in each adjacent cell, missing
+$Gamma$\; so both cells of a join not on $Gamma$ lie in one $D_i$. Near
+a point $x$ of an open side on $Gamma$, the two half-disks are the two
+components of a neighborhood minus $Gamma$. Since $x in D_1 sect D_2$,
+both components of $Q \\ Gamma$ meet this neighborhood, so the two cells
+lie in different $D_i$.
+
+Let $Q_i$ be the physical source formed by the cells in $D_i$ and the
+joins of $Q$ among them; joins between two cells of $D_i$ are not on
+$Gamma$. A fan of $Q$ at a vertex off $Gamma$ contains no join of
+$Gamma$ and lies in one $D_i$. At a vertex of $Gamma$ the fan contains
+one join of $Gamma$ (at an endpoint) or two opposite ones (at an
+interior vertex); removing them from the path or four-cycle leaves two
+subpaths, one in each $D_i$. Since corners are identified only through
+joins, $Q_i$ makes exactly the identifications that $Q$ makes among
+points of $D_i$. Every point of $D_i$ lies in a closed cell of $D_i$: a
+point of $D_1$ in no $D_1$-cell would lie in a $D_2$-cell, hence in
+$D_1 sect D_2 = Gamma$, which is covered by the cut sides of
+$D_1$-cells; likewise for $D_2$. The induced map $Q_i arrow.r D_i$ is
+therefore a continuous bijection from a compact space to a Hausdorff
+space, hence a homeomorphism. So $Q_i$ is an all-flip physical disk; it
+is connected, so its join graph is connected. It contains one cell of
+each join of $Gamma$, so $1 lt.eq \| Q_i \| < \| Q \|$.
+
+#emph[Part 3.] By (Sch), $D_1 sect partial Q = gamma_1$ is one of the
+two boundary arcs between $p$ and $q$. A halfedge with parent in $Q_1$
+lies in this arc. Conversely, a halfedge of $gamma_1$ with parent in
+$Q_2$ would lie in
+$D_1 sect D_2 sect partial Q = Gamma sect partial Q = { p \, q }$, which
+is impossible. The counterclockwise walk of $Q_1$ traverses $alpha_1$
+with the same cells on the left as $W$, hence in the same direction, and
+then traverses $Gamma$. The same holds for $Q_2$. A position of $W$
+whose two walk halfedges lie in $alpha_i$ is a boundary occurrence other
+than $p \, q$, hence off $Gamma$, so by Part 2 it is a position of the
+walk of $Q_i$ with the same fan. The fans at $p$ and $q$ split into one
+subfan in each half; these are the two positions at which the walk of
+$Q_i$ passes between $alpha_i$ and $kappa_i$.
+
+#emph[Part 4.] Interior vertices of $Gamma$ are full stars, so
+consecutive $a_i$ are joined, and $pi$ is injective on $Gamma$.
+$square.stroked.tiny$
+
+#strong[Lemma L2.3 (cuts separate cells).] Any two distinct cells
+$a \, b$ of $Q$ lie in different halves of some cut of $Q$.
+
+#strong[Proof.] Induct on $\| Q \|$. Since $Q$ is join-connected, it has
+a join, and that join lies on a cut $Gamma$. If $Gamma$ separates $a$
+and $b$ we are done; this is always the case when $\| Q \| = 2$, since
+both halves are then single cells by L2.2(2). Otherwise both lie in one
+half, which we name $Q_1$, and $Q$ has at least three cells. By
+induction, a cut $Gamma'$ of $Q_1$ has $a \, b$ in different halves
+$Q_a in.rev a$ and $Q_b in.rev b$ of $Q_1$, with
+$Q_a sect Q_b = Gamma'$.
+
+The joins of $Gamma'$ are joins of $Q$ not on $Gamma$, and full stars of
+$Q_1$ are full stars of $Q$. Interior points of $Gamma'$ are interior
+points of $Q_1$, while $Gamma subset partial Q_1$. So $Gamma'$ meets
+$Gamma$ only in endpoints of $Gamma'$. Let $Gamma''$ be the cut of $Q$
+containing $Gamma'$. It extends $Gamma'$ beyond an endpoint $z$ exactly
+when $z$ is an interior occurrence of $Q$. Since
+$z in partial Q_1 = gamma_1 union Gamma$, this happens only when $z$ is
+an interior vertex of $Gamma$. In that case the star at $z$ has two
+$Q_1$-cells in one half-plane of the lattice line containing
+$pi \( Gamma \)$ and two $Q_2$-cells in the other, and the only join of
+$Q_1$ at $z$ is the one between its two cells there. So $Gamma'$ reaches
+$z$ perpendicular to that line. Since $pi \( Gamma' \)$ is a straight
+segment, it meets that line in at most one point, and $pi$ is injective
+on $Gamma'$. So in that case $Gamma' sect Gamma = { z }$, and in
+particular at most one endpoint of $Gamma'$ is an interior vertex of
+$Gamma$.
+
+#emph[Case 1: $thin Gamma'' = Gamma'$.] Then
+$Gamma' sect Gamma subset { p \, q }$. The connected set
+$Gamma \\ { p \, q }$ lies in
+$Q_1 \\ Gamma' = \( Q_a \\ Gamma' \) union.sq \( Q_b \\ Gamma' \)$, a
+disjoint union of relatively open sets. Hence it lies in one of them,
+say $Q_a \\ Gamma'$, after exchanging the names $a \, b$ if necessary. A
+$Q_1$-cell along $Gamma$ has its open cut side in $Q_a \\ Gamma'$, so it
+lies in $Q_a$\; otherwise its closed square would lie in $Q_b$.
+Therefore every join of $Q$ not on $Gamma''$ joins $Q_a$ to $Q_a$, $Q_b$
+to $Q_b$, $Q_2$ to $Q_2$, or $Q_a$ to $Q_2$ (the joins of $Gamma$). By
+L2.2 for $Gamma''$, each half of $Gamma''$ is a disk, hence
+join-connected, and only joins of $Gamma''$ connect the two halves. So
+the halves of $Gamma''$ are the join-components of $Q$ after removing
+the joins of $Gamma''$. The set $Q_b$ is closed under the remaining
+joins and misses $a$. Hence $a$ and $b$ lie in different halves of
+$Gamma''$.
+
+#emph[Case 2: $thin Gamma'$ ends at an interior vertex $z$ of
+$thin Gamma$.] Then $Gamma' sect Gamma = { z }$, as just shown, and
+$Gamma'' = Gamma' union Gamma'_2$. Here $Gamma'_2$ continues straight
+from $z$, through the join between the two $Q_2$-cells at $z$, to an
+endpoint $z_2 in partial Q$.
+
+The image $pi \( Gamma'_2 \)$ meets the lattice line of $pi \( Gamma \)$
+only in $pi \( z \)$, and $pi$ is injective on $Gamma''$. So the
+connected set $Gamma'_2 \\ { z }$ misses $Gamma$. It contains the open
+side of the join between the two $Q_2$-cells at $z$, a subset of
+$Q_2 \\ Gamma$, so it lies in $Q_2 \\ Gamma$. Therefore $Gamma'_2$
+consists of joins of $Q_2$, its interior vertices are full stars of
+$Q_2$, and its endpoints $z \, z_2$ lie on $partial Q_2$: it is a cut of
+$Q_2$.
+
+The two $Q_1$-cells at $z$ are the cells of the last join of $Gamma'$,
+so one lies in $Q_a$ and the other in $Q_b$. The point $z$ divides
+$Gamma$ into subarcs $Gamma_a \, Gamma_b$, named so that the $Q_a$-cell
+at $z$ has its cut side on $Gamma_a$ and the $Q_b$-cell on $Gamma_b$.
+The two $Q_2$-cells at $z$ are the cells of the first join of
+$Gamma'_2$, so they lie in different halves of $Gamma'_2$. Let
+$Q_(2 \, a)$ be the half containing the one with its cut side on
+$Gamma_a$, and $Q_(2 \, b)$ the other half. The set $Gamma_a \\ { z }$
+is connected, misses $Gamma'$ and $Gamma'_2$, and contains the open cut
+sides of these two cells. As in Case 1, every $Q_1$-cell along $Gamma_a$
+lies in $Q_a$ and every $Q_2$-cell along $Gamma_a$ lies in $Q_(2 \, a)$.
+Likewise the cells along $Gamma_b$ lie in $Q_b$ and $Q_(2 \, b)$.
+
+Every join of $Q$ outside $Gamma''$ therefore lies within $Q_a$, $Q_b$,
+$Q_(2 \, a)$ or $Q_(2 \, b)$, or joins $Q_a$ to $Q_(2 \, a)$ or $Q_b$ to
+$Q_(2 \, b)$. The set $Q_b union Q_(2 \, b)$ is closed under these joins
+and misses $a$. As in Case 1, $a$ and $b$ lie in different halves of
+$Gamma''$. $square.stroked.tiny$
+
+#strong[Marked selections.] In Lemma L2.4 a #emph[selection] $Sigma$ is
+an arbitrary set of boundary halfedges, and #emph[markers] are two
+positions $t_R \, t_B$, with a #emph[tie flag] when they coincide. The
+#emph[red interval] $I_R$ consists of the halfedges met walking forward
+from $t_R$ to $t_B$, and the #emph[blue interval] $I_B$ of the rest,
+from $t_B$ to $t_R$. For coincident markers the flag is their order:
+"$t_R$ first" means that $t_R$ precedes $t_B$, so that $I_R = nothing$,
+and "$t_B$ first" means that $t_B$ precedes $t_R$, so that
+$I_B = nothing$. The #emph[color condition] requires every halfedge of
+$Sigma sect I_R$ to be red and every halfedge of $Sigma sect I_B$ to be
+blue. The #emph[stretch] of a position is the maximal run of consecutive
+positions containing it that crosses no halfedge of $Sigma$, or all of
+$W$ if $Sigma = nothing$. A marker is #emph[admissible] when its stretch
+contains a mixed position. A #emph[slide] moves a marker within its
+stretch without passing the other marker; it may land on the other
+marker, the flag then recording their previous order. A slide may
+separate coincident markers only in a way that keeps their order: with
+$t_R$ first, only $t_R$ moves backward or $t_B$ forward; with $t_B$
+first, the reverse. Markers in different stretches impose no order
+constraint on each other. A slide does not change the sequences
+$Sigma sect I_R$ and $Sigma sect I_B$, so it preserves the color
+condition, admissibility and conclusion (S3) below. If
+$Sigma = nothing$, every placement of the markers satisfies the color
+condition and (S3) is vacuous; a slide is then any move, and the
+requirements below on the order of markers are void.
+
+#strong[Lemma L2.4 (marked orders).] Let $Sigma$ be a selection whose
+markers are admissible and satisfy the color condition. Then $Q$ has a
+strict total order with the following properties.
+
+\(S1) The red joins are pairwise nonalternating, and so are the blue
+joins.
+
+\(S2) The parent of a red (blue) halfedge of $Sigma$ is not strictly
+between the endpoints of any red (blue) join.
+
+\(S3) Along $I_R$, the parents of $Sigma sect I_R$ are weakly
+increasing. Along $I_B$, the parents of $Sigma sect I_B$ are weakly
+decreasing.
+
+#strong[Proof.] Induct on $\| Q \|$. A single cell has no joins and one
+parent. Let $\| Q \| gt.eq 2$. For a cut with halves and endpoints named
+as in L2.2, write $macron(alpha)_1$ for the positions from $q$ to $p$
+along $alpha_1$ and $macron(alpha)_2$ for those from $p$ to $q$, with
+both ends included.
+
+#emph[Step 1: a separating cut.] We claim that, after slides, both
+markers are mixed and some cut $Gamma$ has $t_R in macron(alpha)_1$ and
+$t_B in macron(alpha)_2$. Moreover, coincident markers then lie at $p$
+with $t_R$ first, or at $q$ with $t_B$ first.
+
+The last requirement is a matter of naming. At an endpoint $z$ of
+$Gamma$, the walk leaves one half's interval and enters the other's.
+Call the half left $Q_1$ when $t_R$ is first, so that $z = p$, and the
+half entered $Q_1$ when $t_B$ is first, so that $z = q$. Positions other
+than $p \, q$ lie in only one of $macron(alpha)_1 \, macron(alpha)_2$.
+
+Slide each marker to a mixed position of its stretch, keeping the order
+of markers that share a stretch.
+
+#emph[Case 1: the stretch of some marker contains a mixed joint position
+$w$.] Slide the marker or markers whose stretch contains $w$ to $w$:
+first the one nearer to $w$ along the stretch (for coincident markers,
+the one that may leave the tie toward $w$), then the other if it shares
+the stretch, which lands on the first with the flag recording their
+order. Two cells of the fan at $w$ are joined along a side ending at
+$w$, and the cut through this join ends at the boundary position $w$. A
+cut endpoint lies in both $macron(alpha)_i$, so the halves can be named
+as required.
+
+#emph[Case 2: neither stretch contains a mixed joint position.] Then
+each #emph[available] mixed position $x$, that is, each mixed position
+in the stretch of a marker, is a one-cell fan of a cell $c \( x \)$, and
+both walk halfedges at $x$ lie on $c \( x \)$ (L2.1). Suppose the
+markers can be placed by slides at mixed positions $x_R \, x_B$ with
+$c \( x_R \) eq.not c \( x_B \)$. Then L2.3 gives a cut separating these
+cells. Naming the half of $c \( x_R \)$ as $Q_1$, we get $t_R = x_R$
+interior to $macron(alpha)_1$ and $t_B = x_B$ interior to
+$macron(alpha)_2$.
+
+Otherwise all available mixed positions are corners of one cell $c$. Two
+distinct ones would be the two mixed corners of $c$, both non-joint, and
+all four sides of $c$ would be unjoined, which is impossible for
+$\| Q \| gt.eq 2$. So both markers lie in the stretch $Lambda$ of a
+single mixed position $w$, and $w$ is the only mixed position of
+$Lambda$.
+
+- If $Sigma = nothing$, then $Lambda = W$, and every halfedge has $w$ as
+  its mixed endpoint. So $W$ consists of the two walk halfedges at $w$.
+  These are perpendicular sides of $c$ and do not close up, a
+  contradiction.
+- If $Sigma eq.not nothing$, let $omega_(-) \, omega_(+)$ be the
+  selected halfedges immediately before and after $Lambda$. By L2.1,
+  $Lambda$ consists of $w$ and possibly a pure neighbor at either end.
+  If $Lambda$ begins at $w$, then $omega_(-) = W_(w - 1)$. If $Lambda$
+  begins at a pure position $y$, then $omega_(-)$ and $W_(w - 1)$ are
+  both walk halfedges at $y$ and have its color. So $omega_(-)$ has the
+  color of $W_(w - 1)$, and likewise $omega_(+)$ has the color of $W_w$.
+  These are the two sides of $c$ at $w$, which have different colors. So
+  $Sigma$ contains both colors. But the markers coincide in the
+  $Sigma$-free stretch $Lambda$, so one of $I_R \, I_B$ contains all of
+  $Sigma$, and the color condition makes $Sigma$ one color. This is a
+  contradiction.
+
+#emph[Step 2: intervals.] For $t in macron(alpha)_1$, let
+$alpha_1^(< t)$ and $alpha_1^(> t)$ be the halfedges of $alpha_1$ from
+$q$ to $t$ and from $t$ to $p$. For $t in macron(alpha)_2$, let
+$alpha_2^(< t)$ and $alpha_2^(> t)$ be those of $alpha_2$ from $p$ to
+$t$ and from $t$ to $q$. Then
+$ I_R = alpha_1^(> t_R) thin alpha_2^(< t_B) \, #h(2em) I_B = alpha_2^(> t_B) thin alpha_1^(< t_R) . $
+Walking forward from $t_R$, the walk traverses $alpha_1^(> t_R)$ to $p$,
+meeting no position of $macron(alpha)_2$ other than $p$ and its starting
+point (when $t_R = q$), and then traverses $alpha_2$ up to $t_B$. The
+two ties are read off directly. With both markers at $p$ and $t_R$
+first, $I_R = nothing = alpha_1^(> p) alpha_2^(< p)$. With both at $q$
+and $t_B$ first, $I_R = W = alpha_1^(> q) alpha_2^(< q)$. In every case
+$I_B$ is the complement of $I_R$.
+
+#emph[Step 3: subproblems.] Put
+$Sigma_i = \( Sigma sect alpha_i \) union kappa_i$. In the walk of
+$Q_1$, let $p_1$ be the position between $alpha_1$ and $kappa_1$, and
+$q_1$ the position between $kappa_1$ and $alpha_1$. In the walk of
+$Q_2$, let $q_2$ be the position between $alpha_2$ and $kappa_2$, and
+$p_2$ the position between $kappa_2$ and $alpha_2$. The subproblem $Q_1$
+inherits $t_R$, and $Q_2$ inherits $t_B$\; write $t_R^1 = t_R$ and
+$t_B^2 = t_B$ for the inherited markers, so that subproblem $i$ has
+markers $t_R^i \, t_B^i$. A marker at $p$ or $q$ becomes $p_i$ or $q_i$,
+and other positions are unchanged. The new markers are $t_B^1 = q_1$ and
+$t_R^2 = q_2$, both with "$t_B$ first", for a red cut, and $t_B^1 = p_1$
+and $t_R^2 = p_2$, both with "$t_R$ first", for a blue cut.
+
+Reading the walks $alpha_i kappa_i$ gives, for every position of the
+inherited markers:
+$ upright("red cut: ") I_R^1 = alpha_1^(> t_R) kappa_1 \, quad I_B^1 = alpha_1^(< t_R) \, quad I_R^2 = kappa_2 alpha_2^(< t_B) \, quad I_B^2 = alpha_2^(> t_B) \; $
+$ upright("blue cut: ") I_R^1 = alpha_1^(> t_R) \, quad I_B^1 = kappa_1 alpha_1^(< t_R) \, quad I_R^2 = alpha_2^(< t_B) \, quad I_B^2 = alpha_2^(> t_B) kappa_2 . $
+Before the slides below, coincident markers occur in a subproblem
+exactly when the cut is red and $t_R = q$ or $t_B = q$, or the cut is
+blue and $t_R = p$ or $t_B = p$. The flags were chosen to give these
+formulas in those cases. With Step 2, the formulas give
+$ I_R = \( I_R^1 \\ kappa_1 \) \( I_R^2 \\ kappa_2 \) \, #h(2em) I_B = \( I_B^2 \\ kappa_2 \) \( I_B^1 \\ kappa_1 \) . $
+
+New markers at a pure position are moved. For a red cut with $q$ pure,
+move $t_B^1$ forward from $q_1$ over the first halfedge $h^(+)$ of
+$alpha_1$, and $t_R^2$ backward from $q_2$ over the last halfedge
+$h^(-)$ of $alpha_2$. For a blue cut with $p$ pure, move $t_B^1$
+backward from $p_1$ over the last halfedge $g^(-)$ of $alpha_1$, and
+$t_R^2$ forward from $p_2$ over the first halfedge $g^(+)$ of $alpha_2$.
+
+These moves are slides. Take a red cut with $q$ pure. Then $q$ is pure
+red (L2.2), so $h^plus.minus$ are red (L2.1). These halfedges lie in
+$alpha_1$ or $alpha_2$, so they are in $Sigma_i$ only if they are in
+$Sigma$. If $h^(+) in Sigma$, the color condition puts it in
+$I_R sect alpha_1 = alpha_1^(> t_R)$. Since $h^(+)$ is the first
+halfedge of $alpha_1$, this forces $t_R = q$. If $h^(-) in Sigma$, then
+$h^(-) in I_R sect alpha_2 = alpha_2^(< t_B)$, forcing $t_B = q$. For a
+blue cut with $p$ pure, $g^(-) in Sigma$ would give
+$g^(-) in alpha_1^(< t_R)$ and force $t_R = p$, and $g^(+) in Sigma$
+would give $g^(+) in alpha_2^(> t_B)$ and force $t_B = p$. In each case
+the forced marker sits at a pure position, contrary to Step 1; so none
+of $h^plus.minus \, g^plus.minus$ is selected.
+
+Each move takes one step onto a mixed position (L2.1). The other marker
+of the subproblem is inherited and hence mixed, so the move passes
+nothing. If the moved marker lands on the other one, the order before
+the move is the assigned flag: $t_B^i$ precedes $t_R^i$ for a red cut,
+and $t_R^i$ precedes $t_B^i$ for a blue cut. These landings are the only
+other coincidences, and their flags are again "$t_B$ first" for a red
+cut and "$t_R$ first" for a blue cut. So the selected parts of the four
+intervals are still those of the displayed formulas. All four markers
+are now mixed and hence admissible. The color condition holds in both
+subproblems: for a red cut,
+$Sigma sect alpha_1^(> t_R) subset Sigma sect I_R$ and $kappa_1$ are red
+and $Sigma sect alpha_1^(< t_R) subset Sigma sect I_B$ is blue, and
+$Q_2$ is the same; a blue cut is symmetric, with $kappa_i$ blue. By
+induction, $Q_1$ and $Q_2$ have orders satisfying (S1)--(S3).
+
+#emph[Step 4: combination.] Let $O$ list the order of $Q_1$ followed by
+the order of $Q_2$. Use the notation of L2.2.
+
+#emph[Red cut.]
+
+- #emph[Order of the cut parents.] In $Q_1$, $kappa_1$ is the final part
+  of $Sigma_1 sect I_R^1$ in walk order, so (S3) and distinctness give
+  $a_1 < dots.h.c < a_k$. A red halfedge of $Sigma sect alpha_1$ lies in
+  $alpha_1^(> t_R)$, before $kappa_1$, so its parent $mu$ satisfies
+  $mu lt.eq a_1$. In $Q_2$, $kappa_2$ is the initial part of
+  $Sigma_2 sect I_R^2$. So $b_k < dots.h.c < b_1$, and every red parent
+  $mu$ of $Sigma sect alpha_2$ satisfies $mu gt.eq b_1$.
+- #emph[\(S1).] Joins inside one block are handled by induction, and
+  joins in different blocks occupy disjoint intervals of $O$. Since
+  $a_1 < dots.h.c < a_k < b_k < dots.h.c < b_1$, the cut joins are
+  nested. A red join $x y$ of $Q_1$ alternates with $a_i b_i$ only if
+  $x < a_i < y$. This is excluded by (S2) in $Q_1$, because the cut side
+  of $a_i$ is a red halfedge of $Sigma_1$. The case of $Q_2$ is
+  symmetric. No blue join meets both blocks.
+- #emph[\(S2).] Against joins of its own block, a parent is protected by
+  induction. Against joins of the other block, it is protected by
+  disjointness of the blocks. Against the cut joins, only red parents
+  need checking. A red parent $mu in Q_1$ is strictly inside $a_i b_i$
+  only if $a_i < mu$, which contradicts $mu lt.eq a_1$. A red parent
+  $mu in Q_2$ is strictly inside only if $mu < b_i$, which contradicts
+  $mu gt.eq b_1$.
+
+#emph[Blue cut.] Now $kappa_1$ is the initial part of
+$Sigma_1 sect I_B^1$ and $kappa_2$ the final part of
+$Sigma_2 sect I_B^2$. This gives
+$a_k < dots.h.c < a_1 < b_1 < dots.h.c < b_k$. Every blue parent $mu$ of
+$Sigma sect alpha_1$ satisfies $mu lt.eq a_k$, and every blue parent of
+$Sigma sect alpha_2$ satisfies $mu gt.eq b_k$. The same three arguments
+apply.
+
+#emph[\(S3), both cuts.] By Step 2 and the subproblem formulas, the
+parents of $Sigma sect I_R$, in walk order, are those of
+$Sigma_1 sect I_R^1 sect alpha_1$, which are weakly increasing in the
+order of $Q_1$, followed by those of $Sigma_2 sect I_R^2 sect alpha_2$,
+which are weakly increasing and larger. The parents of $Sigma sect I_B$
+are those of $Sigma_2 sect I_B^2 sect alpha_2$, weakly decreasing,
+followed by those of $Sigma_1 sect I_B^1 sect alpha_1$, weakly
+decreasing and smaller. The slides of Step 1 do not affect (S3). No
+block is ever reversed: the marker conventions orient each block.
+$square.stroked.tiny$
+
+#strong[Proof of Lemma L2.] A #emph[gap] is the run of positions between
+two cyclically consecutive selected halfedges. A gap is #emph[internal]
+when those halfedges are consecutive halfedges of one bank; it is then a
+single position. Choose the markers as follows.
+
+- #emph[Both colors are selected.] By (H1), exactly two gaps change
+  color. Put $t_R$ anywhere in the blue-to-red gap and $t_B$ anywhere in
+  the red-to-blue gap. A single-position gap between halfedges of
+  different colors is not pure, by L2.1. A gap containing a halfedge
+  contains that halfedge's mixed endpoint. So both markers are
+  admissible. Banks are monochromatic, so neither gap is internal.
+- #emph[One color is selected.] By (H2), either some boundary halfedge
+  is unselected, and its gap is not internal and contains its mixed
+  endpoint, or two consecutive banks meet at a mixed position, which is
+  a non-internal gap. Put both markers at that mixed position, with the
+  flag that empties the interval of the absent color.
+- #emph[Nothing is selected.] Put both markers at any mixed position,
+  with either tie flag.
+
+The color condition holds, so Lemma L2.4 applies.
+
+- #emph[Local feasibility and exposure.] Joins and selected halfedges on
+  one target edge share its color. So (S1) and (S2) give pairwise
+  nonalternating flips and exposure on each target edge.
+- #emph[Monotonicity.] No marker lies in an internal gap. Hence each
+  bank is a contiguous piece of the interval of its color. By (S3) its
+  parents are weakly monotone along $W$. They are distinct, so they are
+  strictly monotone.
+- #emph[Separation.] Two banks on one target edge are disjoint pieces of
+  the same interval. By (S3), every parent of the earlier piece is at
+  most (along $I_R$) or at least (along $I_B$) every parent of the later
+  piece. Their parent sets are disjoint by L2.1, so the banks are
+  separated. $square.stroked.tiny$
+
+#strong[Corollary L2a (configurations used below).] The hypotheses of
+Lemma L2 hold, without outwardness, in each of the following cases:
+
+\(a) at most one bank on each target edge;
+
+\(b1) at most four banks, with at most one target edge repeated, and
+that edge at most twice;
+
+\(b2) any number of banks on one target edge and at most one other bank.
+
+These cover every use in Sections 4.3--4.7. Corollary L3a and the
+remaining regions of L5--L7 are case (a). The common neighbor $B$ in L5
+is case (b1). The region $F$ with $m_F gt.eq 2$ in L6, and every region
+of L7 with two banks on one target edge, are case (b2).
+
+#strong[Proof.] Each bank is a monochromatic block of the cyclic
+sequence of selected halfedges.
+
+#emph[\(H1).] (a) With at most three banks, any two-coloring of at most
+three cyclic blocks changes color at most twice. With four banks on
+distinct edges $e_1 e_2 e_3 e_4$, in cyclic order, the three pairings of
+the four edges are ${ e_1 e_2 divides e_3 e_4 }$,
+${ e_2 e_3 divides e_4 e_1 }$ and ${ e_1 e_3 divides e_2 e_4 }$. Only
+the last alternates. The two adjacent-pair partitions are distinct
+pairings, so one of them satisfies (H1).
+
+\(b1) If no edge is repeated, this is case (a). Otherwise let $e$ be the
+repeated edge. With at most one further bank there are at most three
+blocks. With two further banks, on distinct edges $e' \, e'' eq.not e$,
+one of them, say $e'$, is adjacent to $e$. Merge $e$ with $e'$. The
+other class then contains only the block of $e''$, and both classes are
+consecutive.
+
+\(b2) All banks on the main edge share a color, and the other bank is a
+single block.
+
+#emph[\(H2).] Suppose (H2) fails for the chosen partition. Then every
+boundary halfedge is selected, and all lie on the two edges $e_V \, e_H$
+of one class. The north side of a topmost cell and the south side of a
+bottommost cell are then selected on $e_H$, and they lie in different
+banks, because a bank has one port. Likewise the west side of a leftmost
+cell and the east side of a rightmost cell lie in different banks on
+$e_V$. So two target edges each carry at least two banks, which all
+three cases exclude. $square.stroked.tiny$
+
+#strong[Remark L2b (necessity of (H2)).] (H2) cannot be omitted, even
+for outward banks. Let $Q$ be the $2 m times 2 n$ rectangle of cells
+filling $\[ 0 \, 2 m \] times \[ 0 \, 2 n \]$, with all joins, where
+$m \, n gt.eq 1$. Select its four whole sides as banks; all selected
+halfedges are outward. The bottom and top sides lie on the lines
+$Y = 0 \, 2 n$ of equal parity, hence on one target edge, and likewise
+the left and right sides. The partition merging these two edges makes
+every selected halfedge one color, so (H1) holds. (H2) fails: every
+halfedge is selected, and the four positions at which consecutive banks
+meet are the corners
+$\( 0 \, 0 \) \, \( 2 m \, 0 \) \, \( 2 m \, 2 n \) \, \( 0 \, 2 n \)$,
+all pure.
+
+No order separates both same-edge pairs. Let $a \, b \, c \, d$ be the
+corner cells at the top left, top right, bottom right and bottom left.
+The reflections of the rectangle preserve the two pairs of opposite
+sides and permute the corners transitively, so we may assume that $a$ is
+least among them. Separating the top from the bottom with $a < c$ puts
+the top bank first, so $b < d$. Separating the left from the right with
+$a < b$ puts the left bank first, so $d < b$, a contradiction. For the
+$2 times 2$ block, an exhaustive check of all 24 orders finds exactly
+eight that are locally feasible, expose every selected halfedge and are
+monotone on all four banks; only separation fails. The same check gives
+no valid orders and again eight satisfying the first three conclusions
+among the 40,320 orders of each of the $4 times 2$ and $2 times 4$
+blocks (script `supplement/l2-bank-orders/check_counterexample.py`).
+Thus outwardness and consecutive merged colors do not by themselves give
+separation.
+
+=== 4.3 Reattaching every interface
+<reattaching-every-interface>
+#strong[Lemma L3 (tree alignment and block assembly).] Suppose (G) gives
+a tree of all-flip regions, each equipped with a locally feasible order
+exposing all interface banks and monotone on them. The region orders can
+be reversed so that corresponding parents along every interface have the
+same relative order. After this alignment, concatenate region orders as
+whole blocks on each target face. The resulting layers satisfy all
+flip/flip and flip/bend constraints. Bend/bend constraints within an
+interface also hold. The only remaining constraints compare distinct
+interfaces at the same target cube edge.
+
+#strong[Proof.] Root the tree. Retain the root order and process
+outward. The parent's bank and the child's bank each order the same
+finite list of unit joins either forwards or backwards. One whole
+reversal of the child makes those orders agree; for a one-join interface
+no reversal is required. Each nonroot region has only one already
+oriented neighbor. Thus correlated directions of its other banks cause
+no obstruction, regardless of interface length.
+
+A reversal preserves every strict-between and nonalternation statement.
+Under subsequent block concatenation, two internal flip intervals
+belonging to different same-face regions are disjoint. A bend endpoint
+outside a flip's region lies outside that entire block; an endpoint
+inside it is protected by exposure. Finally, adding rank offsets
+preserves the aligned comparisons within an interface. These are exactly
+the cases asserted in L1. Every original unit join is reattached and
+checked; no physical cut is made. $square.stroked.tiny$
+
+#strong[Corollary L3a (distinct target edges).] A six-face disk map
+whose whole bend arcs use pairwise distinct target cube edges has
+locally feasible layers without changing that map.
+
+#strong[Proof.] Each region has at most one bank on each target edge, so
+L2 applies by Corollary L2a(a). Use L3 and choose arbitrary whole-region
+block orders on repeated faces. No target edge has two distinct bend
+interfaces, leaving no further comparisons. In particular, five active
+arcs give six regions on six distinct faces and satisfy this hypothesis.
+$square.stroked.tiny$
+
+=== 4.4 Minimal maps and cancellation
+<minimal-maps-and-cancellation>
+Choose a six-face member of the finite toggle family minimizing its
+active original arcs, and let $T$ be its contracted region tree. A face
+color of a leaf is #strong[exclusive]: it occurs at no other vertex of
+$T$.
+
+#strong[Lemma L4 (leaf exclusivity and three-edge cancellation).] Every
+leaf color is exclusive. Moreover, no simple path in $T$ contains three
+active interfaces with the same target cube edge.
+
+#strong[Proof.] Leaf exclusivity is Lemma R3 of Section 2, and the
+arbitrary-path cancellation statement is Lemma R5 there. Those proofs
+act on complete physical region components, preserve every retained
+endpoint identification, and return to the same root-normalized family;
+no layer-order conclusion is assumed. $square.stroked.tiny$
+
+=== 4.5 One repeated face and six arcs
+<one-repeated-face-and-six-arcs>
+#strong[Proposition L5 (six-arc repair).] A physical disk admitting a
+six-face map with at most six whole bend arcs admits locally feasible
+layers for a six-face (surjective) member of that map's toggle family,
+on the unchanged source.
+
+#strong[Proof.] Minimize active arcs among the six-face members of its
+family, as in Section 4.4. There are $k + 1$ regions and
+$5 lt.eq k lt.eq 6$. The case $k = 5$ follows from L3a. For $k = 6$,
+only one face $A$ repeats, at regions $A_1 \, A_2$. A target edge
+repeats only when these have a common neighbor $B$. Two common neighbors
+would create a tree cycle. If none exists, apply L3a.
+
+Both $A_i$ are nonleaves by L4, so each has an edge away from $B$. These
+are distinct edges not incident to $B$, and consequently
+$deg \( B \) lt.eq 4$. Its banks consist of two on edge $A B$ and at
+most two others, with distinct other colors. By Corollary L2a(b1), L2
+orders $B$, including separation of its two $A B$-banks. All other
+regions have at most one bank on each target edge and use L2 by L2a(a).
+Align via L3, then place the two $A$-blocks in the order of their
+parent-bank sets in $B$. This handles the only comparison between
+distinct bend interfaces; L3 handles everything else.
+$square.stroked.tiny$
+
+#strong[Proposition L6 (one repeated face, arbitrary multiplicity).] If
+a six-face disk map has at most one face represented by multiple
+all-flip regions, the same source admits a six-face (surjective) member
+of the given map's toggle family with locally feasible layers.
+
+#strong[Proof.] A leaf region on the repeated face can be reflected into
+its parent's face by the leaf reflection in the proof of Lemma R3,
+followed, when the root square lies in the leaf, by the global root
+normalization described there. By Lemma R2 the result is again a member
+of the given map's family. The leaf merges into its parent region, and
+the repeated face still occurs elsewhere, so coverage is preserved. The
+reflection lowers the multiplicity of the repeated face by one; the
+normalization may rename faces, but it preserves the multiplicity
+profile. So at most one face remains repeated. Continue until there is
+no repetition, or every remaining region of the repeated face is a
+nonleaf. If no repetition remains, the six regions lie on distinct
+faces, the map has five active arcs, and Corollary L3a applies.
+Otherwise let $A$ be the repeated face, $r gt.eq 2$ the number of its
+regions, and $T$ the region tree of the current map. Then $T$ has
+$r + 5$ vertices and $r + 4$ edges. The degree sum of the $A$-regions is
+at least $2 r$ and counts distinct edges. The unique region on the face
+opposite $A$ has an incident edge not counted there. Thus
+$2 r lt.eq r + 3$, or $r lt.eq 3$. Multiplicity two is L5, applied to
+the current map; since toggling an original arc of a member gives
+another member (Lemma R2), the member it produces lies in the given
+map's family.
+
+For $r = 3$, let a unique-face region $F$ have $m_F$ neighbors among
+$A_1 \, A_2 \, A_3$. At least $6 - m_F$ distinct $A$-incident edges
+avoid $F$, giving $deg \( F \) lt.eq 7 - \( 6 - m_F \) = m_F + 1$. When
+$m_F gt.eq 2$, its banks therefore consist of $m_F$ banks on $A F$ and
+at most one other. L2 applies by Corollary L2a(b2). All remaining
+regions have at most one bank on each target edge and use L2 by L2a(a).
+
+After alignment, a common neighbor of several $A_i$ imposes the order of
+its separated banks on their whole blocks. If one neighbor meets all
+three, no other can meet two, because two paths between that pair would
+create a cycle. Otherwise the pair-comparison graph on the three $A_i$
+is a forest: a repeated pair gives a four-cycle in $T$, and a comparison
+triangle gives a six-cycle. Any orientation of a forest extends to a
+total order. Choose that block order on $A$. Every comparison between
+distinct interfaces at $A F$ agrees with $F$'s separated bank order, and
+L3 completes the proof. $square.stroked.tiny$
+
+=== 4.6 Seven arcs
+<seven-arcs>
+#strong[Theorem L7 (seven-arc layer construction).] A physical disk
+admitting a consistent six-face map with at most seven whole bend arcs
+admits locally feasible layers for a six-face map on exactly the same
+physical source.
+
+#strong[Proof.] Minimize active arcs among the six-face members of the
+given map's toggle family, as in Section 4.4. L5 handles at most six. At
+seven, eight regions occupy six colors. Multiplicities
+$\( 3 \, 1 \, 1 \, 1 \, 1 \, 1 \)$ are L6; consider
+$\( 2 \, 2 \, 1 \, 1 \, 1 \, 1 \)$, with repeated regions
+$A_1 \, A_2 \, B_1 \, B_2$. All four are nonleaves by L4. The faces
+$A \, B$ are adjacent: if opposite, no edge joins two repeated regions,
+and their degree sum at least eight would require eight distinct edges
+in a seven-edge tree.
+
+Let $H$ be the forest induced by these four vertices, with $x$ edges,
+and let $y$ count edges between unique-color vertices. Then
+$ sum_(v in H) deg_T \( v \) = 7 + x - y gt.eq 8 . $ Thus $x gt.eq 1$.
+As a subgraph of $K_(2 \, 2)$, a three-edge $H$ would be an alternating
+path with three occurrences of edge $A B$, forbidden by L4. Hence
+$x = 1$ or $2$. The four degrees then sum to $7 + x - y lt.eq 9$, and
+each is at least two, so every repeated vertex has degree at most three.
+
+Such a vertex can have two banks on one target edge only through its two
+neighbors of the other repeated color. Now consider a unique-face vertex
+$F$ with two banks on one target edge, say it meets $A_1 \, A_2$. It
+cannot meet both $B_i$, since any edge of $H$ would then form a triangle
+through $F$. Let $m = 2$ or $3$ be its number of repeated neighbors. The
+repeated vertices have at least $8 - m - x$ distinct incident edges
+avoiding $F$, so $deg \( F \) lt.eq m + x - 1$. For $m = 2$ this is at
+most three. For $m = 3$, every edge of $H$ must use the fourth repeated
+vertex, or form a triangle. Two such edges would form a four-cycle
+through $F$\; therefore $x = 1$, again giving degree at most three.
+
+Every region with two banks on one target edge thus has at most one
+other bank. Each region is a physical disk whose interfaces lie on its
+one boundary component. L2 supplies local orders, exposures,
+monotonicity and repeated-bank separation, by Corollary L2a(b2) for
+these regions and L2a(a) for the others. Use L3 to orient them. It
+remains to choose the two blocks on face $A$ and the two on face $B$.
+
+The two regions on either repeated face have at most one common
+neighbor. Its separated banks, if present, force that face's block
+order. These include common neighbors on the other repeated face. The
+additional comparisons at $A B$ have three cases:
+
+- If $H$ has one edge, it uses one block on each side and gives no
+  comparison involving the other blocks. Choose each face order to
+  satisfy its possible common-neighbor force.
+- If $H$ is the path $A_1 B_1 A_2$, the separated banks in $B_1$ fix the
+  $A$-order. A second force on that order would create a tree cycle.
+  Both interfaces lie in the one $B_1$-block, so placing $B_2$ on either
+  side adds no $A B$-comparison. Place it to satisfy any force on the
+  $B$-order. The symmetric case is identical.
+- If $H$ is the matching $A_1 B_1 \, A_2 B_2$, L1 requires the order of
+  the $A$-blocks to equal the order of the corresponding $B$-blocks.
+  Both cannot also be independently forced: common neighbors $F$ of the
+  $A_i$ and $G$ of the $B_i$, together with the matching, form a cycle;
+  if $F = G$, a matching edge already gives a triangle. Neither common
+  neighbor can be repeated without adding an edge to $H$. At most one
+  order is forced, so choose the other to agree.
+
+Concatenate these blocks and assign dense ranks. L3 already proves the
+flip comparisons and within-interface bend comparisons. Between distinct
+interfaces at a unique face, its separated bank sets give precisely the
+common-neighbor constraint used above. Between $A$ and $B$, the three
+cases settle all pairs. No other cube edge has multiple interfaces.
+Therefore the conditions of L1 hold for all original retained joins at
+every cube edge. $square.stroked.tiny$
+
+=== 4.7 The four-leaf reduction and realization boundary
+<the-four-leaf-reduction-and-realization-boundary>
+#strong[Proposition L8 (four leaves force five active arcs).] If an
+active-arc-minimal six-face family member has four region-tree leaves,
+it has exactly six regions on distinct faces and admits locally feasible
+layers preserving that member's complete map.
+
+#strong[Proof.] Lemma R7 of Section 2 gives exactly six regions, one on
+each cube face, and five active arcs. Corollary L3a supplies locally
+feasible layers for that same complete map. $square.stroked.tiny$
+
+L7 is a local-order construction for unbounded cell counts and interface
+lengths. Its conclusion is combinatorial: orders satisfying the
+conditions of L1 at every cube edge. Theorem M3 turns such orders into a
+PL embedding arbitrarily close to the map, and Corollary D1, which uses
+that the source is a disk, makes it a valid folding onto the cube.
+Together they give the corresponding seven-arc folding theorem: a
+physical disk admitting a consistent six-face map with at most seven
+whole bend arcs folds validly onto the cube. The decomposition
+interfaces of this section are all reattached before realization. The
+construction neither changes the prescribed physical source nor assumes
+that arbitrary preassigned bank directions are attainable.
+
+== 5. Proof of the main theorem and its corollaries
+<proof-of-the-main-theorem-and-its-corollaries>
+#strong[Proof of Theorem A.] A valid folding of $P$ onto the cube
+corresponds to a surjective folding blueprint $beta : P arrow.r C$
+\[ALL25, Definition 3.3\]. By Lemma B1(c), $beta$ is a consistent
+complete-frame map: it carries each square onto one face of $C$ by an
+affine isometry, and the frames of two joined squares agree on their
+common side because $beta$ is defined on the quotient $P$. Surjectivity
+means that all six faces are covered. This proves necessity.
+
+Conversely, start with a surjective consistent map of the physical disk
+$P$. By Proposition C3, the fixed toggle family of this map contains a
+surjective member with at most seven active arcs, and a member's active
+original arcs are exactly its whole bend arcs. Theorem L7 therefore
+applies to this member and gives locally feasible total orders of the
+square layers for a six-face map on the same physical source, which may
+differ from the member. That construction preserves all source squares,
+retained joins, and actual corner identifications. Theorem M3 gives an
+embedded PL realization arbitrarily pointwise close to the resulting
+blueprint. Its image is a disk, so its boundary is an unknot. Corollary
+D1, using the validity criterion \[ALL25, Theorem 3.4\], makes this a
+valid folding onto the cube. $square.stroked.tiny$
+
+#strong[Corollary A1 (Question 4.9 for disks).] Read the polyominoes and
+consistent mappings of \[ALL25\] as in Lemma B1. Every simply connected
+polyomino that admits a surjective consistent mapping to $C$ admits a
+valid folding onto the cube. Hence a polyomino that admits surjective
+pseudo-foldings but no valid one, as asked for in \[ALL25, Question
+4.9\], must have a hole.
+
+#strong[Proof.] Let $P$ be such a polyomino. By Lemma B1(a) and (b), $P$
+is a physical disk, and by Lemma B1(c) its surjective consistent mapping
+is induced by a consistent complete-frame map covering all six faces.
+Theorem A gives a valid folding of $P$ onto the cube. For the second
+assertion, let a simply connected polyomino admit a surjective
+pseudo-folding. Its consistent mapping is surjective, so the first
+assertion gives a valid folding onto the cube, and this folding defines
+a valid surjective pseudo-folding \[ALL25, Section 4.1\].
+$square.stroked.tiny$
+
+The proof permits changing the original map and all layer orders. No
+claim is made that every surjective consistent map, or every surjective
+member of a toggle family, is realizable. Nor is a bounded-area
+enumeration used: the universal reduction bounds the number of whole
+active arcs, while region areas and arc lengths remain unrestricted.
+
+The bound of Proposition C3 does, however, give a polynomial-time
+decision procedure, because the candidate arcs, the cuts defined in the
+proof below, depend only on the source.
+
+#strong[Corollary A2 (deciding foldability of disks).] Read the
+polyominoes of \[ALL25\] as in Lemma B1, and let a polyomino $P$ with
+$N$ squares be given by its cells in $bb(Z)^2$ and its retained joins,
+as in Lemma B1(a). Whether $P$ is simply connected can be decided in
+$O \( N \)$ time. If it is, the problem CubeFolding of \[ALL25, Section
+4.1\], whether $P$ folds onto the cube, can be decided in $O \( N^7 \)$
+time.
+
+Times are for a unit-cost random-access machine. The squares are
+numbered, and each retained join is given by the numbers of its two
+squares, so that, once the joins have been read, the square joined to a
+given square across a given side, if there is one, is found in constant
+time. The input has size $O \( N \)$, since $P$ has at most $2 N$
+retained joins. A polyomino of \[ALL25\] given abstractly, by its
+squares and edge identifications, is brought to this form in $O \( N \)$
+time by placing its squares along these identifications, as in the proof
+of Lemma B1(a). Like Theorem A, the second assertion rests on
+Proposition C3, whose finite claim C2 is checked by computer, and on
+Theorem L7, Theorem M3, and Corollary D1.
+
+#strong[Proof.] Let $R$ and $n$ be the numbers of retained joins and
+full stars of $P$\; both are counted in $O \( N \)$ time from the joins
+at each square. Since $P$ is a polyomino, its retained cell-adjacency
+graph is connected (Lemma B1(a)), so by Lemma B1(b) and the Euler count
+in its proof, $P$ is simply connected exactly when $N - R + n = 1$. For
+an input not known to be connected, connectivity is checked first, also
+in $O \( N \)$ time. Assume from now on that $P$ is simply connected, so
+that it is a physical disk.
+
+#emph[Cuts.] A #emph[cut] of $P$ is a maximal straight run of retained
+joins along one lattice line whose interior vertices are full stars
+(Section 4.2; the cutting step of Section 2 applies this notion to any
+physical disk). Continuing a join straight through full stars and
+stopping at boundary vertices, as in Part 1 of Lemma L2.2 and in the
+proof of Lemma R1, shows that every join lies on exactly one cut and
+that the endpoints of a cut are two distinct boundary vertices. So $P$
+has $K lt.eq R lt.eq 2 N$ cuts, and they are found in $O \( N \)$ time.
+Distinct cuts share no join. A vertex common to two cuts is either a
+full star, at which both pass straight through and cross, or an endpoint
+of both. A set of cuts is #emph[noncrossing] when no two of its cuts
+share a full star.
+
+#emph[Maps from cuts.] Let $cal(S)$ be a noncrossing set of cuts, $r$ a
+root square, and $phi$ a complete frame of $r$. We show that exactly one
+consistent complete-frame map $beta_(cal(S))$ has root frame $phi$ and
+has as its 90-degree joins exactly the joins of the cuts in $cal(S)$,
+and that the whole bend arcs of $beta_(cal(S))$ are the cuts in
+$cal(S)$. Uniqueness is the uniqueness assertion in the proof of Lemma
+R2: on a connected source, a root complete frame and all join statuses
+determine at most one map.
+
+For existence, the proof of Lemma R1 from the cutting step on, apart
+from its last sentence, uses only three properties of the runs: they are
+straight runs of retained joins whose interior vertices are full stars
+and whose endpoints are distinct boundary vertices; distinct runs meet
+at most in common endpoints; and at an interior vertex of a run the two
+joins off the run lie on no run. The cuts in $cal(S)$ have these
+properties. For the last, the two joins off a cut $Gamma$ at an interior
+vertex $z$ lie on the cut through $z$ perpendicular to $Gamma$, which
+crosses $Gamma$ and so is not in $cal(S)$. Hence removing the joins of
+the cuts in $cal(S)$ leaves $lr(|cal(S)|) + 1$ physical disk regions,
+and their adjacency graph $T_(cal(S))$ is a tree with one edge for each
+cut in $cal(S)$, joining the two regions that contain the squares on its
+two sides; every join between distinct regions lies on a cut in
+$cal(S)$. Removing an edge $Gamma'$ from $T_(cal(S))$ leaves two
+subtrees. The squares of the regions of each subtree form a set that is
+connected by joins not on $Gamma'$, and the only joins between the two
+sets are those of $Gamma'$. So the two sets are the components of the
+retained cell-adjacency graph without the joins of $Gamma'$, that is,
+the two halves of $P$ along $Gamma'$ in the sense of the cutting step.
+
+Let $beta_0$ be the map whose frames are given by the formula of the
+Colors paragraph of Section 4.2, with root cell $r$ and root frame
+$phi$. That formula uses only the positions of the cells: writing
+$phi \( x \, y \) = o + x u + y w$ and $r = \( x_0 \, y_0 \)$, the map
+$beta_0$ is the planar position map followed by
+$\( X \, Y \) mapsto o + tau \( X - x_0 \) thin u + tau \( Y - y_0 \) thin w$,
+so it is well defined on $P$. By the argument given there, $beta_0$ is
+consistent with every retained join of $P$ a 180-degree join, and it
+carries all sides on one lattice line onto one complete edge of the face
+$F_0$ of $phi$\; let $e \( Gamma \)$ be the edge onto which it carries a
+cut $Gamma$.
+
+Root $T_(cal(S))$ at the region $v_0$ containing $r$, put
+$g_(v_0) = upright(i d)$, and for each edge $Gamma$ of $T_(cal(S))$ from
+a region $p$ to a child $v$ put
+$g_v = g_p compose sigma_(e \( Gamma \))$. Define $beta_(cal(S))$ as
+$g_v compose beta_0$ on the squares of each region $v$. Its root frame
+is $phi$, and region $v$ maps onto the face $g_v \( F_0 \)$. Every
+retained join lies inside one region or on a cut in $cal(S)$. At a join
+inside a region $v$, both frames of $beta_0$ are composed with the same
+isometry $g_v$, so the join equations still hold and the join remains a
+180-degree join. At a join of a cut $Gamma in cal(S)$, joining a square
+of $p$ to a square of $v$, the map $beta_0$ carries the two identified
+corners into $e \( Gamma \)$, which $sigma_(e \( Gamma \))$ fixes
+pointwise, so $g_p compose beta_0$ and
+$g_v compose beta_0 = g_p compose sigma_(e \( Gamma \)) compose beta_0$
+agree on them and the join equations hold. Since $sigma_(e \( Gamma \))$
+exchanges $F_0$ with the other face at $e \( Gamma \)$, the two squares
+map onto distinct faces, and the join is a 90-degree join. So
+$beta_(cal(S))$ is consistent, and its 90-degree joins are exactly the
+joins of the cuts in $cal(S)$. By the continuation rule in the proof of
+Lemma R1, the run through a 90-degree join of $beta_(cal(S))$ is the cut
+containing that join, so the whole bend arcs of $beta_(cal(S))$ are the
+cuts in $cal(S)$.
+
+#emph[The algorithm.] Fix a root square $r$ and a complete frame $phi$
+of $r$. For each cut $Gamma$, compute $e \( Gamma \)$ and the half of
+$P$ along $Gamma$ not containing $r$, that is, the component of the
+retained cell-adjacency graph without the joins of $Gamma$ that misses
+$r$\; this takes $O \( K N \)$ time in all. Record in a $K times K$
+table which pairs of cuts cross; these are the pairs of cuts through a
+common full star, exactly one pair at each full star. Record in a second
+table, for each noncrossing pair $Gamma \, Gamma'$, whether $Gamma$ lies
+in the half along $Gamma'$ not containing $r$. This is well defined
+since, as in the proof of Lemma R1, a cut that does not cross $Gamma'$
+lies in one half along $Gamma'$, apart from common endpoints. For a
+noncrossing set $cal(S)$ and $Gamma in cal(S)$, let $v$ be the child
+region of $T_(cal(S))$ at the edge $Gamma$. Removing an edge $Gamma'$
+from $T_(cal(S))$ leaves two subtrees whose regions form the two halves
+along $Gamma'$. Hence the edges of $T_(cal(S))$ on the path from $v_0$
+to $v$ are $Gamma$ and the cuts $Gamma' in cal(S)$ for which $Gamma$
+lies in the half along $Gamma'$ not containing $r$. Of two such edges
+$Gamma' \, Gamma''$, the edge $Gamma'$ comes first on the path exactly
+when $Gamma''$ lies in the half along $Gamma'$ not containing $r$. So,
+if $Gamma_1 \, dots.h \, Gamma_m = Gamma$ are these edges in order from
+$v_0$, the recurrence gives
+$g_v = sigma_(e \( Gamma_1 \)) compose dots.h.c compose sigma_(e \( Gamma_m \))$,
+a product of at most $lr(|cal(S)|)$ symmetries read off from the tables;
+the order matters, since these symmetries need not commute. The regions
+of $T_(cal(S))$ are $v_0$ and the child regions of the edges. The
+algorithm accepts $P$ if and only if some noncrossing set $cal(S)$ with
+$5 lt.eq lr(|cal(S)|) lt.eq 7$ gives all six faces among $F_0$ and the
+colors $g_v \( F_0 \)$ of these child regions. Each of the $O \( K^7 \)$
+such sets takes $O \( 1 \)$ time, so with $K lt.eq 2 N$ the total time
+is $O \( N^2 + N^7 \) = O \( N^7 \)$.
+
+#emph[Correctness.] If the algorithm accepts $P$ with a set $cal(S)$,
+then $beta_(cal(S))$ is a six-face consistent map with at most seven
+whole bend arcs, and Theorem L7, Theorem M3, and Corollary D1 give a
+valid folding of $P$ onto the cube, as in the proof of Theorem A.
+Conversely, if $P$ folds onto the cube, the proof of necessity in
+Theorem A gives a surjective consistent complete-frame map, and
+Proposition C3 gives a surjective member $M$ of its fixed toggle family
+with at most seven active arcs, which are exactly its whole bend arcs.
+By Lemma R1 and its proof, these arcs are straight runs of joins through
+full stars, ending at boundary vertices, and they meet at most in common
+endpoints. So they are the cuts of a noncrossing set $cal(S)$ with
+$lr(|cal(S)|) lt.eq 7$, and $lr(|cal(S)|) gt.eq 5$ because six colors
+need six regions. The cube isometries act transitively on complete
+frames, so $h compose M$ has root frame $phi$ for some isometry $h$.
+Then $h compose M$ is a six-face consistent map with root frame $phi$
+whose 90-degree joins are exactly the joins of the cuts in $cal(S)$, so
+$h compose M = beta_(cal(S))$ by uniqueness; hence $cal(S)$ gives all
+six faces, and the algorithm accepts $P$. $square.stroked.tiny$
+
+Soundness uses Theorem L7, Theorem M3, and Corollary D1, but not
+Proposition C3; completeness uses Proposition C3. With the analytic
+bound of Lemma R6 in place of C3, the same enumeration over noncrossing
+sets of at most twelve cuts decides in $O \( N^12 \)$ time whether $P$
+has a surjective consistent complete-frame map, but concluding
+foldability from such a map requires Theorem A and hence Proposition C3.
+The algorithm does not search the toggle family of a given map, which
+can have exponentially many members; the cuts depend only on the source,
+and Lemma R1 with Proposition C3 confines the search to sets of at most
+seven of them. We have not analyzed the time needed to construct a
+folded state.
+
+An implementation of an equivalent form of this procedure was compared
+with an exhaustive search for surjective consistent maps. For every set
+of at most seven cuts, the implementation propagates frames from the
+root along a spanning tree, with the joins of the set at 90 degrees, and
+checks every join, instead of testing noncrossing and using the tables.
+The two agreed on every physical disk with at most 11 squares and on
+every physical disk with all joins retained and at most 13 squares, both
+up to symmetry, and on 1,140 random physical disks with 11 to 40
+squares. None of these needed more than six cuts. Corollary A2 does not
+depend on this computation, and its scripts are not part of the
+supplement.
+
+Two further computations, also outside the supplement and used in no
+proof, indicate how small a disk can be when a change of map is needed
+and compare the model with independently written code. First, on every
+physical disk with at most 11 squares, and on every physical disk with
+all joins retained and at most 12 squares, every surjective consistent
+map already has locally feasible orders; two separately written programs
+agree on this where their ranges overlap. The smallest physical disks we
+found with a surjective consistent map that has no locally feasible
+orders have 14 squares; we do not know whether 14 is least. We found
+three, all tree-shaped; they have 2,652, 2,768 and 2,874 surjective
+consistent maps, counted up to cube isometries, and on each exactly one
+of these has no locally feasible orders. For comparison, \[ALL25,
+Example 4.5\] has 38 squares. Its toggle family has $2^21$ members; the
+surjective members whose set of active arcs is minimal under inclusion
+are 432 maps with five active arcs, and all of them have locally
+feasible orders. Second, we ran a corrected copy, described below, of
+the implementation of the decision algorithm of \[ALL25\] that
+accompanies \[LS25\], see \[Shi25\], on all 11,501 simply connected
+polyominoes with at most 10 squares, or at most 9 squares when there are
+slits, up to symmetry. Its face-map and layer-map stages find a
+surjective consistent mapping together with a layer map that passes its
+self-intersection test exactly when a surjective consistent mapping
+exists. The test for self-intersecting layer maps, which is the same in
+the published code, accepts exactly the locally feasible orders of
+Section 1.2 on 4.7 million pairs of a consistent map and face orders,
+not reduced by symmetry, on sources with and without holes, on which we
+compared the two. The corrected copy differs from the published code in
+three places, which remove two defects. The published code assumes that
+the first square of the input is the top-left square of the bounding
+box; for 1,148 of the 11,501 inputs no rotation or reflection brings a
+square of the polyomino there. And when a vertex labelling gives the
+top-right corner of the first square two labels, one on each side of a
+slit, the step that converts the labelling into a face map raises an
+error and the labelling is dropped; when this happens to every labelling
+the answer is a wrong negative, as it is for 183 of the other inputs in
+at least one position. We did not rely on its knot-recognition stage,
+which stopped with an error on 16 of the inputs and is unnecessary for
+simply connected polyominoes by \[ALL25, Theorem 3.4\].
+
+== 6. A finite obstruction to connected monochrome map selection
+<a-finite-obstruction-to-connected-monochrome-map-selection>
+The following independent observation concerns selection of a consistent
+map, not nonfoldability. Here a #strong[monochrome component] means a
+connected component of the retained cell-adjacency graph after deleting
+every join between different target faces. This is not the literal
+inverse image of a closed cube face, which can also contain edges and
+vertices of differently mapped squares. No novelty or minimum-size
+assertion is made.
+
+#strong[Proposition X1.] The ordinary disk source
+
+$ P = \( { 0 \, 1 } times { 0 \, 1 \, 2 \, 3 } \) union \( { 1 \, 2 \, 3 \, 4 } times { 3 \, 4 } \) \, $
+
+with all geometric joins retained, admits a valid folding onto the cube.
+It has exactly 81 consistent complete-frame maps after fixing the
+complete frame of the square $\( 0 \, 0 \)$, exactly one of which is
+surjective. That surjective map has seven monochrome components and
+twelve retained 90-degree joins. In particular, no surjective consistent
+map has a single monochrome component on each target face.
+
+#strong[Proof.] First consider a complete $2 times 2$ block. Write a
+frame as $\( n \, u \, v \)$, its outward normal and its
+source-right/source-up tangent vectors, and let 0 denote a 180-degree
+join and 1 a 90-degree join. For an east (respectively north) step, from
+a square to the neighbor across its right (respectively top) side, the
+neighbor's frame is obtained from the square's frame by $H_0$ or $H_1$
+(respectively $V_0$ or $V_1$), the subscript being the bit of the join,
+where
+
+$ H_0 \( n \, u \, v \) & = \( n \, - u \, v \) \, & quad H_1 \( n \, u \, v \) & = \( u \, - n \, v \) \,\
+V_0 \( n \, u \, v \) & = \( n \, u \, - v \) \, & quad V_1 \( n \, u \, v \) & = \( v \, u \, - n \) . $
+
+If $a \, b \, c \, d$ are the turn bits of the lower east step, the left
+north step, the upper east step, and the right north step, respectively,
+and $\( n \, u \, v \)$ is the frame of the lower-left square,
+consistency is exactly
+
+$ V_d H_a \( n \, u \, v \) = H_c V_b \( n \, u \, v \) . $
+
+Substitution in the four displayed formulas gives only
+
+$ \( a \, b \, c \, d \) = \( 0 \, 0 \, 0 \, 0 \) \, med \( 0 \, 1 \, 0 \, 1 \) \, med \( 1 \, 0 \, 1 \, 0 \) . $
+
+For clarity, when $a = b = 0$, equality of normals forces $c = d = 0$.
+When $\( a \, b \) = \( 0 \, 1 \)$ or $\( 1 \, 0 \)$, it forces
+$\( c \, d \) = \( 0 \, 1 \)$ or $\( 1 \, 0 \)$, respectively, and the
+full frames agree. When $a = b = 1$, the two possible equal-normal
+choices give unequal tangent vectors. This proves the $2 times 2$
+assertion without relying on enumerated map files.
+
+Apply it to the three overlapping $2 times 2$ blocks in a $2 times 4$
+rectangle. Call a join transverse or longitudinal according as its step
+is parallel to a short or a long side of the rectangle; the six
+longitudinal joins form three separators of two parallel joins each. By
+the uniqueness argument in the proof of Lemma R2, a map is determined by
+the complete frame of one square and the turn bits of all joins.
+Conversely, given a frame and bits, propagation by the four displayed
+formulas and their inverses along the spanning tree formed by the four
+transverse joins and the three longitudinal joins of one long side
+assigns a frame to every square. Each of the three remaining joins
+closes exactly one $2 times 2$ block, so these frames form a consistent
+map exactly when every block has one of the three patterns above. Hence
+all four transverse joins have the same turn bit. If that bit is 1,
+every longitudinal join is 0, giving one map. If the transverse bit is
+0, each of the three longitudinal separators independently has bit 0 or
+1, with its two parallel joins having that same bit, giving eight maps.
+Thus a fixed corner frame extends in exactly nine ways.
+
+Call ${ 0 \, 1 } times { 0 \, 1 \, 2 \, 3 }$ the vertical lobe and
+${ 1 \, 2 \, 3 \, 4 } times { 3 \, 4 }$ the horizontal lobe of $P$. They
+meet in the single square $\( 1 \, 3 \)$, a corner square of each, and
+there are no additional joins between their other squares. Fix the
+complete frame of $\( 1 \, 3 \)$. The two choices are independent,
+giving $9^2 = 81$ maps. Fixing any other square's frame, in particular
+that of $\( 0 \, 0 \)$ as in the statement, gives the same count:
+whole-cube isometries act freely and transitively on the 48 complete
+frames, and preserve consistency and face coverage.
+
+The exceptional transverse-only map of a lobe covers two faces. The
+other lobe covers at most four, including the common-square face, so a
+surjective map must use the longitudinal family on both lobes. Let $n$
+be the common-square normal and $u \, v$ its tangent axes. In the
+longitudinal family the transverse joins are 180-degree joins. Since
+$H_0$, $V_0$, $V_1$ and their inverses change the source-right tangent
+at most in sign, every frame of the vertical lobe has source-right
+tangent $plus.minus u$\; since $V_0$, $H_0$, $H_1$ and their inverses
+change the source-up tangent at most in sign, every frame of the
+horizontal lobe has source-up tangent $plus.minus v$. As a normal is
+orthogonal to both tangents, the vertical lobe has normals in
+${ plus.minus n \, plus.minus v }$, and the horizontal lobe has normals
+in ${ plus.minus n \, plus.minus u }$. Covering all six faces requires
+each lobe to attain both signs of its own tangent normal: $plus.minus v$
+on the vertical lobe and $plus.minus u$ on the horizontal lobe.
+
+The common square $\( 1 \, 3 \)$ is an end square of both lobes: it lies
+in the top row of the vertical lobe and in the left column of the
+horizontal lobe. In the longitudinal family both squares of a row of the
+vertical lobe, or of a column of the horizontal lobe, have the same
+normal, since $H_0$ and $V_0$ preserve the normal. Starting at the end
+containing $\( 1 \, 3 \)$, three successive 90-degree turns have normal
+sequence $n \, d \, - n \, - d$, where $d in { v \, - v }$ on the
+vertical lobe and $d in { u \, - u }$ on the horizontal lobe. This is
+the only binary sequence of three turns attaining both $d$ and $- d$:
+with at most one 90-degree turn there is only one non-$n$ normal; with
+two, adjacent turns give $n \, d \, - n$ with one repetition, whereas
+the separated pattern 101 returns to $n$ and never reaches $- d$. Thus
+all three longitudinal turns must be 90 degrees in both lobes. This
+proves uniqueness of the surjective map.
+
+The face opposite the shared-square face occurs in exactly the two
+separated dominoes
+
+$ { \( 0 \, 1 \) \, \( 1 \, 1 \) } \, #h(2em) { \( 3 \, 3 \) \, \( 3 \, 4 \) } . $
+
+The common-square face has one connected three-square component, and the
+other four target faces each have one domino component. There are
+therefore seven monochrome components. Each lobe contributes three
+separators of two 90-degree joins, giving twelve such joins altogether.
+
+It remains to prove that the source actually folds. First, $P$ is
+homeomorphic to a closed disk; as Section 1.1 requires, this is checked
+on the quotient, not on the drawing. Place the cell $\( i \, j \)$ on
+the unit square $\[ i \, i + 1 \] times \[ j \, j + 1 \]$. All geometric
+joins are retained, and at every lattice point the squares of $P$
+containing it are consecutive in the four-sector star, so the retained
+joins identify all their corners there to a single vertex of $P$. In
+particular, at the lattice points $\( 1 \, 4 \)$ and $\( 2 \, 3 \)$,
+where two squares of $P$ meet only in a corner, these two squares are
+joined in this way through the square $\( 1 \, 3 \)$. Hence the position
+map from $P$ onto the union of its squares in the plane is a continuous
+bijection of a compact space onto a Hausdorff space, and so a
+homeomorphism. That union consists of the rectangles
+$\[ 0 \, 2 \] times \[ 0 \, 4 \]$ and $\[ 1 \, 5 \] times \[ 3 \, 5 \]$,
+which overlap in a square with nonempty interior; it is a planar disk,
+since it is star-shaped about an interior point of their overlap and has
+a simple polygonal boundary. For an explicit locally feasible surjective
+witness, encode cube vertices by $x + 2 y + 4 z$ and use this table.
+Corner order is bottom-left, bottom-right, top-right, top-left; ranks
+increase away from the cube.
+
+#figure(
+  align(center)[#table(
+    columns: 4,
+    align: (right,auto,auto,right,),
+    table.header([Row], [Cell], [Complete frame], [Rank],),
+    table.hline(),
+    [0], [\(0,0)], [\(0,1,3,2)], [0],
+    [1], [\(0,1)], [\(2,3,7,6)], [0],
+    [2], [\(0,2)], [\(6,7,5,4)], [0],
+    [3], [\(0,3)], [\(4,5,1,0)], [0],
+    [4], [\(1,0)], [\(1,0,2,3)], [1],
+    [5], [\(1,1)], [\(3,2,6,7)], [1],
+    [6], [\(1,2)], [\(7,6,4,5)], [1],
+    [7], [\(1,3)], [\(5,4,0,1)], [1],
+    [8], [\(1,4)], [\(1,0,4,5)], [2],
+    [9], [\(2,3)], [\(4,6,2,0)], [0],
+    [10], [\(2,4)], [\(0,2,6,4)], [1],
+    [11], [\(3,3)], [\(6,7,3,2)], [2],
+    [12], [\(3,4)], [\(2,3,7,6)], [3],
+    [13], [\(4,3)], [\(7,5,1,3)], [0],
+    [14], [\(4,4)], [\(3,1,5,7)], [1],
+  )]
+  , kind: table
+  )
+
+The table agrees on both endpoints of every geometric join and uses
+dense strict ranks on each face. The following is a short complete check
+of the local order condition. At each used cube edge, label the listed
+joined row pairs A, B, C in order. The last column lists their endpoints
+in the cyclic layer order: increasing rank on the lexicographically
+smaller incident face (represented by its sorted vertex tuple), then
+decreasing rank on the other face. If all joined occurrences use only
+one incident face, list their ranks increasingly. Unpaired occurrences
+can be omitted.
+
+#figure(
+  align(center)[#table(
+    columns: 3,
+    align: (auto,auto,auto,),
+    table.header([Cube edge], [Joined row pairs, labeled A, B,
+      C], [Endpoint word],),
+    table.hline(),
+    [{0,1}], [\(7,8)], [AA],
+    [{0,2}], [\(9,10)], [AA],
+    [{0,4}], [\(7,9), (8,10)], [ABBA],
+    [{1,3}], [\(0,4), (13,14)], [AABB],
+    [{1,5}], [\(3,7)], [AA],
+    [{2,3}], [\(0,1), (4,5), (11,12)], [ABCCBA],
+    [{2,6}], [\(9,11), (10,12)], [ABBA],
+    [{3,7}], [\(1,5), (11,13), (12,14)], [BCCBAA],
+    [{4,5}], [\(2,3), (6,7)], [ABBA],
+    [{5,7}], [\(2,6)], [AA],
+    [{6,7}], [\(1,2), (5,6)], [ABBA],
+  )]
+  , kind: table
+  )
+
+The unused cube edge has no retained connector. No word contains
+alternating endpoints of two different letters. Thus the orders are
+locally feasible. Corollary D1 supplies a valid folding of this disk
+source onto the cube. $square.stroked.tiny$
+
+The foldability of this source is not new: it also follows from \[ALL25,
+Theorem 8.2\]. By Lemma B1(a) and (b), $P$ is a simply connected
+polyomino in the sense of \[ALL25\], and its bounding box is
+$\[ 0 \, 5 \] times \[ 0 \, 5 \]$. Orient the boundary of $P$ and the
+box clockwise, as in \[ALL25, Section 8\]. From the boundary vertex
+$\( 2 \, 3 \)$, which does not lie on the box, the boundary of $P$ first
+reaches the box at $\( 5 \, 3 \)$ in the negative direction and at
+$\( 2 \, 0 \)$ in the positive direction. The nearest corner of the box
+in the positive direction from $\( 5 \, 3 \)$ and the nearest corner in
+the negative direction from $\( 2 \, 0 \)$ are both $\( 5 \, 0 \)$, so
+$\( 5 \, 0 \)$ is a valid corner for $\( 2 \, 3 \)$. Its horizontal and
+vertical distances from $\( 2 \, 3 \)$ are both $3$, so the hypothesis
+of that theorem, distance at least $3$ in both directions, holds. The
+explicit witness above keeps the proof self-contained. The assertions
+about consistent maps and monochrome components do not depend on
+\[ALL25, Theorem 8.2\].
+
+The accompanying standalone example package (directory `examples/`)
+contains the complete witness and a standard-library verifier. It
+generates all 48 cube frames, reconstructs all 20 retained joins,
+enumerates the 81 normalized maps under complete endpoint constraints,
+identifies the unique surjective map, and checks the eleven
+nonalternating endpoint words and the component and join counts. It runs
+from outside the research repository with Python isolated mode and site
+imports disabled. Recorded normal and optimized runs agree, and four
+corrupted witnesses are rejected in both modes. These checks support
+transcription and implementation reliability; the proof above does not
+require a catalog of larger sources or the original repository.
+
+The proposition refutes only the universal requirement of six monochrome
+components. It provides neither a general bound on their number nor a
+nonfoldable source, and it does not settle the question whether some
+surjectively mappable polyomino has no valid folding.
+
+#pagebreak(weak: true)
+
+== References
+<references>
+#strong[\[ABDD18\]] Oswin Aichholzer, Michael Biro, Erik D. Demaine,
+Martin L. Demaine, David Eppstein, Sándor P. Fekete, Adam Hesterberg,
+Irina Kostitsyna, and Christiane Schmidt. #emph[Folding Polyominoes into
+(Poly)Cubes]. International Journal of Computational Geometry &
+Applications 28(3), 197--226, 2018.
+#link("https://doi.org/10.1142/S0218195918500048")[DOI 10.1142/S0218195918500048].
+#link("https://erikdemaine.org/papers/PolyformFolding_IJCGA/")[Author copy].
+
+#strong[\[AAAC21\]] Oswin Aichholzer, Hugo A. Akitaya, Kenneth C.
+Cheung, Erik D. Demaine, Martin L. Demaine, Sándor P. Fekete, Linda
+Kleist, Irina Kostitsyna, Maarten Löffler, Zuzana Masárová, Klara
+Mundilova, and Christiane Schmidt. #emph[Folding Polyominoes with Holes
+into a Cube]. Computational Geometry 93, article 101700, 2021.
+#link("https://doi.org/10.1016/j.comgeo.2020.101700")[DOI 10.1016/j.comgeo.2020.101700].
+#link("https://erikdemaine.org/papers/CubeFoldingHoles_CGTA/")[Author copy].
+
+#strong[\[ALL25\]] Oswin Aichholzer, Florian Lehner, and Christian
+Lindorfer. #emph[Folding polyominoes into cubes]. Journal of
+Computational Geometry 16(1), 601--634, 2025.
+#link("https://doi.org/10.20382/jocg.v16i1a17")[DOI 10.20382/jocg.v16i1a17].
+#link("https://arxiv.org/abs/2402.14965")[arXiv:2402.14965].
+
+#strong[\[ADK26\]] Hugo A. Akitaya, Erik D. Demaine, and Jason S. Ku.
+#emph[Computing Flat-Folded States]. In Guoxing Lu, Zhong You, and
+Michael Assis (eds.), Origami#super[8], Volume III: Proceedings of the
+8th International Meeting on Origami in Science, Mathematics and
+Education (8OSME), Lecture Notes in Mechanical Engineering, 201--219.
+Springer, 2026.
+#link("https://doi.org/10.1007/978-981-96-6561-7_14")[DOI 10.1007/978-981-96-6561-7\_14].
+#link("https://erikdemaine.org/papers/FlatFolder_OSME2024/")[Author copy].
+
+#strong[\[ABD+04\]] Esther M. Arkin, Michael A. Bender, Erik D. Demaine,
+Martin L. Demaine, Joseph S.~B. Mitchell, Saurabh Sethia, and Steven S.
+Skiena. #emph[When Can You Fold a Map?] Computational Geometry 29(1),
+23--46, 2004.
+#link("https://doi.org/10.1016/j.comgeo.2004.03.012")[DOI 10.1016/j.comgeo.2004.03.012].
+#link("https://arxiv.org/abs/cs/0011026")[arXiv:cs/0011026].
+
+#strong[\[CDD+20\]] Kingston Yao Czajkowski, Erik D. Demaine, Martin L.
+Demaine, Kim Eppling, Robby Kraft, Klara Mundilova, and Levi Smith.
+#emph[Folding Small Polyominoes into a Unit Cube]. Proceedings of the
+32nd Canadian Conference on Computational Geometry (CCCG 2020), 95--100,
+\2020.
+#link("https://erikdemaine.org/papers/CubeFolding_CCCG2020/")[Author copy].
+
+#strong[\[DDMO04\]] Erik D. Demaine, Satyan L. Devadoss, Joseph S.~B.
+Mitchell, and Joseph O'Rourke. #emph[Continuous Foldability of Polygonal
+Paper]. Proceedings of the 16th Canadian Conference on Computational
+Geometry (CCCG 2004), 64--67, 2004.
+#link("https://erikdemaine.org/papers/PaperReachability_CCCG2004/")[Author copy].
+
+#strong[\[DW18\]] Jill Bigley Dunham and Gwyneth R. Whieldon.
+#emph[Enumeration of Solutions to Gardner's Paper Cutting and Folding
+Problem]. In Jennifer Beineke and Jason Rosenhouse (eds.), The
+Mathematics of Various Entertaining Subjects, Volume 2: Research in
+Games, Graphs, Counting, and Complexity, 108--124. Princeton University
+Press, 2018.
+#link("https://doi.org/10.1515/9781400889136-009")[DOI 10.1515/9781400889136-009].
+
+#strong[\[LS25\]] Florian Lehner and Benjamin Shirley. #emph[Bounding
+the number of holes required for folding rectangular polyominoes into
+cubes]. Preprint, 2025.
+#link("https://arxiv.org/abs/2510.18197")[arXiv:2510.18197].
+
+#strong[\[Mel17\]] Sergey A. Melikhov. #emph[Lifting generic maps to
+embeddings. The double point obstruction]. Preprint, 2017; theorem
+numbers refer to version 9 (2025).
+#link("https://arxiv.org/abs/1711.03518")[arXiv:1711.03518]. Also in
+Louis Funar and Athanase Papadopoulos (eds.), Essays on Topology:
+Dedicated to Valentin Poénaru, 237--288. Springer, 2025.
+#link("https://doi.org/10.1007/978-3-031-81414-3_13")[DOI 10.1007/978-3-031-81414-3\_13].
+
+#strong[\[MT01\]] Bojan Mohar and Carsten Thomassen. #emph[Graphs on
+Surfaces]. Johns Hopkins University Press, 2001.
+
+#strong[\[Shi25\]] Benjamin Shirley. #emph[polyomino\_algorithm].
+Software accompanying \[LS25\], 2025.
+#link("https://github.com/ben-shirley/polyomino_algorithm")[github.com/ben-shirley/polyomino\_algorithm],
+commit `0960cb6`.
+

@@ -1,0 +1,69 @@
+{
+  "schema": "disk_folding_supplement_provenance_v1",
+  "scope": "Computational finite colored-tree certificate, plus the separate Lemma L2 construction tests described under l2_bank_orders. No claim of external peer review, formal verification, novelty, or authorship is supplied by this manifest.",
+  "source_files": [
+    {
+      "source_repository_path": "results/colored-disk-tree-toggle-certificates-independent-v1.json",
+      "supplement_path": "results/colored-disk-tree-toggle-certificates-independent-v1.json",
+      "sha256": "b6b39bc01e21f47341929a2dc563d232478cc3b781b91298f7aefc5489011ff6",
+      "bytes": 44766567,
+      "transformation": "none; byte-for-byte copy"
+    },
+    {
+      "source_repository_path": "results/minimal-colored-disk-region-trees-primary-v1.json",
+      "supplement_path": "results/minimal-colored-disk-region-trees-primary-v1.json",
+      "sha256": "438ef678b8e268a2a6ddcf6492daa6b011b64090d257eb620509c62919113099",
+      "bytes": 33936,
+      "transformation": "none; byte-for-byte copy"
+    },
+    {
+      "source_repository_path": "scripts/certify_colored_disk_tree_toggles_independent_v1.py",
+      "supplement_path": "scripts/certify_colored_disk_tree_toggles_independent_v1.py",
+      "sha256": "4edc0096e5edc97f28e3228fe315af082b4b9081b7378d87778aafe3038fa80b",
+      "bytes": 6437,
+      "transformation": "none; byte-for-byte copy"
+    },
+    {
+      "source_repository_path": "scripts/direct_colored_tree_toggle_search_v1.cpp",
+      "supplement_path": "scripts/direct_colored_tree_toggle_search_v1.cpp",
+      "sha256": "8bd0b6f28d6f18abdf2eb465c902d729e967174760630fe79f9d9b57c3c4cdcf",
+      "bytes": 1222,
+      "transformation": "none; byte-for-byte copy"
+    },
+    {
+      "source_repository_path": "scripts/probe_minimal_colored_disk_region_trees_v1.py",
+      "supplement_path": "scripts/probe_minimal_colored_disk_region_trees_v1.py",
+      "sha256": "9fa2ce1177d956fd80f10d75d65fbd7154eac6f17c731654ce7addedba01012a",
+      "bytes": 6954,
+      "transformation": "none; byte-for-byte copy"
+    },
+    {
+      "source_repository_path": "scripts/verify_colored_disk_tree_toggles_independent_v1.py",
+      "supplement_path": "provenance/scripts/verify_colored_disk_tree_toggles_independent_v1.py",
+      "sha256": "779018e2e5df2d7a0e6a7e0f6d2c766f16f077c3c5e73fa577ddb4ac9f1ba05c",
+      "bytes": 10341,
+      "transformation": "none; byte-for-byte copy"
+    }
+  ],
+  "adapted_consumer": {
+    "path": "verify.py",
+    "derived_from": "scripts/verify_colored_disk_tree_toggles_independent_v1.py",
+    "changes": [
+      "Resolve bundled inputs relative to supplement directory rather than repository parent.",
+      "Name the adapted verifier verify.py in generated provenance.",
+      "Default to a new verification-new.json instead of the frozen result name.",
+      "Reject Python optimization before any certificate processing; original assertion-based semantic checks retained.",
+      "Hardening of 9 November 2026 (after an agent mutation audit): require the certificate's input-binding list and the primary result's binding to name exactly the expected producer files, so an emptied list no longer passes; require integer types for colors, parents, arcs and active_arcs; assert the certificate's summary fields total_patterns, maximum_witness_arcs, direct_masks_examined and minimum_histogram against its records; count a negative control as rejected only on AssertionError.",
+      "Hardening of 14 November 2026 (after an outside AI audit of 13 November 2026 and a re-read of the first version of this hardening): read both JSON files with a hook that refuses a repeated key; require every value in the certificate outside the timing field, and in the counts, survivor list and histogram of the primary result, to be an integer, a string or null; require the status and schema strings to be the expected ones; require path records, and path survivors of the primary result, to carry no leg lengths and Y records three; require every direct_masks_examined to be non-negative; require identity_action, the edge-reflection action indices and the leaf-orbit action indices to lie in range(48); require minimum_histogram to equal that of the primary result, whose survivor list must have 80 entries."
+    ],
+    "semantic_changes": "No change to domain enumeration, cube actions, witness replay, survivor checks, or the nine negative controls (seven semantic corruption controls and two set-comparison illustrations; wording corrected 2026-11-09, see README.md). The hardening of 9 November 2026 only adds assertions and narrows the exception type caught by the control wrapper; it accepts the shipped certificate with unchanged counts and rejects ten mutated inputs that the 5 November verifier accepted (see README.md, 'Hardening of 9 November 2026'). The hardening of 14 November 2026 again only adds assertions and a duplicate-key check on reading; it accepts the shipped certificate with unchanged counts and rejects 20 further altered inputs that the verifier of 9 November accepted (see README.md, 'Hardening of 14 November 2026').",
+    "diff": "provenance/consumer-portability.patch"
+  },
+  "l2_bank_orders": {
+    "path": "l2-bank-orders/",
+    "added": "2026-11-07",
+    "scope": "Tests of the construction in the proof of Lemma L2 (manuscript Section 4.2). Not used by verify.py. Not a proof.",
+    "origin": "Written during the November 2026 correction of Section 4.2, previously kept as drafts/L2-supplement/. impl.py is adapted from impl_v2.py of the selected C_induction proof candidate, of which controls/C_induction_impl_v2.py is a byte copy: solve() and k2_cut() are unchanged apart from comments, docstrings and ProofGap message strings (the impl.py docstring, which says only \"comments\", is left as is); construct() tests (H1) and (H2) as stated in the final text and raises the recursion limit. l2harness.py is a byte copy of the shared test harness used to evaluate the candidates (sha256 d936b4d5c07831aa4545ace720f92adeb16c9aef1b345b0c0ebc7b3a87689489). The candidates' working files were in a temporary session directory and are not part of this package.",
+    "hashes": "SHA256SUMS"
+  }
+}

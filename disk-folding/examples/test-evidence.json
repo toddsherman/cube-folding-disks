@@ -1,0 +1,62 @@
+{
+  "additional_python_312_positive_output_equal": true,
+  "controls": [
+    {
+      "control": "boolean_rank",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Ranks must be one integer per cell",
+      "optimized": false
+    },
+    {
+      "control": "boolean_rank",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Ranks must be one integer per cell",
+      "optimized": true
+    },
+    {
+      "control": "dense_crossing_order",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Alternating connector endpoints at edge (2, 3)",
+      "optimized": false
+    },
+    {
+      "control": "dense_crossing_order",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Alternating connector endpoints at edge (2, 3)",
+      "optimized": true
+    },
+    {
+      "control": "forged_word",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Stored edge words differ from reconstruction",
+      "optimized": false
+    },
+    {
+      "control": "forged_word",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Stored edge words differ from reconstruction",
+      "optimized": true
+    },
+    {
+      "control": "boolean_edge_id",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Target edges must be integer vertex pairs",
+      "optimized": false
+    },
+    {
+      "control": "boolean_edge_id",
+      "exit_code": 1,
+      "message": "VERIFICATION FAILED: Target edges must be integer vertex pairs",
+      "optimized": true
+    }
+  ],
+  "corruption_controls_rejected": 8,
+  "date": "2026-11-05",
+  "isolated": true,
+  "positive_normal_and_optimized_outputs_equal": true,
+  "python": "3.15.0",
+  "site_disabled": true,
+  "verifier_sha256": "d0b6f7e4b7f768cafd713fe92bed12568205a914942bc8718b9f8a23291abe90",
+  "witness_sha256": "c4c6523ce482e6ecad10ace1d7a517b51306c9e3295fb537fe12e8ba245f6a99",
+  "working_directory": "/tmp"
+}

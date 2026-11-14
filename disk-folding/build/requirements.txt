@@ -1,0 +1,6 @@
+pypandoc_binary==1.17
+typst==0.15.2
+
+# Optional PDF quality-assurance helpers, not proof dependencies:
+pypdf==6.21.4
+pillow==13.0.0

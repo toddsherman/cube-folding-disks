@@ -1,0 +1,313 @@
+{
+  "task_date": "2026-11-05",
+  "baseline_files": 27,
+  "unchanged_files": 26,
+  "observed_changes_since_previous_audit": [
+    {
+      "path": "research/rank4-all-topologies-theorem-v1.md",
+      "baseline_sha256": "2ab474ffdf4586f238d51c210e7a6c34b18353d332ce414d9deb51ab4ada0148",
+      "current_sha256": "cbf4d1f20c7282472ca7a102d05a45120b5ff3901c24b41048c3ea9a41b73ffa"
+    }
+  ],
+  "publication_process_source_edits": [],
+  "change_scope": "The separate rank-four note changed since the previous audit baseline. It was not edited by this publication task and is not a dependency of the disk theorem. No claim about its current proof is made by this release.",
+  "unique_statement_labels": [
+    "M1",
+    "M2",
+    "M3",
+    "D1",
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "A",
+    "C1",
+    "C2",
+    "C3",
+    "X1",
+    "L1",
+    "L2",
+    "L2a",
+    "L3",
+    "L3a",
+    "L4",
+    "L5",
+    "L6",
+    "L7",
+    "L8"
+  ],
+  "baseline_manifest": {
+    "research/physical-disk-surjective-map-repair-v1.md": "2c4cc4c1bbb1ce3e83fece15f9ce63789bf28bbb64d30b7e4539ac6a27ad35e6",
+    "research/disk-ninety-crease-arc-toggle-family-v1.md": "57a6fe4f616bd254ed6b486012d7fb177e131ba409f891f2a97c282c822263cf",
+    "research/disk-crease-family-13-region-map-normalform-v2.md": "d98c3842fe0915b0a75c0d0b56aaf2b6acea56d153e0c391dd0916681b143eb4",
+    "research/seven-arc-disk-repair-v1.md": "bfab1fbaca40f215ea68f5cc94bb3417cf6630bdd79f53b47ed7c9dde76ccc18",
+    "research/outward-bank-separator-and-six-arc-disk-repair-v1.md": "5caf6389a0d371734e1fafeeaefdebcfd34fa2caf945a939c7c2da9054821dba",
+    "research/layer-model.md": "a8eb5dcdeb619d0f12bea1035882cd9e661dbc7b326b7ffc62bbcef06e740bfb",
+    "research/rank-three-all-topologies-theorem-v1.md": "057eca8ff2d31c95c383fd4e1d490300507dfd5c019c4a8cd2ee249f1df3369e",
+    "research/rank4-all-topologies-theorem-v1.md": "2ab474ffdf4586f238d51c210e7a6c34b18353d332ce414d9deb51ab4ada0148",
+    "research/connected-face-map-selection-counterexample-v1.md": "2f34c9d1c81816b2787fd63a37fce0c8572170f762b4a55c68b81910c5ec5712",
+    "polycube/__init__.py": "ba9e1f9d18f261d3dd9aead9b44288b78fe13fa38428e10313c961d542c8bede",
+    "polycube/annular_preserving_blocks.py": "b2719f8599c33c7198784d8490ed6037724b2e0b713105d97d5adce0f7ce5a97",
+    "polycube/disk_cegis.py": "0689183ef8fb1bb4c50bcaad8c808ad7983acaa14b820da1710eb08918f5f4f0",
+    "polycube/exact_link.py": "5bb9f7357bffcf1ca2fc84f51f539ae30f1404f4941083fe7acbadc0b8d0ad46",
+    "polycube/flat_link.py": "95c36bf3055a07cac8ad34bf1edfab3c450c5f411d1affb0995ac9526a03cb16",
+    "polycube/full_graph_ribbon.py": "f598c85b2422fa2e3f3ebd742a68fda768b0146b2ccdff498a2e6f3bf7be9e5b",
+    "polycube/independent.py": "59fbcfe0ea9a41302be788a5e3f886491129efff8eb08e114aaf9dfeb1a69167",
+    "polycube/joint_sat.py": "57fb4d2149a4a4232d8e295530bc84cf188aa8ec67aa70a31c2fe0b7b11a345f",
+    "polycube/layer_sat.py": "0405762036d94d80ed760b110d0d21479f677c56aada265b04ef918f9e8ab5cd",
+    "polycube/layers.py": "2ed2546f05d0ea3297628449ffb0518ef13f7f2e1df227b36c9d9f498e10cd5e",
+    "polycube/model.py": "83b5ddc83c4d4fa8a65b9cc232496313a1779a39ec92b3146dd9a4468f499d8a",
+    "polycube/rectangle_automaton.py": "6574a4afe5b9294a410f5b026eb9984e982ee76ac0a7d8b682f6d24b02abe62e",
+    "polycube/recursive_blocks.py": "c04599d00b2fed99bf96aabf37ad00b1a16895723d0c43c76d7b3f4510b7c7bf",
+    "polycube/signed_frame_constraint_maps.py": "74b7e5cc7b7cf5807882782705cb3e6bdc7ffe46cee5e653598a2a1c97f148a9",
+    "polycube/slits.py": "f2c3cb35938283dc918b70bf99167c18c411a93aa152ea218b33c2c77f53a422",
+    "polycube/star_ribbon.py": "4fcf58ead4933981997a3a489ec939949fe93ecda1c46a863a5416397de7b1e5",
+    "polycube/strip_extension.py": "0d34d50eb6a8856133bceb188d2ecf035f57159a834f0a8e24dfa9f5cd208be5",
+    "polycube/upstream_probe.py": "707555a33620858a97002b35d441d847dc9622d613ed4b2de5553f88cca499dd"
+  },
+  "section_4_2_replacement_2026_11_07": {
+    "note": "Section 4.2 of sections/04-layer-construction.md was replaced on 2026-11-07 (see drafts/L2-correction-notes.md). The unique_statement_labels list above records the 2026-11-05 text and is not updated in place.",
+    "changed_statement_labels": [
+      "L2",
+      "L2a"
+    ],
+    "added_statement_labels": [
+      "(Sch)",
+      "L2.1",
+      "L2.2",
+      "L2.3",
+      "L2.4",
+      "L2b"
+    ],
+    "research_sources_edited": false
+  },
+  "post_checks_edits_2026_11_09": {
+    "note": "The manuscript sections were revised on 2026-11-09, after the confidence checks of 2026-11-07 (publication/disk-folding-checks/REPORT.md). The revision applied the items listed in publication/disk-folding-checks/8-apply-updates/APPLIED-SUMMARY.json and then the fixes of the agent review round recorded there under review_round, followed by rendering and notation fixes after a visual check of the rebuilt PDF (visual-check-*.json in the same folder). The unique_statement_labels list above records the 2026-11-05 text and is not updated in place; read it together with section_4_2_replacement_2026_11_07 and this block. The label lists below compare the sections of the pre-edit snapshot publication/disk-folding-snapshot-pre-confidence-edits-2026-11-09.tar.gz with the sections recorded in build/build-record.json on 2026-11-09, after the review fixes and the rendering fixes.",
+    "sections_edited": [
+      "sections/00-introduction.md",
+      "sections/01-model-and-realization.md",
+      "sections/02-crease-reduction.md",
+      "sections/03-finite-certificate.md",
+      "sections/04-layer-construction.md",
+      "sections/05-main-theorem.md",
+      "sections/06-counterexample.md",
+      "sections/07-references.md"
+    ],
+    "added_statement_labels": [
+      "B1"
+    ],
+    "changed_statement_labels": [
+      "A",
+      "M3",
+      "D1",
+      "R1",
+      "R2",
+      "C1",
+      "C3",
+      "X1",
+      "L1",
+      "(G)",
+      "(Sch)",
+      "L2.2",
+      "L5",
+      "L6",
+      "Corollary of Section 5"
+    ],
+    "statement_unchanged_proof_or_remarks_changed": [
+      "M1",
+      "M2",
+      "R7",
+      "C2 (Section 3.2 description only)",
+      "L2 (Remark (ii) only)",
+      "L2.3",
+      "L2.4",
+      "L7",
+      "L8 (Section 4.7 closing paragraph only)"
+    ],
+    "statement_and_proof_unchanged": [
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "L2.1",
+      "L2a",
+      "L2b",
+      "L3",
+      "L3a",
+      "L4"
+    ],
+    "typography_note": "Ignored in these lists: changes of typography only, such as bold proof headings and \\(\\square\\) end marks in every section (decision D12 and review findings rendering-03 and rendering-04), list markup (the cases of the proof of Corollary L2a are now paragraphs) and the typesetting of formulas (fixes after the visual check of the rebuilt PDF).",
+    "labels_kept_by_decision": "Corollary L2a keeps cases (a), (b1) and (b2) (items G2-23 and G2-V02 not applied), L8 is kept as a proposition (G2-12 not applied), and Remark L2b keeps its title (G2-22 not applied).",
+    "applied_summary_new_labels": [
+      "Lemma B1 (agreement with [ALL25]), Section 1.6, parts (a)-(c)",
+      "Lemma R1 statement: tangent-join clause; proof by sequential cuts using (Sch) and the argument of Lemma L2.2 Part 2",
+      "Section 2 contraction paragraph: active original arcs of a member are its whole bend arcs",
+      "Lemma C1 restated for the contracted tree T of a family member M",
+      "Proposition C3: surjective member; equivariance step in its proof"
+    ],
+    "applied_summary_changed_labels": [
+      "Title",
+      "Abstract",
+      "Theorem A wording (physical disk)",
+      "Introduction: related work, credits, positioning",
+      "Section 1.1 surface observation and full-star definition",
+      "Section 1.2 [ADK26] remark",
+      "Lemma M1, M2, Theorem M3 precision fixes",
+      "Corollary D1 remarks ([ALL25] hole remark, [DDMO04], [Mel17])",
+      "Lemma R1",
+      "Lemma R2 (characterization)",
+      "Lemma R7 wording",
+      "Section 3 opening",
+      "Lemma C1",
+      "Proposition C3",
+      "Section 3.2 sigma-table and control wording",
+      "Lemma L1 condition 2 and proof",
+      "(G)",
+      "(Sch) proof",
+      "Lemma L2.2 statement/proof clarifications",
+      "Remark (ii) of Section 4.2",
+      "Proposition L5, Proposition L6 (six-face conclusion)",
+      "Theorem L7 degree bound",
+      "Section 4.7 closing paragraph",
+      "Section 5 Corollary and proof (Lemma B1); necessity",
+      "Section 6 disk derivation, lobe normals, step wording, X1 proof facts, [ALL25] Thm 8.2 remark",
+      "References: [CDD+20], [DW18], [ADK26], [DDMO04], [ABD+04], [Mel17]"
+    ],
+    "research_sources_edited": false,
+    "research_sources_check": "On 2026-11-09, 26 of the 27 baseline_manifest files still match; research/rank4-all-topologies-theorem-v1.md is cbf4d1f2..., equal to the current_sha256 recorded above, and was not edited by this task.",
+    "paths_relative_to": "The research paths below, like those of baseline_manifest, are relative to the repository root (the folder that contains research/ and publication/).",
+    "research_files_added": [
+      "research/errata-2026-11-09-bank-separator-HN-and-collar-v1.md"
+    ],
+    "research_summaries_edited": [
+      "README.md",
+      "RESEARCH_REPORT.md"
+    ],
+    "research_errata_scope": "The errata file records that the separation clause of the outward-bank separator lemma is false, that the connected given-embedding form of the Hong-Nagamochi theorem used by the bank-separator notes is unverified, that the collar-separation step of the straight-crease decomposition is false at boundary fans with two or more run endpoints, and that several holed-source research theorems now have conditional proofs. The notes it corrects are left byte-identical. The manuscript does not cite them."
+  },
+  "corollary_a2_2026_11_09": {
+    "note": "On the evening of 2026-11-09 Corollary A2 (deciding foldability of simply connected polyominoes in O(N^7) time) was added at the end of Section 5, after the user approved adopting the check of publication/disk-folding-checks/9-poly-time/NOTE.md. Pre-edit text: publication/disk-folding-snapshot-pre-polytime-corollary-2026-11-09.tar.gz (sha256 e3bad3741556fb82cfcdae93f18ecc80ae2fb26c700cdb31d1bfc1ade3339b20). Reviews: publication/disk-folding-checks/10-polytime-adoption/.",
+    "sections_edited": [
+      "sections/00-introduction.md",
+      "sections/01-model-and-realization.md",
+      "sections/05-main-theorem.md"
+    ],
+    "section_01_note": "Layout only: in Section 1.2 the one-line paragraph \"The condition can equivalently be checked by three kinds of comparisons:\" was joined to the preceding paragraph so that it no longer ends a page apart from its list. No words changed.",
+    "build_script_change": "build/build_manuscript.py wraps Table 1 (Section 3.1) in an unbreakable block, so that it is not split with one row left behind; other tables may still break.",
+    "section_sha256_after": {
+      "sections/00-introduction.md": "923aff7e84e3203cb2d9ed6290a1208bf53968774df10b6bf539ed37bc144e08",
+      "sections/01-model-and-realization.md": "1638d90984e68131d6e643fe3b80a1493003f5a9fd02419f4d308c33028c31bb",
+      "sections/05-main-theorem.md": "d789048cca6f283b525c517b86747c18aac9152cebff039db4943d9bdbaa046c"
+    },
+    "added_statement_labels": [
+      "A2"
+    ],
+    "relabelled": {
+      "Corollary of Section 5": "A1 (Question 4.9 for disks)"
+    },
+    "removed_text": "The last paragraph of Section 5 (\"The finite verification does not yield a polynomial-time algorithm ... No polynomial runtime bound is asserted.\") and the Introduction clause saying that Theorem A does not settle [ALL25, Conjecture 4.10].",
+    "other_changes": [
+      "Section 5 title: \"Proof of the main theorem and its corollaries\".",
+      "One Abstract sentence added; its last sentence reworded.",
+      "Introduction paragraph on Open Problem 9.2 and Conjecture 4.10 rewritten, crediting [ALL25, Section 7] and [LS25, Section 1] for the tree case."
+    ],
+    "statement_labels_unchanged": "All other labels, statements and proofs are unchanged."
+  },
+  "full_review_2026_11_09_night": {
+    "note": "Full review of 2026-11-09 (night): publication/disk-folding-checks/11-full-review/REPORT.md. Pre-edit state: publication/disk-folding-snapshot-pre-full-review-fixes-2026-11-09.tar.gz (sha256 809e945dd8e26ff4bdb1aab0a6f94f116587b871aa7ece21a7109f9015729fda).",
+    "sections_edited": [
+      "sections/05-main-theorem.md",
+      "sections/07-references.md"
+    ],
+    "section_sha256_after": {
+      "sections/05-main-theorem.md": "308d1cc2a6f5ee1e91046fc67cb6338cd05d9ea8fcd1bf4265e23cde6e2af7d3",
+      "sections/07-references.md": "3637b45233f116f42c09486ffdb51e8bb5a8838811bae6de6cf3c8b5672b2b99"
+    },
+    "changes": [
+      "Section 5: one closing paragraph of computational remarks added; no statement or proof changed.",
+      "Section 7: reference [Shi25] added.",
+      "build/build_manuscript.py: tables kept whole."
+    ],
+    "supplement_files_edited": [
+      "supplement/verify.py",
+      "supplement/check_integrity.py",
+      "supplement/l2-bank-orders/check_counterexample.py",
+      "supplement/README.md",
+      "supplement/PACKAGING_REVIEW.md",
+      "supplement/PROVENANCE.json",
+      "supplement/provenance/consumer-portability.patch",
+      "supplement/l2-bank-orders/README.md",
+      "supplement/SHA256SUMS"
+    ],
+    "supplement_files_added": [
+      "supplement/validation/verification-python315-hardened-2026-11-09.json"
+    ],
+    "statement_labels_unchanged": "No statement label was added, removed or changed.",
+    "research_sources_edited": false
+  },
+  "outside_audit_2026_11_14": {
+    "note": "Changes of 2026-11-14 after the outside audit of 2026-11-13: publication/disk-folding-checks/12-outside-audit/. Pre-edit state: git commit f2f4fef, and copies under publication/disk-folding-checks/12-outside-audit/pre/.",
+    "sections_edited": [
+      "sections/01-model-and-realization.md",
+      "sections/05-main-theorem.md"
+    ],
+    "section_sha256_after": {
+      "sections/01-model-and-realization.md": "e11afb022a6580607e827fc9434639a52e7c23e687526baed9c8d86071068b92",
+      "sections/05-main-theorem.md": "b6278398cb39fab7d051ccfb22f9a39c073bd1d2143ba520b2270a612fa18f8d"
+    },
+    "changes": [
+      "Section 1.6: one sentence added (polyominoes of [ALL25] are finite, nonempty and connected); in the proof of Lemma B1(a), the clause \"which is finite and nonempty\".",
+      "Section 5: the conventions after Corollary A2 state the input encoding; the closing paragraph describes the two defects of [Shi25] exactly, without calling both defects of input handling."
+    ],
+    "supplement_files_edited": [
+      "supplement/verify.py",
+      "supplement/README.md",
+      "supplement/PACKAGING_REVIEW.md",
+      "supplement/PROVENANCE.json",
+      "supplement/provenance/consumer-portability.patch",
+      "supplement/SHA256SUMS"
+    ],
+    "supplement_files_added": [
+      "supplement/validation/verification-python315-hardened-2026-11-14.json"
+    ],
+    "statement_labels_unchanged": "No statement label was added, removed or changed. The only change inside a proof is one clause in the proof of Lemma B1(a).",
+    "research_sources_edited": false
+  },
+  "wording_2026_11_14b": {
+    "note": "Wording change of 2026-11-14 (later): the models are named and the review status reads \"No human with sufficient expertise in this field of study has reviewed any proof\". Pre-edit state: git commit 175ab32.",
+    "sections_edited": [],
+    "files_edited": [
+      "README.md",
+      "reviews/external-review-packet.md",
+      "reviews/ADDENDUM-2026-11-14-outside-audit.md",
+      "reviews/source-preservation.json"
+    ],
+    "pdf_unchanged": "5f38f455e986a2e813c873b654750275a4a169daada3651f48757b9283b7ea3a",
+    "supplement_unchanged": true,
+    "research_sources_edited": false
+  },
+  "author_name_2026_11_14c": {
+    "note": "Third build of 2026-11-14: author named in the title block; request packet moved out of the package. Pre-edit state: git commit bbd87b8.",
+    "sections_edited": [
+      "sections/00-introduction.md"
+    ],
+    "section_sha256_after": {
+      "sections/00-introduction.md": "0254cae1fab12f8a484ae8fab9f0948a96a90abb03faba3d9a6ddc4774020bd2"
+    },
+    "changes": [
+      "Title block: author line \"Todd S. Sherman\"; date line \"revised 7, 9 and 14 November 2026\"; a note in italics on how the work was produced. No statement, proof or other text changed.",
+      "build/build_manuscript.py: sets the PDF author field from the author line; build date pinned to 2026-11-14."
+    ],
+    "files_moved_out_of_package": {
+      "reviews/external-review-packet.md": "publication/external-review-packet.md"
+    },
+    "files_added": [
+      "reviews/questions-for-a-referee.md"
+    ],
+    "supplement_unchanged": true,
+    "research_sources_edited": false
+  }
+}

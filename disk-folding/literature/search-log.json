@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-05",
+  "exact_web_queries_this_preparation_pass": [
+    "\"polyomino\" \"surjective\" \"disk\" folding",
+    "\"polyomino\" \"consistent map\" \"simply connected\"",
+    "\"polyomino\" \"Question 4.9\"",
+    "\"polyomino\" \"disk\" \"folding\" \"2026\"",
+    "\"Folding polyominoes into cubes\" 2026 theorem disk",
+    "\"polyominoes\" \"surjective pseudo-folding\"",
+    "\"polyominoes\" \"consistent mapping\" cube simply connected",
+    "\"polyomino\" \"seven\" \"crease\" disk folding theorem",
+    "site.zbmath.org \"Folding polyominoes\"",
+    "site.mathscinet.ams.org \"Folding polyominoes\"",
+    "\"polyomino\" \"disk\" \"map\" \"folding\" theorem -site:themoonlight.io -site:researchgate.net",
+    "site.zbmath.org \"polyominoes\" \"cubes\"",
+    "site.mathscinet.ams.org \"polyominoes\" \"cubes\"",
+    "site.sciencedirect.com/science/article/pii/S0304397515012207 \"Theorem 4\" \"connected partitioned graph\""
+  ],
+  "arxiv_api_record": "arxiv-query.json",
+  "method": "Primary paper comparison plus current web discovery; secondary search hits are not proof premises.",
+  "observed_access_limits": [
+    "Direct published JoCG PDF fetch redirected or failed in web tool; published local PDF/text plus journal landing metadata used.",
+    "Direct HN publisher fetch returned403; publisher-indexed full Section3 including theorem and proof inspected.",
+    "Web site-restricted MathSciNet/zbMATH queries did not yield a useful database review; not represented as one."
+  ],
+  "observed_access_limits_annotations_2026_11_09": {
+    "note": "Added on 9 November 2026. The three entries of observed_access_limits are kept as recorded on 5 November 2026; these notes say what later checks found.",
+    "entry_1_jocg_pdf": "On 7 November 2026 the published JoCG PDF of [ALL25] was fetched directly (SHA-256 96598c0b51382520994209d34c6f0fee92070fbb9960e8ab49dbb542b9bf8afd). It is byte-identical to the local published PDF used on 5 November, so the 5 November reading of the published text stands.",
+    "entry_2_hong_nagamochi": "Overstated as recorded. During the 6-7 November 2026 correction of Section 4.2 it was found that only indexed publisher snippets had been seen, not the full text of the TCS 2018 article. The accessible Kyoto University technical report (2013-001) states Theorem 4 for biconnected graphs only, so the connected, given-embedding form once used in Section 4.2 was never verified. Since 7 November 2026 the bank-order lemma of Section 4.2 is proved directly and the Hong-Nagamochi paper is not cited. The ScienceDirect query in exact_web_queries_this_preparation_pass is historical.",
+    "entry_3_mathscinet_zbmath": "On 7 November 2026 the zbMATH Open API was queried: [ALL25] is Zbl 1578.68273, with the authors' summary and no review, and the searches found no further relevant document. MathSciNet remained inaccessible."
+  },
+  "prior_pass_record": "previous-audit-search-record.json",
+  "prior_pass_record_status": "Historical record of the earlier search pass (dated 5 November 2026); not edited. Its coverage is superseded by refresh_2026_11_07. Its Hong-Nagamochi entries (query family, primary source and limitation) are historical: that paper is no longer cited, and the connected, given-embedding form of its Theorem 4 was never verified (see observed_access_limits_annotations_2026_11_09).",
+  "verdict": "No equivalent same-model disk theorem located; novelty provisional pending specialist input.",
+  "refresh_2026_11_07": {
+    "date": "2026-11-07",
+    "recorded": "2026-11-09",
+    "scope": "Extension of this file, arxiv-query.json, previous-audit-search-record.json and theorem-comparison.md (cutoff 5 November 2026) through 7 November 2026, focused on whether known results imply the candidate theorem or resolve the disk case of [ALL25] Question 4.9.",
+    "coverage": [
+      "arXiv, 1 January 2025 to 7 November 2026: 60 API queries plus 14 queries on arXiv's separate HTML search, giving 1,211 distinct records; topical papers were read or grepped in full text.",
+      "arXiv, 22 February to 31 December 2024: 112 folding-related papers found and 111 grepped in full text; only [ALL25] itself matched.",
+      "The 5 November base query all:polyomino AND all:folding was re-run and returned the same 13 records (see rerun_2026_11_07 in arxiv-query.json).",
+      "Works citing [ALL25], as far as reachable: Semantic Scholar, OpenAlex, OpenCitations, DataCite, zbMATH Open and full-text greps. The only citing work found is Lehner-Shirley, arXiv:2510.18197 [LS25], read end to end; it does not mention Question 4.9, Open Problem 9.2 (8.2 in the arXiv numbering), Theorem 8.2 or simply connected sources.",
+      "Full-text greps, each with a positive control: CCCG 2025 and 2026 (tentative proceedings), EuroCG 2024-2026, CG:YRF 2025, JCDCG^3 2026 and FWCG 2025.",
+      "Titles: SoCG 2025-2026, FUN 2026, WALCOM 2025-2026, ISAAC 2025, GD 2025-2026, JoCG 16-17 and CGTA since January 2025.",
+      "Origami^8 (8OSME): titles and Crossref-deposited reference lists of all 128 chapters (1,891 references); no chapter cites [ALL25] or [LS25].",
+      "Ten authors (Lehner, Lindorfer, Aichholzer, E. and M. Demaine, Akitaya, Kostitsyna, C. Schmidt, Fekete, Kleist): homepages or CVs where available, arXiv, ORCID and OpenAlex.",
+      "Theses (TU Graz IST database, IST Austria, Auckland ResearchSpace, MIT DSpace), German, Chinese and Japanese searches, and Stack Exchange.",
+      "Related works screened in full text (read or skimmed): Czajkowski et al., CCCG 2020; Akitaya-Demaine-Ku, Origami^8 Vol. III; Demaine-Devadoss-Mitchell-O'Rourke, CCCG 2004; Arkin et al. 2004; Melikhov, arXiv:1711.03518. See theorem-comparison.md."
+    ],
+    "findings": [
+      "No prior or concurrent resolution of the disk case of [ALL25] Question 4.9 was found, and no known theorem implies the candidate. The published [ALL25] (JoCG, 16 November 2025) still lists Question 4.9 as open.",
+      "Already known: the tree case, essentially from [ALL25] Section 7, and the disks satisfying the hypothesis of [ALL25] Theorem 8.2. Many non-tree disks with a surjective map fail that hypothesis: the smallest have 8 cells (19 free shapes with all joins retained), and at 14 cells, with all joins retained, 215,762 of the 473,908 free non-tree disks with a surjective map fail it.",
+      "No individual instance is new: all 34,697 small witnesses (non-tree disks with a surjective map that fail the Theorem 8.2 hypothesis; all joins up to 12 cells, slits up to 10 cells) also fold by elementary moves, 34,648 (99.86%) by planar simple folds followed by folding a cube net and the other 49 by a multi-layer tree wrap whose certification relies on Theorem M3.",
+      "Related works identified and added to the manuscript's references: [CDD+20], [DW18] (unread; paywalled), [ADK26], [DDMO04], [ABD+04] and [Mel17]. None of those read implies the candidate; [DW18], which is unread, concerns only the 3x3 square."
+    ],
+    "access_failures": [
+      "Google Scholar: CAPTCHA; not bypassed.",
+      "dblp: Anubis bot challenge; not bypassed.",
+      "Lens.org: search CAPTCHA; the API needs a token.",
+      "BASE: bot challenge; not bypassed.",
+      "CORE: Cloudflare challenge; the API needs a key.",
+      "IA Scholar: anti-scrape challenge; not bypassed.",
+      "MathSciNet: no access.",
+      "TU Graz thesis repositories: diglib refused the connection, PURE returned HTTP 403, and the Invenio repository failed its positive control.",
+      "Semantic Scholar: repeatedly rate-limited (HTTP 429); the JoCG DOI is not indexed there.",
+      "Dunham-Whieldon chapter: paywalled; full text not obtained.",
+      "Not covered: CCCG 2024 (not checked), the JCDCG^3 2025 programme (unreachable), work under review, and the [ALL25] authors (not asked)."
+    ],
+    "verdict": "No prior or concurrent resolution of the disk case of Q4.9 through 7 Nov 2026; novelty about 90%, provisional pending specialist input.",
+    "records": "Project-internal; not included in the release package: publication/disk-folding-checks/5-novelty/ (citations-arxiv/search-log.json, venues-authors/log.tsv, theorem-8-2/lit/search-record-2026-11-07.json, gap-fill/search-log.json, critic-evidence/searches/critic-search-log.json) and publication/disk-folding-checks/REPORT.md, Check 5."
+  },
+  "decision_problem_search_2026_11_09": {
+    "scope": "Whether a polynomial-time algorithm for CubeFolding restricted to simply connected polyominoes (the disk case of [ALL25] Conjecture 4.10) was already known.",
+    "record": "../../disk-folding-checks/9-poly-time/lit/search-log.json and NOTE.md, section Literature (outside this package).",
+    "finding": "No source found settles the disk case or gives a polynomial-time algorithm for simply connected polyominoes whose cell-adjacency graphs have cycles, in the [ALL25] model. The tree case is polynomial by the classification of [ALL25, Section 7]; [LS25, Section 1] says so explicitly. [ABDD18, Theorem 5] gives linear-time algorithms for tree-shaped sources onto polycubes with O(1) cubes in a different folding model. A citing-work search found [LS25] as the only work citing [ALL25].",
+    "consequence": "Corollary A2 of the manuscript is credited as new for disks with cycles; the Introduction credits the tree case to [ALL25, Section 7] and [LS25]."
+  },
+  "refresh_2026_11_09_night": {
+    "scope": "Both results: Theorem A (disk case of [ALL25] Question 4.9) and Corollary A2 (disk case of Conjecture 4.10).",
+    "record": "../../disk-folding-checks/11-full-review/novelty/search-log-2026-11-09.json (outside this package).",
+    "reached": "arXiv API (28 keyword and author queries, date sweeps from 1 April to 10 November 2026), Semantic Scholar, OpenAlex, OpenCitations, Crossref, DataCite, dblp through its SPARQL endpoint (24 authors), zbMATH Open, OpenAIRE, CORE, Zenodo, GitHub, Stack Exchange, the Open Problems Project, Open Problem Garden, Auckland ResearchSpace, the CCCG 2026, JCDCG3 2026, FUN 2026 and CG:YRF 2026 lists, and 44 web queries.",
+    "not_reached": "Google Scholar citing lists, dblp HTML pages, TU Graz thesis repositories, the Dunham-Whieldon chapter, MathSciNet, and work under review.",
+    "finding": "Nothing found that states, implies, contradicts or concurrently claims either result. The published [ALL25] (issued 16 November 2025) still lists Question 4.9, Conjecture 4.10 and Open Problem 9.2 as open; its only citing work found is [LS25]. [AAAC21, Section 4.3] says that every surjective consistent mapping its authors tried could be folded and that they could not prove this in general. The simply connected examples reported as non-foldable in the grid model ([ABDD18] Figure 13, Theorem 4 and Table 1) have no surjective consistent mapping; a recount of the Table 1 dual trees for 6 to 9 squares gives exactly its foldable counts 11, 114, 746 and 3768."
+  },
+  "outside_audit_2026_11_13": {
+    "scope": "Both results: Theorem A and Corollary A2.",
+    "record": "../../disk-folding-checks/12-outside-audit/auditor-scratch/AUDIT-REPORT.md and pre_review_confidence.json (outside this package).",
+    "reported": "The outside audit reports nine targeted web searches (arXiv, JoCG, CCCG, EuroCG, SoCG and authors' pages) through November 2026 and found nothing that states, implies or contradicts either result.",
+    "not_reached": "As reported by the audit: Google Scholar citing lists, thesis repositories, paywalled chapters, and work under review.",
+    "status": "Reported by the auditing model. Its queries and results were not recorded, and this project did not repeat or verify them."
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "schema": "disk-folding-release-v1",
+  "files": {
+    "README.md": {
+      "sha256": "6ab81ce6b389cb7a1fd4d1dafc9754c3ee08f9bd50ee998465697bd4a222e3df",
+      "bytes": 31330
+    },
+    "build/build-record.json": {
+      "sha256": "7ac378f198524af05f70371b53dd0ba39bc309521452c0bf2126508a0a5945ec",
+      "bytes": 1609
+    },
+    "build/build_manuscript.py": {
+      "sha256": "51954c7b50a62cb073567d23f25e0b5f2870ca3bf93b94753d53a00163dcbb3e",
+      "bytes": 5111
+    },
+    "build/package_release.py": {
+      "sha256": "97e680bdf47ac41f63e3a07e7964038d36bda15c709e79814af0eaa388a9d307",
+      "bytes": 2081
+    },
+    "build/pdf-quality-check.json": {
+      "sha256": "db7fd6fccb3f9abdc464ea1398fe4eab4a5b67016ff2154945cca55857a2952c",
+      "bytes": 11395
+    },
+    "build/requirements.txt": {
+      "sha256": "ce59c7fcf5466737ffcf44b77dc92f7ee361008843e5a64d207385f31a9b6d57",
+      "bytes": 132
+    },
+    "drafts/04-2-cofacial-bank-orders.md": {
+      "sha256": "58f53e91eb1db02cdd44a0d553b129edc21f363d259cf634cb0fc0f9da86118c",
+      "bytes": 36871
+    },
+    "drafts/L2-correction-notes.md": {
+      "sha256": "74153de8e59748699cc15be544fabf81fe6b0e71816f62ac69ae0b46b3726f92",
+      "bytes": 47866
+    },
+    "examples/README.md": {
+      "sha256": "db76d3410e1d044cd37ec23d325d1641c30c298ac3afe8fe32fa37f4bcadbc3c",
+      "bytes": 4821
+    },
+    "examples/counterexample.json": {
+      "sha256": "c4c6523ce482e6ecad10ace1d7a517b51306c9e3295fb537fe12e8ba245f6a99",
+      "bytes": 952
+    },
+    "examples/test-evidence.json": {
+      "sha256": "64aa3d118d329392ae8e1c91ca53e6159af020e02465a95fd246e5d0baf0f21e",
+      "bytes": 1895
+    },
+    "examples/verification.json": {
+      "sha256": "c3d27bc09766189689b1f45bf00a010fea9eea6a544a0767d70b6817bdfa803a",
+      "bytes": 3113
+    },
+    "examples/verify_counterexample.py": {
+      "sha256": "d0b6f7e4b7f768cafd713fe92bed12568205a914942bc8718b9f8a23291abe90",
+      "bytes": 12151
+    },
+    "literature/arxiv-query.json": {
+      "sha256": "bbed4f289ec0eab5c0fa38c0da49696b82e91f359ca1c61d84de5801a733655d",
+      "bytes": 6246
+    },
+    "literature/previous-audit-search-record.json": {
+      "sha256": "329840b028ce977dc30ead8cd14f42abaf6945987487d481e82ef9b250d020c9",
+      "bytes": 2296
+    },
+    "literature/search-log.json": {
+      "sha256": "f64f86d19af8c0bf1d5e10aeb36180d4d6484cf2f2a078db56d734c9375bae9c",
+      "bytes": 11633
+    },
+    "literature/theorem-comparison.md": {
+      "sha256": "5724c0d4a97c9c8b179d549c3dea72b1a39011ae306e611246324db4783bea15",
+      "bytes": 19284
+    },
+    "manuscript.md": {
+      "sha256": "bb2a9772e33048378db70254f4cf0eea0a1cae46269b6accbe935e18e2f0bb36",
+      "bytes": 167095
+    },
+    "manuscript.tex": {
+      "sha256": "492be00a9a6d6d0aa2a145bd8c113b62160a1c8efa7821bf1f01ac89e41af229",
+      "bytes": 173549
+    },
+    "manuscript.typ": {
+      "sha256": "ac4a5edb5aa714ca94f55380a6f732e0a5be37e0fe7878b2ba5ce5703a14d762",
+      "bytes": 173377
+    },
+    "output/pdf/disk-folding-manuscript.pdf": {
+      "sha256": "6f4478119c8919eb65a56415053b78cc07a067fec74221793eb463f870d1911a",
+      "bytes": 783743
+    },
+    "reviews/ADDENDUM-2026-11-09-confidence-checks-and-revision.md": {
+      "sha256": "a2de70b24c45dc40fade6bfbee83d785261e47ca3e9509a041d11f1ca2fa30d0",
+      "bytes": 29582
+    },
+    "reviews/ADDENDUM-2026-11-09b-decision-corollary.md": {
+      "sha256": "0135a3a45bc168f852e7df214dab1124e0c564934b718ca418b4b426ea94fb20",
+      "bytes": 8124
+    },
+    "reviews/ADDENDUM-2026-11-09c-full-review.md": {
+      "sha256": "4abb1bbb53edd0567c24fe8b335d3af78755ec7ccc5e60eff510adc889fd1172",
+      "bytes": 7007
+    },
+    "reviews/ADDENDUM-2026-11-14-outside-audit.md": {
+      "sha256": "87563f8b14d9223c969b4a7c3a3dc8c2569568c01281f5c479b831a1888eba9e",
+      "bytes": 12782
+    },
+    "reviews/construction-author-check.md": {
+      "sha256": "a2ebd36d70d385ddc00319ed033a1e6a379022d4610f366f3df56e76181e1183",
+      "bytes": 5351
+    },
+    "reviews/foundations-referee.md": {
+      "sha256": "9a5d1c3de5cf30db2ff166a485d7a7f37e29ffc3464bc047114d152c6b15bc47",
+      "bytes": 7971
+    },
+    "reviews/layer-referee.md": {
+      "sha256": "de6326ac6775544a0e73bd2f6e570e94b45843100872cbc244d89b9d3218342d",
+      "bytes": 9337
+    },
+    "reviews/literature-referee.md": {
+      "sha256": "25235757548190bf7cb2c0c42c43b3936e8ba035ef5c67b4d8c86b4ff3eb79d8",
+      "bytes": 9014
+    },
+    "reviews/questions-for-a-referee.md": {
+      "sha256": "9aa5300bed44a8d779fef0af7791b150bf370e0b74740a32436ce283768e6901",
+      "bytes": 4964
+    },
+    "reviews/source-preservation.json": {
+      "sha256": "d95d433d6a38a97c831c26cc466877b95bf2df4f86aa12ff67c74ad383b30213",
+      "bytes": 16911
+    },
+    "reviews/topology-author-check.md": {
+      "sha256": "76cf9ca3143507c47bcd65f7473957a7eb21279654e94dce4bf6f5f14775b9e5",
+      "bytes": 5917
+    },
+    "reviews/topology-referee.md": {
+      "sha256": "29618d7837bd6c32513cad472611e569c13df6b1d9462e84f255f86bbf66e465",
+      "bytes": 10299
+    },
+    "sections/00-introduction.md": {
+      "sha256": "0254cae1fab12f8a484ae8fab9f0948a96a90abb03faba3d9a6ddc4774020bd2",
+      "bytes": 11328
+    },
+    "sections/01-model-and-realization.md": {
+      "sha256": "e11afb022a6580607e827fc9434639a52e7c23e687526baed9c8d86071068b92",
+      "bytes": 33743
+    },
+    "sections/02-crease-reduction.md": {
+      "sha256": "c5beb68335ba7f048d2cfcf077b463c1f41fa9aae0f7877abafbed88807945b3",
+      "bytes": 20127
+    },
+    "sections/03-finite-certificate.md": {
+      "sha256": "027a264f25c54349ea111fbd735f3537b470e3adc288970c084e581ccb65ad97",
+      "bytes": 11755
+    },
+    "sections/04-layer-construction.md": {
+      "sha256": "fd964ee2c1b1305f05ab4ad8f25f329f9bf23a6f0423b75cbf9c3833e58c587c",
+      "bytes": 57595
+    },
+    "sections/05-main-theorem.md": {
+      "sha256": "b6278398cb39fab7d051ccfb22f9a39c073bd1d2143ba520b2270a612fa18f8d",
+      "bytes": 16909
+    },
+    "sections/06-counterexample.md": {
+      "sha256": "3ff203415ca2a9c6b9813e9541b707d141ac08ec583ab8122cce3c8f3c13cfff",
+      "bytes": 11510
+    },
+    "sections/07-references.md": {
+      "sha256": "3637b45233f116f42c09486ffdb51e8bb5a8838811bae6de6cf3c8b5672b2b99",
+      "bytes": 4105
+    },
+    "supplement/PACKAGING_REVIEW.md": {
+      "sha256": "b393f39f1c907ff81d4c0e01e3a7e022ea97b6e87448200564fb475697cf9bb6",
+      "bytes": 12760
+    },
+    "supplement/PROVENANCE.json": {
+      "sha256": "0413b047f2ba9c224f81fb0a351361d4c68a661ec3b881304622dd7db6839d74",
+      "bytes": 6184
+    },
+    "supplement/README.md": {
+      "sha256": "c2af8456e91efeed2ff787048095f26d32be26882af242f471d8b44463b6ddd6",
+      "bytes": 14785
+    },
+    "supplement/SHA256SUMS": {
+      "sha256": "cac87a87f4b57c3eb4755a21fe22bf054c2311a8cd196ae1b682ec9c3742257c",
+      "bytes": 3040
+    },
+    "supplement/check_integrity.py": {
+      "sha256": "0d8df58f85fde20393a41804d2af1b8440f66619bab7c21c831d3950d87e88e1",
+      "bytes": 1994
+    },
+    "supplement/l2-bank-orders/README.md": {
+      "sha256": "4bddd0fd3bd60eeaac22a019e386c46950853e3c29f2917784403bc2d552ee80",
+      "bytes": 6700
+    },
+    "supplement/l2-bank-orders/check_adversarial.py": {
+      "sha256": "aaecb20daeace5cf4104ea5526fb46d297526492bda4e92850f5d8ed3c99e956",
+      "bytes": 16196
+    },
+    "supplement/l2-bank-orders/check_counterexample.py": {
+      "sha256": "246c30fdb1b6bfb1ca356750861f299abfb450effea7ded7e82b3a8410e089b5",
+      "bytes": 6339
+    },
+    "supplement/l2-bank-orders/controls/C_induction_impl_v2.py": {
+      "sha256": "11e006736fa0c1e1bc45063626d7e78b4de0214c7d08d334b965f71743cbdeac",
+      "bytes": 22687
+    },
+    "supplement/l2-bank-orders/controls/equiv_check.py": {
+      "sha256": "cd3d78cda487602e190a47b9189dc1b363ffa7b534bd1c639694e06de96635b4",
+      "bytes": 1879
+    },
+    "supplement/l2-bank-orders/controls/long_strip.py": {
+      "sha256": "baba2b341f0b319492e729b5f8e43ab3464b46d7cef0edad64fe8fcd3eb36242",
+      "bytes": 955
+    },
+    "supplement/l2-bank-orders/controls/mutation_controls.py": {
+      "sha256": "e6f2d46d5d099dc5a987c984fa5234d307c704949e79e3a4158160f423831436",
+      "bytes": 2818
+    },
+    "supplement/l2-bank-orders/controls/old_gap_example.py": {
+      "sha256": "0543af886d67ab24d822cdec15cace7e60932363b669ad52c41cdbc04eaeeb8c",
+      "bytes": 5344
+    },
+    "supplement/l2-bank-orders/harness.log": {
+      "sha256": "3343b726c6fb617f8c3bd32df35bf8134ad687d5a4a4a00b74d2407ceffdf06f",
+      "bytes": 28737
+    },
+    "supplement/l2-bank-orders/impl.py": {
+      "sha256": "5d72bdd2862dd425c21c16b7447f88d09cd13902efe0fbd5302683442e7e727a",
+      "bytes": 25819
+    },
+    "supplement/l2-bank-orders/l2harness.py": {
+      "sha256": "d936b4d5c07831aa4545ace720f92adeb16c9aef1b345b0c0ebc7b3a87689489",
+      "bytes": 12162
+    },
+    "supplement/provenance/consumer-portability.patch": {
+      "sha256": "044b21e973c4e1876f7acbbf2eed91f0ace4c8029362f8fc1f36917f39a68f85",
+      "bytes": 5984
+    },
+    "supplement/provenance/scripts/verify_colored_disk_tree_toggles_independent_v1.py": {
+      "sha256": "779018e2e5df2d7a0e6a7e0f6d2c766f16f077c3c5e73fa577ddb4ac9f1ba05c",
+      "bytes": 10341
+    },
+    "supplement/results/colored-disk-tree-toggle-certificates-independent-v1.json": {
+      "sha256": "b6b39bc01e21f47341929a2dc563d232478cc3b781b91298f7aefc5489011ff6",
+      "bytes": 44766567
+    },
+    "supplement/results/minimal-colored-disk-region-trees-primary-v1.json": {
+      "sha256": "438ef678b8e268a2a6ddcf6492daa6b011b64090d257eb620509c62919113099",
+      "bytes": 33936
+    },
+    "supplement/scripts/certify_colored_disk_tree_toggles_independent_v1.py": {
+      "sha256": "4edc0096e5edc97f28e3228fe315af082b4b9081b7378d87778aafe3038fa80b",
+      "bytes": 6437
+    },
+    "supplement/scripts/direct_colored_tree_toggle_search_v1.cpp": {
+      "sha256": "8bd0b6f28d6f18abdf2eb465c902d729e967174760630fe79f9d9b57c3c4cdcf",
+      "bytes": 1222
+    },
+    "supplement/scripts/probe_minimal_colored_disk_region_trees_v1.py": {
+      "sha256": "9fa2ce1177d956fd80f10d75d65fbd7154eac6f17c731654ce7addedba01012a",
+      "bytes": 6954
+    },
+    "supplement/validation/clean-room-context.json": {
+      "sha256": "d5fb09e2712a66c7890524ee20466b4f7674259cd8c5b9161b5a0def3d3ec1e9",
+      "bytes": 2453
+    },
+    "supplement/validation/integrity-controls.json": {
+      "sha256": "1a41da892dbfc6eee5cf2737da041ddf857ea9c20839d88a0282a7b4db8d592a",
+      "bytes": 717
+    },
+    "supplement/validation/verification-python312.json": {
+      "sha256": "c03a55e35909942e86692d96cc6453a9f9a5731f6afc9ac5acf751f956362763",
+      "bytes": 2525
+    },
+    "supplement/validation/verification-python315-hardened-2026-11-09.json": {
+      "sha256": "9a0b13a260281513cf0fd8bf1362e16db84247f2caad8a135757acb051134f43",
+      "bytes": 2526
+    },
+    "supplement/validation/verification-python315-hardened-2026-11-14.json": {
+      "sha256": "f2157ee42ee9763ffcc7446ccaaeac859916a7903a77d435ce048a9fac9757fb",
+      "bytes": 2526
+    },
+    "supplement/validation/verification-python315.json": {
+      "sha256": "8cb888d6e55ff323d9299427baab69ca3efd6b4fc90913df4d9f6b32ba3d09bf",
+      "bytes": 2524
+    },
+    "supplement/verify.py": {
+      "sha256": "cbd1a0709ad0081a707df95247727665b3666c27812146db62afa6d823b3ebee",
+      "bytes": 12839
+    }
+  },
+  "scope": "Manuscript, finite certificates, internal reviews, and literature comparison. External human review is pending."
+}

@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-05",
+  "url": "https://export.arxiv.org/api/query?search_query=all%3Apolyomino+AND+all%3Afolding&start=0&max_results=100&sortBy=submittedDate&sortOrder=descending",
+  "query": {
+    "search_query": "all:polyomino AND all:folding",
+    "start": 0,
+    "max_results": 100,
+    "sortBy": "submittedDate",
+    "sortOrder": "descending"
+  },
+  "entries": [
+    {
+      "id": "http://arxiv.org/abs/2611.04246v1",
+      "title": "Polyominoes Folding into Four and Five Distinct Boxes",
+      "published": "2026-11-03T03:28:19Z",
+      "updated": "2026-11-03T03:28:19Z",
+      "screening": "Primary abstract inspected: constructions of common nets for four/five distinct boxes; different question."
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.13908v1",
+      "title": "Counting with Hiccup Sequences",
+      "published": "2026-10-09T17:47:29Z",
+      "updated": "2026-10-09T17:47:29Z",
+      "screening": "Primary abstract inspected: integer hiccup sequences with polyomino-vertex interpretations; not cube-folding existence."
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.19910v2",
+      "title": "Polyomino Nets Covering Three Different Boxes of Area 106 and Related Results",
+      "published": "2026-08-20T11:26:20Z",
+      "updated": "2026-08-21T09:06:40Z",
+      "screening": "Primary abstract inspected: common nets for multiple cuboids; different question."
+    },
+    {
+      "id": "http://arxiv.org/abs/2510.18197v2",
+      "title": "Bounding the number of holes required for folding rectangular polyominoes into cubes",
+      "published": "2025-10-21T00:47:43Z",
+      "updated": "2025-10-22T03:26:47Z",
+      "screening": "Primary full text inspected: cooperating holes in rectangular sources; comparison in theorem-comparison.md."
+    },
+    {
+      "id": "http://arxiv.org/abs/2506.01079v1",
+      "title": "Unfolding Boxes with Local Constraints",
+      "published": "2025-06-01T16:30:07Z",
+      "updated": "2025-06-01T16:30:07Z",
+      "screening": "Primary abstract inspected: SAT-based common box unfolding constructions/enumeration; different question."
+    },
+    {
+      "id": "http://arxiv.org/abs/2402.14965v1",
+      "title": "Folding polyominoes into cubes",
+      "published": "2024-02-22T20:59:02Z",
+      "updated": "2024-02-22T20:59:02Z",
+      "screening": "Primary full text and published journal version inspected; closest problem/model source."
+    },
+    {
+      "id": "http://arxiv.org/abs/2005.02645v1",
+      "title": "Search for developments of a box having multiple ways of folding by SAT solver",
+      "published": "2020-05-06T08:15:07Z",
+      "updated": "2020-05-06T08:15:07Z",
+      "screening": "Title-level triage only: multiple developments of a box by SAT; no conclusion from full text."
+    },
+    {
+      "id": "http://arxiv.org/abs/1910.09917v3",
+      "title": "Folding Polyominoes with Holes into a Cube",
+      "published": "2019-10-22T12:16:26Z",
+      "updated": "2020-07-02T11:39:05Z",
+      "screening": "Primary published full text inspected; consistent-map necessity and holes."
+    },
+    {
+      "id": "http://arxiv.org/abs/1712.09317v2",
+      "title": "Folding Polyominoes into (Poly)Cubes",
+      "published": "2017-12-26T18:06:16Z",
+      "updated": "2018-03-25T14:46:55Z",
+      "screening": "Primary published full text inspected; models and tree algorithms."
+    },
+    {
+      "id": "http://arxiv.org/abs/1701.03461v1",
+      "title": "Rules for Folding Polyminoes from One Level to Two Levels",
+      "published": "2017-01-12T13:57:47Z",
+      "updated": "2017-01-12T13:57:47Z",
+      "screening": "Title-level triage only: one-level to two-level foldings; no conclusion from full text."
+    },
+    {
+      "id": "http://arxiv.org/abs/1505.07821v3",
+      "title": "Genetic correlations greatly increase mutational robustness and can both reduce and enhance evolvability",
+      "published": "2015-05-28T19:45:34Z",
+      "updated": "2016-03-07T17:54:05Z",
+      "screening": "Title-level triage only: genetics and evolvability; no full-text review."
+    },
+    {
+      "id": "http://arxiv.org/abs/1007.2460v2",
+      "title": "Polyominoes and Polyiamonds as Fundamental Domains of Isohedral Tilings with Rotational Symmetry",
+      "published": "2010-07-15T01:21:57Z",
+      "updated": "2011-06-30T02:18:59Z",
+      "screening": "Title-level triage only: isohedral tilings; no full-text review."
+    },
+    {
+      "id": "http://arxiv.org/abs/cs/9907018v3",
+      "title": "Hinged Dissection of Polyominoes and Polyforms",
+      "published": "1999-07-10T21:29:56Z",
+      "updated": "2003-03-23T13:29:42Z",
+      "screening": "Title-level triage only: hinged dissections; no full-text review."
+    }
+  ],
+  "status": "retrieved",
+  "returned_entries": 13,
+  "limitation": "One arXiv API query is not all literature; titles and abstracts are screening only.",
+  "rerun_2026_11_07": {
+    "date": "2026-11-07",
+    "recorded": "2026-11-09",
+    "result": "The same query returned the same 13 records (newest 2611.04246, 3 November 2026). The entries above are kept as recorded on 5 November 2026.",
+    "later_screening": [
+      {
+        "id": "2611.04246",
+        "screening": "Full 13-page text grepped and all nine references checked: does not cite [ALL25]; common nets of several boxes in the no-overlap net model."
+      },
+      {
+        "id": "2608.19910",
+        "screening": "Full text grepped (CCCG 2026): common cuboid nets in the no-overlap model; does not cite [ALL25]."
+      },
+      {
+        "id": "2506.01079",
+        "screening": "Full text skimmed: SAT encodings for common box unfoldings; its 'simply connected' refers to nets; does not cite [ALL25]."
+      },
+      {
+        "id": "2610.13908",
+        "screening": "Full text grepped: polyomino keywords only; does not cite [ALL25]."
+      }
+    ],
+    "conclusion": "None of these four cites [ALL25] or addresses Question 4.9.",
+    "record": "Project-internal; not included in the release package: publication/disk-folding-checks/5-novelty/theorem-8-2/lit/arxiv-queries-2026-11-07.json (re-run), publication/disk-folding-checks/5-novelty/citations-arxiv/search-log.json and publication/disk-folding-checks/5-novelty/venues-authors/log.tsv (later screenings)."
+  }
+}
