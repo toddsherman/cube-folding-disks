@@ -1,0 +1,4 @@
+; A ring of eight squares. It has a hole, so the theorem says nothing about it.
+###
+#.#
+###

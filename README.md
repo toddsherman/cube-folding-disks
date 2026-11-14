@@ -16,9 +16,11 @@ Nothing is claimed for sheets with holes. For them the question remains open.
 | If you want | Read |
 |---|---|
 | An account in plain language | [plain-language-summary.md](plain-language-summary.md) |
+| The same account with diagrams, and how the work went | [todd.sh/CubeFoldingDisks](https://www.todd.sh/CubeFoldingDisks) |
 | The manuscript (41 pages) | [disk-folding/output/pdf/disk-folding-manuscript.pdf](disk-folding/output/pdf/disk-folding-manuscript.pdf) |
 | The points where a specialist's judgement would help most | [disk-folding/reviews/questions-for-a-referee.md](disk-folding/reviews/questions-for-a-referee.md) |
 | To check the computer-assisted step yourself | "Checking the certificate" below |
+| To try the result on a sheet of your own | [decision-procedure/](decision-procedure/) |
 | The history of checks and corrections | [disk-folding/README.md](disk-folding/README.md) and [disk-folding/reviews/](disk-folding/reviews/) |
 
 ## Checking the certificate
@@ -43,6 +45,7 @@ The first command should print `Verified SHA-256 hashes for 29 packaged files.` 
 ## What is in this repository
 
 - [disk-folding/](disk-folding/) is the release package: the manuscript and its sources, the certificate with its verifier, a worked example, a comparison with earlier work, and the AI review records. It is file for file the archive `disk-folding-release-2026-11-14c.zip` (SHA-256 `2b5e3ad78f2bb5edde32bb91aa9927c10e02ab3f88cc03729101f23122ad42f2`), which is attached to the release of that name. The PDF has SHA-256 `6f4478119c8919eb65a56415053b78cc07a067fec74221793eb463f870d1911a`.
+- [decision-procedure/](decision-procedure/) is a program that decides whether a given sheet without holes folds onto the cube, with its tests. The proof does not depend on it, and it is not part of the release package.
 - Some records in the package refer to paths that begin with `../`. Those are working records of the project and are not published here.
 - The working notes of the project are not here either. They include unfinished work on sheets with holes, for which nothing is claimed.
 

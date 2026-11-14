@@ -1,0 +1,5 @@
+; A cube net: the cross. Folds.
+.#.
+###
+.#.
+.#.

@@ -1,0 +1,3 @@
+; A 2 x 3 rectangle. Does not fold: it has six squares but is not a cube net.
+###
+###

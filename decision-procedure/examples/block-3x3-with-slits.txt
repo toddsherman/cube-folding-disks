@@ -1,0 +1,7 @@
+; A 3 x 3 block. Without slits it does not fold; with these three slits it does.
+###
+###
+###
+slit 0 0 right
+slit 0 1 down
+slit 1 1 right
